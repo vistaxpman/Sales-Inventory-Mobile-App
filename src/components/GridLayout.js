@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { TouchableOpacity, Image, View } from 'react-native'
+import { TouchableOpacity, Image, View, FlatList } from 'react-native'
 import { Divider, ImageBackground, Tile, Card, GridRow } from '@shoutem/ui'
 
 export default class GridLayout extends Component {
@@ -85,7 +85,7 @@ export default class GridLayout extends Component {
     return this.state.fontLoaded ? (
       <Screen>
         <NavigationBar title="Restaurants" styleName="inline" />
-        <ListView data={groupedData} renderRow={this.renderRow} />
+        <FlatList data={groupedData} renderRow={this.renderRow} />
       </Screen>
     ) : null
   }

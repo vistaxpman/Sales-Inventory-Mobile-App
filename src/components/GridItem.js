@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, TextInput } from 'react-native'
 
-export default class Grid extends Component {
+export default class GridItems extends Component {
   render() {
     return (
       <View style={styles.gridContainer}>
