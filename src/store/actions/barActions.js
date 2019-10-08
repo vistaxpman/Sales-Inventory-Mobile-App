@@ -1,25 +1,18 @@
-export const ADD_ITEM = 'ADD_ITEM'
-export const REMOVE_ITEM = 'REMOVE_ITEM'
-export const TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY =
-  'TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY'
-export const EDIT_NO_OF_ITEM = 'EDIT_NO_OF_ITEM'
+export const ADD_ITEM_TO_BAR = 'ADD_ITEM_TO_BAR'
+export const REMOVE_ITEM_FROM_BAR = 'REMOVE_ITEM_FROM_BAR'
+export const EDIT_NO_OF_ITEM_IN_BAR = 'EDIT_NO_OF_ITEM_IN_BAR'
 
-export const addItem = (item, index) => ({
-  type: ADD_ITEM,
+export const addItemToBar = (item, index) => ({
+  type: ADD_ITEM_TO_BAR,
   payload: { item, index }
 })
 
-export const removeItem = (item, index) => ({
-  type: REMOVE_ITEM,
+export const removeItemFromBar = (item, index) => ({
+  type: REMOVE_ITEM_FROM_BAR,
   payload: { item, index }
 })
 
-export const editNoOfItem = (userInput, item, index) => ({
-  type: EDIT_NO_OF_ITEM,
+export const editNoOfItemInBar = (userInput, item, index) => ({
+  type: EDIT_NO_OF_ITEM_IN_BAR,
   payload: { userInput, item, index }
-})
-
-export const toggleAreYouSureModalVisibility = status => ({
-  type: TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY,
-  payload: status
 })

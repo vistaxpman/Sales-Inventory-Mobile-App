@@ -1,62 +1,59 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, TextInput } from 'react-native'
-import { Header } from 'react-native-elements'
-import Icon from 'react-native-vector-icons/AntDesign'
+import { connect } from 'react-redux'
+import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
+import GridItem from '../components/GridItem'
 
-const SearchBar = () => (
-  <View style={styles.searchBarStyle}>
-    <TextInput style={styles.searchInputStyle} placeholder="Search" />
-    <Icon name="search1" size={17} color="gray" />
-  </View>
-)
+class Restaurant extends Component {
+  constructor() {
+    super()
+  }
 
-export default class Restaurant extends Component {
+  renderGridItem = ({ item, index }) => <GridItem item={item} index={index} />
+
   render() {
-    Invex = () => <Text style={styles.invexText}>Invex</Text>
     return (
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        <Header
-          leftComponent={<Invex />}
-          centerComponent={<SearchBar />}
-          rightComponent={{ icon: 'shopping-cart', color: '#fff' }}
-          containerStyle={{
-            backgroundColor: '#eeaf3b',
-            justifyContent: 'space-around'
-          }}
-        />
-        <View style={styles.barContainer}>
-          <Text>Restaurant</Text>
-        </View>
+      <View style={styles.gridContainer}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <FlatList
+            data={this.props.restaurant}
+            keyExtractor={item => item.itemId}
+            renderItem={this.renderGridItem}
+            horizontal={false}
+            numColumns={2}
+            style={styles.gridLayout}
+          />
+        </ScrollView>
       </View>
     )
   }
 }
 
+mapStateToProps = state => {
+  return {
+    restaurant: state.restaurantReducer.restaurant,
+    restaurantCart: state.restaurantReducer.restaurantCart
+  }
+}
+
+mapDispatchToProps = dispatch => {
+  return {}
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Restaurant)
+
 const styles = StyleSheet.create({
-  invexText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold'
+  gridContainer: {
+    flex: 1,
+    backgroundColor: '#eee',
+    flexDirection: 'column',
+    marginTop: 15,
+    paddingLeft: 5,
+    paddingRight: 5
   },
-  searchBarStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 35,
-    width: 200,
-    backgroundColor: '#fff',
-    borderColor: '#eee',
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingRight: 10,
-    paddingLeft: 10
-  },
-  searchInputStyle: {
-    fontSize: 15,
-    width: 160
-  },
-  barContainer: {
-    display: 'flex',
-    flexDirection: 'column'
+  gridLayout: {
+    marginBottom: 30
   }
 })

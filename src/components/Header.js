@@ -23,13 +23,11 @@ class Header extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tab: this.props.tab,
       screen: this.props.screen
     }
   }
 
   handleCartIcon = () => {
-    // ToastAndroid.show(this.state.tab, ToastAndroid.SHORT)
     this.props.navigation.navigate('Cart')
   }
 

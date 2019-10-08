@@ -5,16 +5,21 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  ScrollView,
-  TextInput,
-  Modal,
-  TouchableHighlight,
-  ToastAndroid
+  TextInput
 } from 'react-native'
 import { connect } from 'react-redux'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
-import { addItem, removeItem, editNoOfItem } from '../store/actions/barActions'
+import {
+  addItemToBar,
+  removeItemFromBar,
+  editNoOfItemInBar
+} from '../store/actions/barActions'
+import {
+  addItemToRestaurant,
+  removeItemFromRestaurant,
+  editNoOfItemInRestaurant
+} from '../store/actions/restaurantActions'
 import { increaseNoInCart } from '../store/actions/cartActions'
 
 class GridItem extends Component {
@@ -23,7 +28,7 @@ class GridItem extends Component {
   }
 
   onChangeNoInCart = (userInput, item, index) => {
-    this.props.onChangeNoInCart(userInput, item, index)
+    this.props.onChangeNoInCart(userInput, item, index, this.props.currentTab)
     // this.setState({
     //   bar: update(this.state.bar, {
     //     3: { noInCart: { $set: `${noInCart}` } }
@@ -32,11 +37,11 @@ class GridItem extends Component {
   }
 
   increaseNumberOfItemsInCart = (item, index) => {
-    this.props.increaseNumberOfItemsInCart(item, index)
+    this.props.increaseNumberOfItemsInCart(item, index, this.props.currentTab)
   }
 
   decreaseNumberOfItemsInCart = (item, index) => {
-    this.props.decreaseNumberOfItemsInCart(item, index)
+    this.props.decreaseNumberOfItemsInCart(item, index, this.props.currentTab)
   }
 
   render() {
@@ -100,21 +105,34 @@ class GridItem extends Component {
 }
 
 mapStateToProps = state => {
-  return {}
+  return {
+    currentTab: state.homeReducer.currentTab
+  }
 }
 
 mapDispatchToProps = dispatch => {
   return {
-    increaseNumberOfItemsInCart: (item, index) => {
-      // ToastAndroid.show(index.toString(), ToastAndroid.SHORT)
-      dispatch(addItem(item, index))
+    increaseNumberOfItemsInCart: (item, index, currentTab) => {
+      if (currentTab === 'bar') {
+        dispatch(addItemToBar(item, index))
+      } else if (currentTab === 'restaurant') {
+        dispatch(addItemToRestaurant(item, index))
+      }
       // dispatch(increaseNoInCart(item))
     },
-    decreaseNumberOfItemsInCart: (item, index) => {
-      dispatch(removeItem(item, index))
+    decreaseNumberOfItemsInCart: (item, index, currentTab) => {
+      if (currentTab === 'bar') {
+        dispatch(removeItemFromBar(item, index))
+      } else if (currentTab === 'restaurant') {
+        dispatch(removeItemFromRestaurant(item, index))
+      }
     },
-    onChangeNoInCart: (userInput, item, index) => {
-      dispatch(editNoOfItem(userInput, item, index))
+    onChangeNoInCart: (userInput, item, index, currentTab) => {
+      if (currentTab === 'bar') {
+        dispatch(editNoOfItemInBar(userInput, item, index))
+      } else if (currentTab === 'restaurant') {
+        dispatch(editNoOfItemInRestaurant(userInput, item, index))
+      }
     }
   }
 }

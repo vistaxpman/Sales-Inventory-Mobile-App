@@ -1,35 +1,28 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
-// import GridLayout from 'react-native-layout-grid'
-// import AntDesignIcon from 'react-native-vector-icons/AntDesign'
-// import EntypoIcon from 'react-native-vector-icons/Entypo'
-// import update from 'react-addons-update'
 import GridItem from '../components/GridItem'
 
-class Bar extends Component {
+class MainLayout extends Component {
   constructor() {
     super()
+    this.state = {}
   }
 
-  // increaseNumberOfItemInCart = itemId => {
-  //   const currentNoInCart = this.state.bar[3].noInCart
-  //   const noInCart = Number(currentNoInCart) + 1
-  //   this.setState({
-  //     bar: update(this.state.bar, {
-  //       3: { noInCart: { $set: `${noInCart}` } }
-  //     })
-  //   })
-  // }
-
   renderGridItem = ({ item, index }) => <GridItem item={item} index={index} />
+
+  dataToLoad = () => {
+    return this.props.currentTab === 'bar'
+      ? this.props.bar
+      : this.props.restaurant
+  }
 
   render() {
     return (
       <View style={styles.gridContainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <FlatList
-            data={this.props.bar}
+            data={this.dataToLoad()}
             keyExtractor={item => item.itemId}
             renderItem={this.renderGridItem}
             horizontal={false}
@@ -44,8 +37,11 @@ class Bar extends Component {
 
 mapStateToProps = state => {
   return {
+    currentTab: state.homeReducer.currentTab,
     bar: state.barReducer.bar,
-    barCart: state.barReducer.barCart
+    barCart: state.barReducer.barCart,
+    restaurant: state.restaurantReducer.restaurant,
+    restaurantCart: state.restaurantReducer.restaurantCart
   }
 }
 
@@ -56,7 +52,7 @@ mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Bar)
+)(MainLayout)
 
 const styles = StyleSheet.create({
   gridContainer: {

@@ -9,10 +9,14 @@ import {
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { SimpleHtml } from '@shoutem/ui'
 import { connect } from 'react-redux'
-import { toggleAreYouSureModalVisibility } from '../store/actions/barActions'
+import { toggleAreYouSureModalVisibility } from '../store/actions/homeActions'
 
 const nairaIcon = `<span style="color: #fff">&#8358;<span>`
 class Bottom extends Component {
+  constructor() {
+    super()
+  }
+
   setModalVisible = () => {
     this.props.setModalVisible(!this.props.areYouSureModalIsVisible)
     // console.log(this.props.barCart)
@@ -23,7 +27,8 @@ class Bottom extends Component {
       <View style={styles.bottomContainer}>
         <View style={styles.noOfItemsContainer}>
           <Text style={styles.noOfItemsTextOne}>
-            {this.props.totalNumberOfItemsAdded}
+            {Number(this.props.totalNumberOfItemsAddedFromBar) +
+              Number(this.props.totalNumberOfItemsAddedFromRestaurant)}
           </Text>
           <Text style={styles.noOfItemsTextTwo}>Item(s)</Text>
         </View>
@@ -35,7 +40,8 @@ class Bottom extends Component {
             {/* <SimpleHtml body={nairaIcon} style={styles.nairaIconContent} /> */}
             <Text style={{ color: '#fff', marginRight: 2 }}>#</Text>
             <Text style={styles.totalAmountTextTwo}>
-              {this.props.totalAmountOfItemsAdded}
+              {Number(this.props.totalAmountOfItemsAddedFromBar) +
+                Number(this.props.totalAmountOfItemsAddedFromRestaurant)}
             </Text>
           </View>
         </View>
@@ -52,10 +58,17 @@ class Bottom extends Component {
 
 mapStateToProps = state => {
   return {
-    areYouSureModalIsVisible: state.barReducer.areYouSureModalIsVisible,
-    totalNumberOfItemsAdded: state.barReducer.totalNumberOfItemsAdded,
-    totalAmountOfItemsAdded: state.barReducer.totalAmountOfItemsAdded,
-    barCart: state.barReducer.barCart
+    areYouSureModalIsVisible: state.homeReducer.areYouSureModalIsVisible,
+    totalNumberOfItemsAddedFromBar:
+      state.barReducer.totalNumberOfItemsAddedFromBar,
+    totalAmountOfItemsAddedFromBar:
+      state.barReducer.totalAmountOfItemsAddedFromBar,
+    barCart: state.barReducer.barCart,
+    totalNumberOfItemsAddedFromRestaurant:
+      state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant,
+    totalAmountOfItemsAddedFromRestaurant:
+      state.restaurantReducer.totalAmountOfItemsAddedFromRestaurant,
+    restaurantCart: state.restaurantReducer.restaurantCart
   }
 }
 

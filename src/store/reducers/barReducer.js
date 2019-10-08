@@ -3,9 +3,8 @@ import * as Actions from '../actions'
 import update from 'react-addons-update'
 
 const initialState = {
-  areYouSureModalIsVisible: false,
-  totalNumberOfItemsAdded: 0,
-  totalAmountOfItemsAdded: 0,
+  totalNumberOfItemsAddedFromBar: 0,
+  totalAmountOfItemsAddedFromBar: 0,
   bar: [
     {
       itemId: '12345',
@@ -109,16 +108,17 @@ const initialState = {
 
 const barReducer = (state = initialState, action) => {
   switch (action.type) {
-    case Actions.ADD_ITEM: {
+    case Actions.ADD_ITEM_TO_BAR: {
       const itemIndex = action.payload.index
       const noInCart = state.bar[itemIndex].noInCart
       const increaseNoInCart = Number(noInCart) + 1
-      const totalNumberOfItemsAdded = state.totalNumberOfItemsAdded
-      const increaseTotalNumberOfItemsAdded =
-        Number(totalNumberOfItemsAdded) + 1
+      const totalNumberOfItemsAddedFromBar =
+        state.totalNumberOfItemsAddedFromBar
+      const increaseTotalNumberOfItemsAddedFromBar =
+        Number(totalNumberOfItemsAddedFromBar) + 1
       const itemPrice = state.bar[itemIndex].price
-      const currentTotalAmount = state.totalAmountOfItemsAdded
-      const increaseTotalAmountOfItemsAdded =
+      const currentTotalAmount = state.totalAmountOfItemsAddedFromBar
+      const increaseTotalAmountOfItemsAddedFromBar =
         Number(itemPrice) + Number(currentTotalAmount)
       // const item = action.payload.item
       const newBar = state.bar.map((item, index) => {
@@ -138,24 +138,29 @@ const barReducer = (state = initialState, action) => {
             noInCart: { $set: `${increaseNoInCart}` }
           }
         },
-        totalNumberOfItemsAdded: { $set: `${increaseTotalNumberOfItemsAdded}` },
-        totalAmountOfItemsAdded: { $set: `${increaseTotalAmountOfItemsAdded}` },
+        totalNumberOfItemsAddedFromBar: {
+          $set: `${increaseTotalNumberOfItemsAddedFromBar}`
+        },
+        totalAmountOfItemsAddedFromBar: {
+          $set: `${increaseTotalAmountOfItemsAddedFromBar}`
+        },
         barCart: { $set: newBarCart() }
       })
     }
-    case Actions.REMOVE_ITEM: {
+    case Actions.REMOVE_ITEM_FROM_BAR: {
       const itemIndex = action.payload.index
       const noInCart = state.bar[itemIndex].noInCart
 
       if (noInCart > 0) {
         const decreaseNoInCart = Number(noInCart) - 1
 
-        const totalNumberOfItemsAdded = state.totalNumberOfItemsAdded
-        const decreaseTotalNumberOfItemsAdded =
-          Number(totalNumberOfItemsAdded) - 1
+        const totalNumberOfItemsAddedFromBar =
+          state.totalNumberOfItemsAddedFromBar
+        const decreaseTotalNumberOfItemsAddedFromBar =
+          Number(totalNumberOfItemsAddedFromBar) - 1
         const itemPrice = state.bar[itemIndex].price
-        const currentTotalAmount = state.totalAmountOfItemsAdded
-        const decreaseTotalAmountOfItemsAdded =
+        const currentTotalAmount = state.totalAmountOfItemsAddedFromBar
+        const decreaseTotalAmountOfItemsAddedFromBar =
           Number(currentTotalAmount) - Number(itemPrice)
 
         const newBar = state.bar.map((item, index) => {
@@ -174,38 +179,40 @@ const barReducer = (state = initialState, action) => {
               noInCart: { $set: `${decreaseNoInCart}` }
             }
           },
-          totalNumberOfItemsAdded: {
-            $set: `${decreaseTotalNumberOfItemsAdded}`
+          totalNumberOfItemsAddedFromBar: {
+            $set: `${decreaseTotalNumberOfItemsAddedFromBar}`
           },
-          totalAmountOfItemsAdded: {
-            $set: `${decreaseTotalAmountOfItemsAdded}`
+          totalAmountOfItemsAddedFromBar: {
+            $set: `${decreaseTotalAmountOfItemsAddedFromBar}`
           },
           barCart: { $set: newBarCart() }
         })
       }
     }
-    case Actions.EDIT_NO_OF_ITEM: {
+    case Actions.EDIT_NO_OF_ITEM_IN_BAR: {
       const itemIndex = action.payload.index
       const userInput = action.payload.userInput
       const formerNumberOfItemsAdded = state.bar[itemIndex].noInCart
       const itemPrice = state.bar[itemIndex].price
-      let currentTotalNumberOfItemsAdded = state.totalNumberOfItemsAdded
-      let currentTotalAmountOfItemsAdded = state.totalAmountOfItemsAdded
+      let currentTotalNumberOfItemsAddedFromBar =
+        state.totalNumberOfItemsAddedFromBar
+      let currentTotalAmountOfItemsAddedFromBar =
+        state.totalAmountOfItemsAddedFromBar
       if (formerNumberOfItemsAdded > 0) {
-        currentTotalNumberOfItemsAdded =
-          Number(currentTotalNumberOfItemsAdded) -
+        currentTotalNumberOfItemsAddedFromBar =
+          Number(currentTotalNumberOfItemsAddedFromBar) -
           Number(formerNumberOfItemsAdded)
         const priceOfFormerNumberOfItemsAdded =
           Number(formerNumberOfItemsAdded) * itemPrice
-        currentTotalAmountOfItemsAdded =
-          Number(currentTotalAmountOfItemsAdded) -
+        currentTotalAmountOfItemsAddedFromBar =
+          Number(currentTotalAmountOfItemsAddedFromBar) -
           priceOfFormerNumberOfItemsAdded
       }
-      currentTotalNumberOfItemsAdded =
-        Number(currentTotalNumberOfItemsAdded) + Number(userInput)
+      currentTotalNumberOfItemsAddedFromBar =
+        Number(currentTotalNumberOfItemsAddedFromBar) + Number(userInput)
       const priceOfUserInput = Number(userInput) * itemPrice
-      currentTotalAmountOfItemsAdded =
-        Number(currentTotalAmountOfItemsAdded) + priceOfUserInput
+      currentTotalAmountOfItemsAddedFromBar =
+        Number(currentTotalAmountOfItemsAddedFromBar) + priceOfUserInput
 
       const newBar = state.bar.map((item, index) => {
         if (index === itemIndex) {
@@ -224,20 +231,14 @@ const barReducer = (state = initialState, action) => {
             noInCart: { $set: `${userInput}` }
           }
         },
-        totalNumberOfItemsAdded: {
-          $set: `${currentTotalNumberOfItemsAdded}`
+        totalNumberOfItemsAddedFromBar: {
+          $set: `${currentTotalNumberOfItemsAddedFromBar}`
         },
-        totalAmountOfItemsAdded: {
-          $set: `${currentTotalAmountOfItemsAdded}`
+        totalAmountOfItemsAddedFromBar: {
+          $set: `${currentTotalAmountOfItemsAddedFromBar}`
         },
         barCart: { $set: newBarCart() }
       })
-    }
-    case Actions.TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY: {
-      return {
-        ...state,
-        areYouSureModalIsVisible: action.payload
-      }
     }
     default: {
       return state

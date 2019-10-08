@@ -27,7 +27,7 @@ class Cart extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <Header tab="Bar" screen="cart" />
+        <Header screen="cart" />
         <View style={styles.layoutContainer}>
           <Text style={styles.layoutTitleText}>Cart</Text>
           <View style={styles.listContainer}>

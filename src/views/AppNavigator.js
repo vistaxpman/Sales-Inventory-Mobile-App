@@ -1,19 +1,12 @@
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
-import Bar from './Bar'
-import Restaurant from './Restaurant'
+import Home from './Home'
 import Cart from './Cart'
 
 const NavigationStack = createStackNavigator(
   {
-    Bar: {
-      screen: Bar,
-      navigationOptions: {
-        header: null
-      }
-    },
-    Restaurant: {
-      screen: Restaurant,
+    Home: {
+      screen: Home,
       navigationOptions: {
         header: null
       }
@@ -30,7 +23,7 @@ const NavigationStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'Bar'
+    initialRouteName: 'Home'
   }
 )
 
