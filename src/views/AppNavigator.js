@@ -21,10 +21,11 @@ const NavigationStack = createStackNavigator(
     Cart: {
       screen: Cart,
       navigationOptions: {
-        title: 'Invex',
-        headerTitleStyle: { color: '#fff' },
-        headerStyle: { backgroundColor: '#eeaf3b' },
-        headerTintColor: '#fff'
+        header: null
+        // title: 'Invex',
+        // headerTitleStyle: { color: '#fff' },
+        // headerStyle: { backgroundColor: '#eeaf3b' },
+        // headerTintColor: '#fff'
       }
     }
   },

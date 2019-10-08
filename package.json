@@ -20,6 +20,7 @@
     "expo-font": "~7.0.0",
     "galio-framework": "^0.6.1",
     "react": "16.8.3",
+    "react-addons-update": "^15.6.2",
     "react-dom": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-native-easy-grid-view": "^0.1.1",
@@ -35,7 +36,9 @@
     "react-navigation": "^4.0.10",
     "react-navigation-material-bottom-tabs": "^2.1.2",
     "react-navigation-stack": "^1.9.3",
-    "react-navigation-tabs": "^2.5.5"
+    "react-navigation-tabs": "^2.5.5",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4"
   },
   "devDependencies": {
     "babel-preset-expo": "^7.0.0"

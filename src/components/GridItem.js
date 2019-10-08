@@ -1,38 +1,172 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, TextInput } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ImageBackground,
+  ScrollView,
+  TextInput,
+  Modal,
+  TouchableHighlight,
+  ToastAndroid
+} from 'react-native'
+import { connect } from 'react-redux'
+import AntDesignIcon from 'react-native-vector-icons/AntDesign'
+import EntypoIcon from 'react-native-vector-icons/Entypo'
+import { addItem, removeItem, editNoOfItem } from '../store/actions/barActions'
+import { increaseNoInCart } from '../store/actions/cartActions'
 
-export default class GridItems extends Component {
+class GridItem extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  onChangeNoInCart = (userInput, item, index) => {
+    this.props.onChangeNoInCart(userInput, item, index)
+    // this.setState({
+    //   bar: update(this.state.bar, {
+    //     3: { noInCart: { $set: `${noInCart}` } }
+    //   })
+    // })
+  }
+
+  increaseNumberOfItemsInCart = (item, index) => {
+    this.props.increaseNumberOfItemsInCart(item, index)
+  }
+
+  decreaseNumberOfItemsInCart = (item, index) => {
+    this.props.decreaseNumberOfItemsInCart(item, index)
+  }
+
   render() {
     return (
-      <View style={styles.gridContainer}>
-        <View style={styles.gridContainer2}>
-          <View style={styles.singleColumn}>
-            <Text>One</Text>
-          </View>
-          <View style={styles.singleColumn}>
-            <Text>Two</Text>
-          </View>
+      <View style={styles.itemContainer}>
+        <ImageBackground
+          source={{ uri: this.props.item.image.url }}
+          style={styles.itemBgImage}
+          resizeMode="contain"
+        >
+          {this.props.item.isAddedToCart && (
+            <View style={styles.itemBgCheckBoxContainer}>
+              <AntDesignIcon name="checkcircleo" size={20} color="#eeaf3b" />
+            </View>
+          )}
+        </ImageBackground>
+        <View style={styles.itemAndPriceContainer}>
+          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+          <Text
+            style={styles.itemPriceText}
+          >{`#${this.props.item.price}`}</Text>
+        </View>
+        <View style={styles.counterContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              this.increaseNumberOfItemsInCart(
+                this.props.item,
+                this.props.index
+              )
+            }
+          >
+            <EntypoIcon name="plus" size={30} color="#eeaf3b" />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.counterText}
+            onChangeText={userInput =>
+              this.onChangeNoInCart(
+                userInput,
+                this.props.item,
+                this.props.index
+              )
+            }
+            value={this.props.item.noInCart.toString()}
+            keyboardType={'numeric'}
+            selectTextOnFocus
+          />
+          <TouchableOpacity
+            onPress={() =>
+              this.decreaseNumberOfItemsInCart(
+                this.props.item,
+                this.props.index
+              )
+            }
+          >
+            <EntypoIcon name="minus" size={30} color="#eeaf3b" />
+          </TouchableOpacity>
         </View>
       </View>
     )
   }
 }
 
+mapStateToProps = state => {
+  return {}
+}
+
+mapDispatchToProps = dispatch => {
+  return {
+    increaseNumberOfItemsInCart: (item, index) => {
+      // ToastAndroid.show(index.toString(), ToastAndroid.SHORT)
+      dispatch(addItem(item, index))
+      // dispatch(increaseNoInCart(item))
+    },
+    decreaseNumberOfItemsInCart: (item, index) => {
+      dispatch(removeItem(item, index))
+    },
+    onChangeNoInCart: (userInput, item, index) => {
+      dispatch(editNoOfItem(userInput, item, index))
+    }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GridItem)
+
 const styles = StyleSheet.create({
-  gridContainer: {
-    flex: 1
-  },
-  gridContainer2: {
+  itemContainer: {
     flex: 1,
     display: 'flex',
-    flexWrap: 'wrap',
-    borderColor: 'red',
-    borderWidth: 1,
-    alignItems: 'stretch'
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    margin: 10,
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 1,
+    elevation: 2,
+    padding: 5
   },
-  singleColumn: {
-    width: 150,
-    height: 80,
-    backgroundColor: '#4CAF50'
+  itemBgImage: {
+    width: '100%',
+    height: 80
+  },
+  itemBgCheckBoxContainer: {
+    flex: 1,
+    alignItems: 'flex-end'
+  },
+  itemAndPriceContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  itemNameText: {
+    fontWeight: 'bold',
+    fontSize: 15
+  },
+  itemPriceText: {
+    color: 'gray'
+  },
+  counterContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 7
+  },
+  counterText: {
+    fontSize: 20,
+    borderColor: 'transparent'
   }
 })

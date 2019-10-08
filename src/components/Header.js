@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ToastAndroid
 } from 'react-native'
-import { Header } from 'react-native-elements'
+import { Header as NativeHeader } from 'react-native-elements'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -19,11 +19,12 @@ const SearchBar = () => (
   </View>
 )
 
-class MyHeader extends Component {
+class Header extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tab: this.props.tab
+      tab: this.props.tab,
+      screen: this.props.screen
     }
   }
 
@@ -42,7 +43,7 @@ class MyHeader extends Component {
     )
 
     return (
-      <Header
+      <NativeHeader
         leftComponent={<Invex />}
         centerComponent={<SearchBar />}
         rightComponent={<CartIcon />}
@@ -80,4 +81,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withNavigation(MyHeader)
+export default withNavigation(Header)
