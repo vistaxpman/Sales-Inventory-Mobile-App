@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
-// import GridLayout from 'react-native-layout-grid'
-// import AntDesignIcon from 'react-native-vector-icons/AntDesign'
-// import EntypoIcon from 'react-native-vector-icons/Entypo'
-// import update from 'react-addons-update'
 import GridItem from '../components/GridItem'
 
 class Bar extends Component {

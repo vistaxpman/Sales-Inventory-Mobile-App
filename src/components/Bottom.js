@@ -7,7 +7,6 @@ import {
   ToastAndroid
 } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
-import { SimpleHtml } from '@shoutem/ui'
 import { connect } from 'react-redux'
 import { toggleAreYouSureModalVisibility } from '../store/actions/homeActions'
 
@@ -37,8 +36,7 @@ class Bottom extends Component {
             <Text style={styles.totalAmountTextOne}>Total Amount:</Text>
           </View>
           <View style={styles.totalIconAndAmountContainer}>
-            {/* <SimpleHtml body={nairaIcon} style={styles.nairaIconContent} /> */}
-            <Text style={{ color: '#fff', marginRight: 2 }}>#</Text>
+            <Text style={{ color: '#fff', marginRight: 2 }}>₦</Text>
             <Text style={styles.totalAmountTextTwo}>
               {Number(this.props.totalAmountOfItemsAddedFromBar) +
                 Number(this.props.totalAmountOfItemsAddedFromRestaurant)}
@@ -88,16 +86,17 @@ export default connect(
 const styles = StyleSheet.create({
   bottomContainer: {
     alignSelf: 'flex-end',
-    height: 50,
-    marginBottom: 7,
-    backgroundColor: '#eeaf3b',
-    borderColor: '#eeaf3b',
+    height: 55,
+    backgroundColor: '#606060',
+    borderColor: '#606060',
     borderWidth: 1,
-    borderRadius: 3,
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    padding: 5,
+    paddingLeft: 5,
+    paddingTop: 5,
+    paddingRight: 5,
+    paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'space-around',
     shadowColor: '#fff',

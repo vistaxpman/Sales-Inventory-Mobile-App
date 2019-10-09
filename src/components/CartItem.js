@@ -31,7 +31,7 @@ class CartItem extends Component {
           <Text style={styles.itemNameText}>{this.props.item.name}</Text>
           <Text
             style={styles.itemPriceText}
-          >{`#${this.props.item.price}`}</Text>
+          >{`₦${this.props.item.price}`}</Text>
         </View>
         <View style={styles.counterContainer}>
           <TouchableOpacity>

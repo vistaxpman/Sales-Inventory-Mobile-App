@@ -4,21 +4,45 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
-  Alert
+  Alert,
+  Dimensions
 } from 'react-native'
 import { connect } from 'react-redux'
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view'
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Header from '../components/Header'
 import Bottom from '../components/Bottom'
 import { toggleAreYouSureModalVisibility } from '../store/actions/homeActions'
 import { changeTab } from '../store/actions/homeActions'
 import Bar from './Bar'
 import Restaurant from './Restaurant'
-import MainLayout from './MainLayout'
+import Cart from './Cart'
+
+barRoute = () => {
+  return <Bar />
+}
+
+restaurantRoute = () => {
+  return <Restaurant />
+}
+
+cartRoute = () => {
+  return <Cart />
+}
 
 class Home extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      index: 0,
+      routes: [
+        { key: 'bar', title: 'Bar' },
+        { key: 'restaurant', title: 'Restaurant' },
+        { key: 'cart', title: 'Cart' }
+      ]
+    }
   }
 
   placeOrder = () => {}
@@ -59,46 +83,78 @@ class Home extends Component {
     this.props.toggleActiveTab(tab)
   }
 
+  renderIcon = ({ route, focused, color }) => {
+    return route.key === 'bar' ? (
+      <View>
+        {focused && (
+          <FontAwesome5Icon name="wine-bottle" size={15} color="#eeaf3b" />
+        )}
+        {!focused && (
+          <FontAwesome5Icon name="wine-bottle" size={15} color="#ccc" />
+        )}
+      </View>
+    ) : route.key === 'restaurant' ? (
+      <View>
+        {focused && (
+          <MaterialIcon name="food-variant" size={15} color="#eeaf3b" />
+        )}
+        {!focused && (
+          <MaterialIcon name="food-variant" size={15} color="#ccc" />
+        )}
+      </View>
+    ) : route.key === 'cart' ? (
+      <View>
+        {focused && (
+          <MaterialCommunityIcon name="cart" size={15} color="#eeaf3b" />
+        )}
+        {!focused && (
+          <MaterialCommunityIcon name="cart" size={15} color="#ccc" />
+        )}
+      </View>
+    ) : null
+  }
+
+  renderLabel = ({ route, focused, color }) => {
+    return (
+      <View>
+        <Text
+          style={[
+            styles.tabText,
+            focused ? styles.activeTabTextColor : styles.tabTextColor
+          ]}
+        >
+          {route.title}
+        </Text>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
         {this.showConfirmationDialog()}
         <Header screen="bar" />
         <View style={styles.layoutContainer}>
-          <View style={styles.tabContainer}>
-            {/* <TouchableWithoutFeedback
-              onPress={() => this.toggleActiveTab('bar')}
-            > */}
-            <Text
-              onPress={() => this.toggleActiveTab('bar')}
-              style={[
-                this.props.currentTab === 'bar'
-                  ? styles.activeLayoutTitleText
-                  : styles.layoutTitleText
-              ]}
-            >
-              Bar
-            </Text>
-            {/* </TouchableWithoutFeedback> */}
-            {/* <TouchableWithoutFeedback
-              onPress={() => this.toggleActiveTab('restaurant')}
-            > */}
-            <Text
-              onPress={() => this.toggleActiveTab('restaurant')}
-              style={[
-                this.props.currentTab === 'restaurant'
-                  ? styles.activeLayoutTitleText
-                  : styles.layoutTitleText
-              ]}
-            >
-              Restaurant
-            </Text>
-            {/* </TouchableWithoutFeedback> */}
-          </View>
-          {/* {this.activeTab()} */}
-          {/* {this.props.currentTab === 'bar' && <Bar />}
-          {this.props.currentTab === 'restaurant' && <Restaurant />} */}
-          <MainLayout />
+          <TabView
+            navigationState={this.state}
+            renderScene={SceneMap({
+              bar: barRoute,
+              restaurant: restaurantRoute,
+              cart: cartRoute
+            })}
+            onIndexChange={index => this.setState({ index })}
+            initialLayout={{ width: Dimensions.get('window').width }}
+            renderTabBar={props => (
+              <TabBar
+                {...props}
+                indicatorStyle={{ backgroundColor: '#eeaf3b' }}
+                style={{ backgroundColor: '#606060', height: 55 }}
+                renderIcon={this.renderIcon}
+                indicatorStyle={{ backgroundColor: '#eeaf3b', height: 5 }}
+                renderLabel={this.renderLabel}
+              />
+            )}
+          />
           <Bottom />
         </View>
       </View>
@@ -135,37 +191,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee'
   },
   tabContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingTop: 3,
-    paddingBottom: 3,
-    backgroundColor: '#fff',
-    paddingLeft: 15,
-    paddingRight: 15
+    backgroundColor: '#fff'
   },
-  layoutTitleText: {
-    fontSize: 17,
-    marginTop: 5,
-    marginBottom: 5,
-    fontWeight: 'bold',
-    color: 'gray',
-    backgroundColor: '#fff',
-    borderRadius: 3,
-    paddingTop: 7,
-    paddingBottom: 7,
-    paddingLeft: 15,
-    paddingRight: 15
+  activeTabTextColor: {
+    color: '#eeaf3b'
   },
-  activeLayoutTitleText: {
-    fontSize: 17,
-    marginTop: 5,
-    marginBottom: 5,
-    fontWeight: 'bold',
-    paddingTop: 7,
-    paddingBottom: 7,
-    paddingLeft: 15,
-    paddingRight: 15,
-    color: '#fff',
-    backgroundColor: '#eeaf3b'
+  tabTextColor: {
+    color: '#ccc'
+  },
+  tabText: {
+    fontWeight: 'bold'
   }
 })

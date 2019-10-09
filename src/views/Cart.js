@@ -26,33 +26,23 @@ class Cart extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <Header screen="cart" />
-        <View style={styles.layoutContainer}>
-          <Text style={styles.layoutTitleText}>Cart</Text>
-          <View style={styles.listContainer}>
-            {this.props.itemsInCart.length === 0 ? (
-              <View style={styles.emptyContainer}>
-                <MaterialIcon
-                  name="remove-shopping-cart"
-                  size={80}
-                  color="gray"
-                />
-                <Text style={styles.emptyText}>
-                  Cart is empty. Place an order now
-                </Text>
-              </View>
-            ) : (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <List
-                  data={this.props.itemsInCart}
-                  renderItem={this.renderItem}
-                  style={styles.listLayout}
-                />
-              </ScrollView>
-            )}
+      <View style={styles.listContainer}>
+        {this.props.itemsInCart.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <MaterialIcon name="remove-shopping-cart" size={80} color="gray" />
+            <Text style={styles.emptyText}>
+              Cart is empty. Place an order now
+            </Text>
           </View>
-        </View>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <List
+              data={this.props.itemsInCart}
+              renderItem={this.renderItem}
+              style={styles.listLayout}
+            />
+          </ScrollView>
+        )}
       </View>
     )
   }
@@ -74,26 +64,14 @@ export default connect(
 )(Cart)
 
 const styles = StyleSheet.create({
-  layoutContainer: {
-    flex: 1,
-    marginTop: 5,
-    backgroundColor: '#F5FCFF',
-    paddingLeft: 5,
-    paddingRight: 5
-  },
-  layoutTitleText: {
-    fontSize: 17,
-    marginTop: 7,
-    marginBottom: 7,
-    marginLeft: 10
-  },
   listContainer: {
     flex: 1,
     backgroundColor: '#eee',
     flexDirection: 'column',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 10
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 10,
+    marginTop: 15
   },
   listLayout: {
     marginBottom: 30,

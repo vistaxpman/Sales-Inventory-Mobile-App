@@ -1,7 +1,7 @@
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import Home from './Home'
-import Cart from './Cart'
+import Orders from './Orders'
 
 const NavigationStack = createStackNavigator(
   {
@@ -11,14 +11,13 @@ const NavigationStack = createStackNavigator(
         header: null
       }
     },
-    Cart: {
-      screen: Cart,
+    Orders: {
+      screen: Orders,
       navigationOptions: {
-        header: null
-        // title: 'Invex',
-        // headerTitleStyle: { color: '#fff' },
-        // headerStyle: { backgroundColor: '#eeaf3b' },
-        // headerTintColor: '#fff'
+        title: 'Invex',
+        headerTitleStyle: { color: '#fff' },
+        headerStyle: { backgroundColor: '#eeaf3b' },
+        headerTintColor: '#fff'
       }
     }
   },

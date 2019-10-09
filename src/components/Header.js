@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { Header as NativeHeader } from 'react-native-elements'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import FoundationIcon from 'react-native-vector-icons/Foundation'
 
 const SearchBar = () => (
   <View style={styles.searchBarStyle}>
@@ -28,7 +28,7 @@ class Header extends Component {
   }
 
   handleCartIcon = () => {
-    this.props.navigation.navigate('Cart')
+    this.props.navigation.navigate('Orders')
   }
 
   render() {
@@ -36,7 +36,7 @@ class Header extends Component {
 
     CartIcon = () => (
       <TouchableOpacity onPress={this.handleCartIcon}>
-        <MaterialCommunityIcon name="cart" size={30} color="#fff" />
+        <FoundationIcon name="burst-sale" size={35} color="#fff" />
       </TouchableOpacity>
     )
 
