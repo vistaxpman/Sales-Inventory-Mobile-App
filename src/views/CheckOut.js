@@ -41,12 +41,10 @@ class CheckOut extends Component {
             <View style={styles.emptyContainer}>
               <MaterialIcon
                 name="remove-shopping-cart"
-                size={50}
+                size={40}
                 color="gray"
               />
-              <Text style={styles.emptyText}>
-                No item to Order. Place an order now
-              </Text>
+              <Text style={styles.emptyText}>No item to Order.</Text>
             </View>
           ) : (
             <ScrollView showsVerticalScrollIndicator={false}>

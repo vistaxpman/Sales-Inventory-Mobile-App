@@ -46,7 +46,7 @@ class Header extends Component {
         centerComponent={<SearchBar />}
         rightComponent={<CartIcon />}
         containerStyle={{
-          backgroundColor: '#eeaf3b',
+          backgroundColor: '#c98811',
           justifyContent: 'space-around'
         }}
       />

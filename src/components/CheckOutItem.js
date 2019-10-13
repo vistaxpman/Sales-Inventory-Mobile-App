@@ -60,7 +60,7 @@ class CheckOutOut extends Component {
           <TouchableOpacity
             onPress={() => this.checkOutItemClick(this.props.item)}
           >
-            <EntypoIcon name="plus" size={30} color="#eeaf3b" />
+            <EntypoIcon name="plus" size={30} color="#c98811" />
           </TouchableOpacity>
           <TextInput
             style={styles.counterText}
@@ -71,7 +71,7 @@ class CheckOutOut extends Component {
           <TouchableOpacity
             onPress={() => this.checkOutItemClick(this.props.item)}
           >
-            <EntypoIcon name="minus" size={30} color="#eeaf3b" />
+            <EntypoIcon name="minus" size={30} color="#c98811" />
           </TouchableOpacity>
         </View>
       </View>

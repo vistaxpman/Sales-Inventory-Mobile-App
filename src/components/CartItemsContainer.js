@@ -43,7 +43,7 @@ class CartItemsContainer extends Component {
             </Text>
           </View>
           <TouchableOpacity onPress={() => this.toggleItemsVisibility}>
-            <AntDesignIcon name="downcircleo" size={20} color="#eeaf3b" />
+            <AntDesignIcon name="downcircleo" size={20} color="#c98811" />
           </TouchableOpacity>
         </View>
 
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   orderControlButtons: {
-    color: '#eeaf3b',
+    color: '#c98811',
     backgroundColor: '#fff',
     borderColor: '#fff',
     borderWidth: 1,

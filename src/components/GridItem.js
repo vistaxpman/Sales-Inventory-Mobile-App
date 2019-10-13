@@ -17,23 +17,22 @@ class GridItem extends Component {
     super(props)
   }
 
-  amount = 0
-
   onUpdate = (type, value) => {
+    let amount = this.props.item.noInCheckOut
     switch (type) {
       case 'increment':
-        this.amount = this.amount + 1
+        amount = amount + 1
         break
       case 'decrement':
-        this.amount = this.amount - (this.amount ? 1 : 0)
+        amount = amount - (amount ? 1 : 0)
         break
       case 'input':
-        this.amount = value
+        amount = value
         break
       default:
         break
     }
-    this.props.onChange(this.amount, type)
+    this.props.onChange(amount, type)
   }
 
   render() {
@@ -51,7 +50,7 @@ class GridItem extends Component {
                   <AntDesignIcon
                     name="checkcircleo"
                     size={20}
-                    color="#eeaf3b"
+                    color="#c98811"
                   />
                 </View>
               )}
@@ -63,21 +62,25 @@ class GridItem extends Component {
               >{`₦${this.props.item.price}`}</Text>
             </View>
             <View style={styles.counterContainer}>
-              <TouchableOpacity onPress={() => this.onUpdate('increment')}>
-                <EntypoIcon name="plus" size={30} color="#eeaf3b" />
-              </TouchableOpacity>
+              <TouchableWithoutFeedback
+                onPress={() => this.onUpdate('increment')}
+              >
+                <EntypoIcon name="plus" size={30} color="#c98811" />
+              </TouchableWithoutFeedback>
               <TextInput
                 style={styles.counterText}
                 onChangeText={userInput =>
                   this.onUpdate('input', Number(userInput))
                 }
-                value={this.amount.toString()}
+                value={this.props.item.noInCheckOut.toString()}
                 keyboardType={'numeric'}
                 selectTextOnFocus
               />
-              <TouchableOpacity onPress={() => this.onUpdate('decrement')}>
-                <EntypoIcon name="minus" size={30} color="#eeaf3b" />
-              </TouchableOpacity>
+              <TouchableWithoutFeedback
+                onPress={() => this.onUpdate('decrement')}
+              >
+                <EntypoIcon name="minus" size={30} color="#c98811" />
+              </TouchableWithoutFeedback>
             </View>
           </View>
         </TouchableWithoutFeedback>

@@ -35,7 +35,7 @@ class CartItem extends Component {
         </View>
         <View style={styles.counterContainer}>
           <TouchableOpacity>
-            <EntypoIcon name="plus" size={30} color="#eeaf3b" />
+            <EntypoIcon name="plus" size={30} color="#c98811" />
           </TouchableOpacity>
           <TextInput
             style={styles.counterText}
@@ -44,7 +44,7 @@ class CartItem extends Component {
             selectTextOnFocus
           />
           <TouchableOpacity>
-            <EntypoIcon name="minus" size={30} color="#eeaf3b" />
+            <EntypoIcon name="minus" size={30} color="#c98811" />
           </TouchableOpacity>
         </View>
       </View>

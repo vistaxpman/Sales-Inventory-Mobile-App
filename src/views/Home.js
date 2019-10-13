@@ -17,7 +17,6 @@ import RBSheet from 'react-native-raw-bottom-sheet'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { Spinner } from 'react-native-ui-kitten'
 import Header from '../components/Header'
@@ -117,8 +116,30 @@ class Home extends Component {
   }
 
   viewOrder = () => {
-    this.props.setModalVisible()
     this.showCheckOutModal()
+    this.props.setModalVisible()
+  }
+
+  openClearModal = () => {
+    return Alert.alert(
+      'Delete Items to Order',
+      'Are you sure you want delete items ?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => null
+        },
+        {},
+        {
+          text: 'OK',
+          onPress: () => {
+            this.hideCheckOutModal()
+            this.props.clearCart()
+          }
+        }
+      ],
+      { cancelable: true }
+    )
   }
 
   showConfirmationDialog = () => {
@@ -169,7 +190,7 @@ class Home extends Component {
                     fontWeight: 'bold'
                   }}
                 >
-                  Please wait, while we process your Order...
+                  Sending your Order...
                 </Text>
                 <Spinner size="giant" status="info" />
               </View>
@@ -225,22 +246,16 @@ class Home extends Component {
                     <Text
                       style={[
                         styles.bottomControls,
-                        { backgroundColor: '#909090' }
+                        {
+                          borderColor: '#c98811',
+                          borderWidth: 1,
+                          color: '#c98811'
+                        }
                       ]}
                     >
                       View
                     </Text>
                   </TouchableWithoutFeedback>
-                  {/* <TouchableWithoutFeedback>
-                  <Text
-                    style={[
-                      styles.bottomControls,
-                      { backgroundColor: '#f06246' }
-                    ]}
-                  >
-                    Cancel
-                  </Text>
-                </TouchableWithoutFeedback> */}
                   <TouchableWithoutFeedback onPress={() => this.placeOrder()}>
                     <Text
                       style={[
@@ -294,10 +309,14 @@ class Home extends Component {
     ) : route.key === 'restaurant' ? (
       <View>
         {focused && (
-          <MaterialIcon name="food-variant" size={15} color="#eeaf3b" />
+          <MaterialCommunityIcon
+            name="food-variant"
+            size={15}
+            color="#eeaf3b"
+          />
         )}
         {!focused && (
-          <MaterialIcon name="food-variant" size={15} color="#ccc" />
+          <MaterialCommunityIcon name="food-variant" size={15} color="#ccc" />
         )}
       </View>
     ) : route.key === 'cart' ? (
@@ -351,27 +370,26 @@ class Home extends Component {
                   this.setModalVisible()
                 }}
               >
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    marginRight: 'auto'
-                  }}
-                >
-                  <FeatherIcon name="send" size={20} color="#fff" />
-                  <Text
-                    style={{ fontWeight: 'bold', fontSize: 12, color: '#fff' }}
-                  >
-                    Place Order
-                  </Text>
-                </View>
+                <FeatherIcon name="send" size={25} color="#fff" />
               </TouchableOpacity>
               <Text style={styles.bottomSheetHeaderText}>Items to Order</Text>
+              {this.itemsInCheckOut().length > 0 && (
+                <TouchableOpacity onPress={() => this.openClearModal()}>
+                  <MaterialCommunityIcon
+                    name="delete"
+                    size={25}
+                    color="#fff"
+                    style={{ marginLeft: 'auto' }}
+                  />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity onPress={() => this.hideCheckOutModal()}>
-                <View style={{ marginLeft: 'auto' }}>
-                  <AntDesignIcon name="close" size={25} color="#fff" />
-                </View>
+                <AntDesignIcon
+                  style={{ marginLeft: 25 }}
+                  name="close"
+                  size={25}
+                  color="#fff"
+                />
               </TouchableOpacity>
             </View>
             <CheckOut />

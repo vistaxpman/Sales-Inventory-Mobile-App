@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
   bottomContainer: {
     alignSelf: 'flex-end',
     height: 55,
-    backgroundColor: '#eeaf3b',
-    borderColor: '#eeaf3b',
+    backgroundColor: '#c98811',
+    borderColor: '#c98811',
     borderWidth: 1,
     width: '100%',
     display: 'flex',

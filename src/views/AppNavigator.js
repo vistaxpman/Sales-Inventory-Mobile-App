@@ -34,7 +34,7 @@ const NavigationStack = createStackNavigator(
       navigationOptions: {
         title: 'Invex',
         headerTitleStyle: { color: '#fff' },
-        headerStyle: { backgroundColor: '#eeaf3b' },
+        headerStyle: { backgroundColor: '#c98811' },
         headerTintColor: '#fff'
       }
     },
@@ -46,7 +46,7 @@ const NavigationStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'Home'
+    initialRouteName: 'Login'
   }
 )
 
