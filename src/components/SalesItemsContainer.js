@@ -4,19 +4,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Image,
-  ScrollView,
-  TextInput,
-  Modal,
-  TouchableHighlight,
   ToastAndroid
 } from 'react-native'
 import { List, ListItem } from 'react-native-ui-kitten'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import { connect } from 'react-redux'
-import CartItem from './CartItem'
+import SalesItem from './SalesItem'
 
-class CartItemsContainer extends Component {
+class SalesItemsContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -24,12 +19,16 @@ class CartItemsContainer extends Component {
     }
   }
 
-  renderItem = ({ item, index }) => <CartItem item={item} />
+  renderItem = ({ item, index }) => <SalesItem item={item} />
 
   toggleItemsVisibility = () => {
     // this.setState({
     //   itemsVisibility: !this.state.itemsVisibility
     // })
+    ToastAndroid.show(
+      'Are you sure you want to place order ?',
+      ToastAndroid.SHORT
+    )
   }
 
   render() {
@@ -46,20 +45,16 @@ class CartItemsContainer extends Component {
             <AntDesignIcon name="downcircleo" size={20} color="#eeaf3b" />
           </TouchableOpacity>
         </View>
-
         <List
           data={this.props.item.transactionDetails}
           renderItem={this.renderItem}
           style={styles.listLayout}
         />
-
-        <View style={styles.bottomContainer}>
-          <TouchableOpacity>
-            <Text style={styles.orderControlButtons}>Cancel Order</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.orderControlButtons}>Save Changes</Text>
-          </TouchableOpacity>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <Text style={{ fontWeight: 'bold', marginRight: 7, color: 'gray' }}>
+            SubTotal:
+          </Text>
+          <Text style={{ color: 'gray' }}>{`₦${'500'}`}</Text>
         </View>
       </View>
     )
@@ -77,7 +72,7 @@ mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CartItemsContainer)
+)(SalesItemsContainer)
 
 const styles = StyleSheet.create({
   cartItemsContainer: {
@@ -112,7 +107,7 @@ const styles = StyleSheet.create({
     color: 'gray'
   },
   listLayout: {
-    marginBottom: 30,
+    marginBottom: 15,
     backgroundColor: 'transparent'
   },
   bottomContainer: {

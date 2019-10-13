@@ -8,9 +8,11 @@ import {
 } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { connect } from 'react-redux'
-import { toggleAreYouSureModalVisibility } from '../store/actions/homeActions'
+import {
+  toggleAreYouSureModalVisibility,
+  toggleCheckOutBottomSheet
+} from '../store/actions/homeActions'
 
-const nairaIcon = `<span style="color: #fff">&#8358;<span>`
 class Bottom extends Component {
   constructor() {
     super()
@@ -18,19 +20,24 @@ class Bottom extends Component {
 
   setModalVisible = () => {
     this.props.setModalVisible(!this.props.areYouSureModalIsVisible)
-    // console.log(this.props.barCart)
+  }
+
+  toggleCheckOutBottomSheet() {
+    this.props.onBottomSheetStateChange()
   }
 
   render() {
     return (
       <View style={styles.bottomContainer}>
-        <View style={styles.noOfItemsContainer}>
-          <Text style={styles.noOfItemsTextOne}>
-            {Number(this.props.totalNumberOfItemsAddedFromBar) +
-              Number(this.props.totalNumberOfItemsAddedFromRestaurant)}
-          </Text>
-          <Text style={styles.noOfItemsTextTwo}>Item(s)</Text>
-        </View>
+        <TouchableOpacity onPress={() => this.toggleCheckOutBottomSheet()}>
+          <View style={styles.noOfItemsContainer}>
+            <Text style={styles.noOfItemsTextOne}>
+              {Number(this.props.totalNumberOfItemsAddedFromBar) +
+                Number(this.props.totalNumberOfItemsAddedFromRestaurant)}
+            </Text>
+            <Text style={styles.noOfItemsTextTwo}>Item(s)</Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.totalAmountContainer}>
           <View>
             <Text style={styles.totalAmountTextOne}>Total Amount:</Text>
@@ -61,12 +68,13 @@ mapStateToProps = state => {
       state.barReducer.totalNumberOfItemsAddedFromBar,
     totalAmountOfItemsAddedFromBar:
       state.barReducer.totalAmountOfItemsAddedFromBar,
-    barCart: state.barReducer.barCart,
+    barCheckOut: state.barReducer.barCheckOut,
     totalNumberOfItemsAddedFromRestaurant:
       state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant,
     totalAmountOfItemsAddedFromRestaurant:
       state.restaurantReducer.totalAmountOfItemsAddedFromRestaurant,
-    restaurantCart: state.restaurantReducer.restaurantCart
+    restaurantCheckOut: state.restaurantReducer.restaurantCheckOut,
+    checkBottomSheetIsVisible: state.homeReducer.checkBottomSheetIsVisible
   }
 }
 
@@ -74,6 +82,9 @@ mapDispatchToProps = dispatch => {
   return {
     setModalVisible: status => {
       dispatch(toggleAreYouSureModalVisibility(status))
+    },
+    toggleCheckOutBottomSheet: status => {
+      dispatch(toggleCheckOutBottomSheet(status))
     }
   }
 }
@@ -87,8 +98,8 @@ const styles = StyleSheet.create({
   bottomContainer: {
     alignSelf: 'flex-end',
     height: 55,
-    backgroundColor: '#606060',
-    borderColor: '#606060',
+    backgroundColor: '#eeaf3b',
+    borderColor: '#eeaf3b',
     borderWidth: 1,
     width: '100%',
     display: 'flex',

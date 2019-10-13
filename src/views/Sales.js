@@ -14,20 +14,34 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import CartItemsContainer from '../components/CartItemsContainer'
+import SalesItemsContainer from '../components/SalesItemsContainer'
 
-class Orders extends Component {
+class Sales extends Component {
   constructor() {
     super()
   }
 
-  renderItem = ({ item, index }) => <CartItemsContainer item={item} />
+  renderItem = ({ item, index }) => <SalesItemsContainer item={item} />
 
   render() {
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.layoutContainer}>
-          <Text style={styles.layoutTitleText}>Orders</Text>
+          <View style={{ display: 'flex', padding: 5, flexDirection: 'row' }}>
+            <Text style={styles.layoutTitleText}>Sales</Text>
+            <View
+              style={{
+                marginLeft: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Text>Total Amount:</Text>
+              <Text style={{ color: 'gray' }}>{`₦${'25,000'}`}</Text>
+            </View>
+          </View>
           <View style={styles.listContainer}>
             {this.props.itemsInCart.length === 0 ? (
               <View style={styles.emptyContainer}>
@@ -36,9 +50,7 @@ class Orders extends Component {
                   size={80}
                   color="gray"
                 />
-                <Text style={styles.emptyText}>
-                  Cart is empty. Place an order now
-                </Text>
+                <Text style={styles.emptyText}>Sales is empty.</Text>
               </View>
             ) : (
               <ScrollView showsVerticalScrollIndicator={false}>
@@ -69,7 +81,7 @@ mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Orders)
+)(Sales)
 
 const styles = StyleSheet.create({
   layoutContainer: {
@@ -83,7 +95,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginTop: 7,
     marginBottom: 7,
-    marginLeft: 10
+    marginLeft: 10,
+    fontWeight: 'bold'
   },
   listContainer: {
     flex: 1,
@@ -91,7 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingLeft: 10,
     paddingRight: 10,
-    paddingTop: 10
+    paddingTop: 15
   },
   listLayout: {
     marginBottom: 30,

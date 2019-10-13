@@ -28,7 +28,7 @@ class Header extends Component {
   }
 
   handleCartIcon = () => {
-    this.props.navigation.navigate('Orders')
+    this.props.navigation.navigate('Sales')
   }
 
   render() {

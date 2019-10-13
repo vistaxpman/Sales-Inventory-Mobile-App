@@ -12,7 +12,7 @@ const initialState = {
       category: 'soup',
       price: '300',
       isAddedToCart: true,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://sisijemimah.com/wp-content/uploads/2016/04/bitter-leaf-soup-12.jpg'
@@ -24,7 +24,7 @@ const initialState = {
       category: 'soup',
       price: '250',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://i1.wp.com/www.myactivekitchen.com/wp-content/uploads/2015/03/banga-soupaaa.jpg?resize=1024%2C682&ssl=1'
@@ -36,7 +36,7 @@ const initialState = {
       category: 'soup',
       price: '800',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://i1.wp.com/www.myactivekitchen.com/wp-content/uploads/2015/03/assorted-meat-nigerian-pepper-soup-img-7.jpg?resize=380%2C380&ssl=1'
@@ -48,7 +48,7 @@ const initialState = {
       category: 'stew',
       price: '5000',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://i1.wp.com/www.myactivekitchen.com/wp-content/uploads/2019/05/nigerian-beef-stew_image_13.jpg?resize=360%2C240&ssl=1'
@@ -60,7 +60,7 @@ const initialState = {
       category: 'soup',
       price: '300',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://i1.wp.com/www.myactivekitchen.com/wp-content/uploads/2019/02/Egusi-soup.image-3-600x900-e1549493434779.jpeg?zoom=2&resize=360%2C240&ssl=1://i1.wp.com/www.myactivekitchen.com/wp-content/uploads/2019/02/Egusi-soup.image-3-600x900-e1549493434779.jpeg'
@@ -72,7 +72,7 @@ const initialState = {
       category: 'stew',
       price: '250',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://i2.wp.com/www.myactivekitchen.com/wp-content/uploads/2015/03/nigerian-chicken-stew_jpg-1-e1548367805864.jpeg?zoom=2&resize=360%2C240&ssl=1://i2.wp.com/www.myactivekitchen.com/wp-content/uploads/2015/03/nigerian-chicken-stew_jpg-1-e1548367805864.jpeg'
@@ -84,149 +84,70 @@ const initialState = {
       category: 'soup',
       price: '800',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://i2.wp.com/www.myactivekitchen.com/wp-content/uploads/2015/11/edikA-e1554940545349.jpg?resize=360%2C240&ssl=1'
       }
     }
   ],
-  restaurantCart: []
+  restaurantCheckOut: []
 }
 
 const restaurantReducer = (state = initialState, action) => {
   switch (action.type) {
-    case Actions.ADD_ITEM_TO_RESTAURANT: {
-      const itemIndex = action.payload.index
-      const noInCart = state.restaurant[itemIndex].noInCart
-      const increaseNoInCart = Number(noInCart) + 1
-      const totalNumberOfItemsAddedFromRestaurant =
-        state.totalNumberOfItemsAddedFromRestaurant
-      const increaseTotalNumberOfItemsAddedFromRestaurant =
-        Number(totalNumberOfItemsAddedFromRestaurant) + 1
-      const itemPrice = state.restaurant[itemIndex].price
-      const currentTotalAmount = state.totalAmountOfItemsAddedFromRestaurant
-      const increaseTotalAmountOfItemsAddedFromRestaurant =
-        Number(itemPrice) + Number(currentTotalAmount)
-      // const item = action.payload.item
+    case Actions.UPDATE_NO_OF_ITEM_IN_RESTAURANT: {
+      // console.log(action.payload)
+
       const newRestaurant = state.restaurant.map((item, index) => {
-        if (index === itemIndex) {
-          item.noInCart = increaseNoInCart
+        if (index === action.payload.index) {
+          item.noInCheckOut = action.payload.value
         }
         return item
       })
 
-      const newRestaurantCart = () => {
-        return newRestaurant.filter(item => item.noInCart > 0)
+      const newRestaurantCheckOut = () => {
+        return newRestaurant.filter(item => item.noInCheckOut > 0)
       }
+
+      let newTotalNumberOfItemsAddedFromRestaurant = 0
+      let newTotalAmountOfItemsAddedFromRestaurant = 0
+      newRestaurant.map((anItem, index) => {
+        newTotalNumberOfItemsAddedFromRestaurant += Number(anItem.noInCheckOut)
+        if (anItem.noInCheckOut > 0) {
+          newTotalAmountOfItemsAddedFromRestaurant +=
+            Number(anItem.price) * Number(anItem.noInCheckOut)
+        }
+      })
 
       return update(state, {
         restaurant: {
-          [itemIndex]: {
-            noInCart: { $set: `${increaseNoInCart}` }
+          [action.payload.index]: {
+            noInCheckOut: { $set: action.payload.value }
           }
         },
         totalNumberOfItemsAddedFromRestaurant: {
-          $set: `${increaseTotalNumberOfItemsAddedFromRestaurant}`
+          $set: `${newTotalNumberOfItemsAddedFromRestaurant}`
         },
         totalAmountOfItemsAddedFromRestaurant: {
-          $set: `${increaseTotalAmountOfItemsAddedFromRestaurant}`
+          $set: `${newTotalAmountOfItemsAddedFromRestaurant}`
         },
-        restaurantCart: { $set: newRestaurantCart() }
+        restaurantCheckOut: { $set: newRestaurantCheckOut() }
       })
     }
-    case Actions.REMOVE_ITEM_FROM_RESTAURANT: {
-      const itemIndex = action.payload.index
-      const noInCart = state.restaurant[itemIndex].noInCart
-
-      if (noInCart > 0) {
-        const decreaseNoInCart = Number(noInCart) - 1
-
-        const totalNumberOfItemsAddedFromRestaurant =
-          state.totalNumberOfItemsAddedFromRestaurant
-        const decreaseTotalNumberOfItemsAddedFromRestaurant =
-          Number(totalNumberOfItemsAddedFromRestaurant) - 1
-        const itemPrice = state.restaurant[itemIndex].price
-        const currentTotalAmount = state.totalAmountOfItemsAddedFromRestaurant
-        const decreaseTotalAmountOfItemsAddedFromRestaurant =
-          Number(currentTotalAmount) - Number(itemPrice)
-
-        const newRestaurant = state.restaurant.map((item, index) => {
-          if (index === itemIndex) {
-            item.noInCart = decreaseNoInCart
-          }
-          return item
-        })
-
-        const newRestaurantCart = () => {
-          return newRestaurant.filter(item => item.noInCart > 0)
-        }
-        return update(state, {
-          restaurant: {
-            [itemIndex]: {
-              noInCart: { $set: `${decreaseNoInCart}` }
-            }
-          },
-          totalNumberOfItemsAddedFromRestaurant: {
-            $set: `${decreaseTotalNumberOfItemsAddedFromRestaurant}`
-          },
-          totalAmountOfItemsAddedFromRestaurant: {
-            $set: `${decreaseTotalAmountOfItemsAddedFromRestaurant}`
-          },
-          restaurantCart: { $set: newRestaurantCart() }
-        })
-      }
-    }
-    case Actions.EDIT_NO_OF_ITEM_IN_RESTAURANT: {
-      const itemIndex = action.payload.index
-      const userInput = action.payload.userInput
-      const formerNumberOfItemsAdded = state.restaurant[itemIndex].noInCart
-      const itemPrice = state.restaurant[itemIndex].price
-      let currentTotalNumberOfItemsAddedFromRestaurant =
-        state.totalNumberOfItemsAddedFromRestaurant
-      let currentTotalAmountOfItemsAddedFromRestaurant =
-        state.totalAmountOfItemsAddedFromRestaurant
-      if (formerNumberOfItemsAdded > 0) {
-        currentTotalNumberOfItemsAddedFromRestaurant =
-          Number(currentTotalNumberOfItemsAddedFromRestaurant) -
-          Number(formerNumberOfItemsAdded)
-        const priceOfFormerNumberOfItemsAdded =
-          Number(formerNumberOfItemsAdded) * itemPrice
-        currentTotalAmountOfItemsAddedFromRestaurant =
-          Number(currentTotalAmountOfItemsAddedFromRestaurant) -
-          priceOfFormerNumberOfItemsAdded
-      }
-      currentTotalNumberOfItemsAddedFromRestaurant =
-        Number(currentTotalNumberOfItemsAddedFromRestaurant) + Number(userInput)
-      const priceOfUserInput = Number(userInput) * itemPrice
-      currentTotalAmountOfItemsAddedFromRestaurant =
-        Number(currentTotalAmountOfItemsAddedFromRestaurant) + priceOfUserInput
-
-      const newRestaurant = state.restaurant.map((item, index) => {
-        if (index === itemIndex) {
-          item.noInCart = userInput
-        }
+    case Actions.CLEAR_ITEMS_IN_RESTAURANT: {
+      const newRestaurant = state.restaurant.map(item => {
+        item.noInCheckOut = 0
         return item
       })
-
-      const newRestaurantCart = () => {
-        return newRestaurant.filter(item => item.noInCart > 0)
+      return {
+        ...state,
+        restaurant: newRestaurant,
+        totalNumberOfItemsAddedFromRestaurant: 0,
+        totalAmountOfItemsAddedFromRestaurant: 0,
+        restaurantCheckOut: []
       }
-
-      return update(state, {
-        restaurant: {
-          [itemIndex]: {
-            noInCart: { $set: `${userInput}` }
-          }
-        },
-        totalNumberOfItemsAddedFromRestaurant: {
-          $set: `${currentTotalNumberOfItemsAddedFromRestaurant}`
-        },
-        totalAmountOfItemsAddedFromRestaurant: {
-          $set: `${currentTotalAmountOfItemsAddedFromRestaurant}`
-        },
-        restaurantCart: { $set: newRestaurantCart() }
-      })
+      return state
     }
     default: {
       return state

@@ -12,7 +12,7 @@ const initialState = {
       category: 'beer',
       price: '300',
       isAddedToCart: true,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://produits.bienmanger.com/35133-0w345h345_Star_Lager_Beer_From_Nigeria.jpg'
@@ -24,7 +24,7 @@ const initialState = {
       category: 'beer',
       price: '250',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://dydza6t6xitx6.cloudfront.net/ci-guinness-draught-57a370742d804361.png'
@@ -36,7 +36,7 @@ const initialState = {
       category: 'beer',
       price: '800',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://dydza6t6xitx6.cloudfront.net/ci-budweiser-9cda9582631c8c77.jpeg'
@@ -48,7 +48,7 @@ const initialState = {
       category: 'spirit',
       price: '5000',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://media-verticommnetwork1.netdna-ssl.com/wines/absolut-vodka-45l-434781_p.jpg'
@@ -60,7 +60,7 @@ const initialState = {
       category: 'beer',
       price: '300',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://produits.bienmanger.com/35133-0w345h345_Star_Lager_Beer_From_Nigeria.jpg'
@@ -72,7 +72,7 @@ const initialState = {
       category: 'beer',
       price: '250',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://dydza6t6xitx6.cloudfront.net/ci-guinness-draught-57a370742d804361.png'
@@ -84,7 +84,7 @@ const initialState = {
       category: 'beer',
       price: '800',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://dydza6t6xitx6.cloudfront.net/ci-budweiser-9cda9582631c8c77.jpeg'
@@ -96,149 +96,70 @@ const initialState = {
       category: 'spirit',
       price: '5000',
       isAddedToCart: false,
-      noInCart: 0,
+      noInCheckOut: 0,
       image: {
         url:
           'https://media-verticommnetwork1.netdna-ssl.com/wines/absolut-vodka-45l-434781_p.jpg'
       }
     }
   ],
-  barCart: []
+  barCheckOut: []
 }
 
 const barReducer = (state = initialState, action) => {
   switch (action.type) {
-    case Actions.ADD_ITEM_TO_BAR: {
-      const itemIndex = action.payload.index
-      const noInCart = state.bar[itemIndex].noInCart
-      const increaseNoInCart = Number(noInCart) + 1
-      const totalNumberOfItemsAddedFromBar =
-        state.totalNumberOfItemsAddedFromBar
-      const increaseTotalNumberOfItemsAddedFromBar =
-        Number(totalNumberOfItemsAddedFromBar) + 1
-      const itemPrice = state.bar[itemIndex].price
-      const currentTotalAmount = state.totalAmountOfItemsAddedFromBar
-      const increaseTotalAmountOfItemsAddedFromBar =
-        Number(itemPrice) + Number(currentTotalAmount)
-      // const item = action.payload.item
+    case Actions.UPDATE_NO_OF_ITEM_IN_BAR: {
+      // console.log(action.payload)
+
       const newBar = state.bar.map((item, index) => {
-        if (index === itemIndex) {
-          item.noInCart = increaseNoInCart
+        if (index === action.payload.index) {
+          item.noInCheckOut = action.payload.value
         }
         return item
       })
 
-      const newBarCart = () => {
-        return newBar.filter(item => item.noInCart > 0)
+      const newBarCheckOut = () => {
+        return newBar.filter(item => item.noInCheckOut > 0)
       }
+
+      let newTotalNumberOfItemsAddedFromBar = 0
+      let newTotalAmountOfItemsAddedFromBar = 0
+      newBar.map((anItem, index) => {
+        newTotalNumberOfItemsAddedFromBar += Number(anItem.noInCheckOut)
+        if (anItem.noInCheckOut > 0) {
+          newTotalAmountOfItemsAddedFromBar +=
+            Number(anItem.price) * Number(anItem.noInCheckOut)
+        }
+      })
 
       return update(state, {
         bar: {
-          [itemIndex]: {
-            noInCart: { $set: `${increaseNoInCart}` }
+          [action.payload.index]: {
+            noInCheckOut: { $set: action.payload.value }
           }
         },
         totalNumberOfItemsAddedFromBar: {
-          $set: `${increaseTotalNumberOfItemsAddedFromBar}`
+          $set: `${newTotalNumberOfItemsAddedFromBar}`
         },
         totalAmountOfItemsAddedFromBar: {
-          $set: `${increaseTotalAmountOfItemsAddedFromBar}`
+          $set: `${newTotalAmountOfItemsAddedFromBar}`
         },
-        barCart: { $set: newBarCart() }
+        barCheckOut: { $set: newBarCheckOut() }
       })
     }
-    case Actions.REMOVE_ITEM_FROM_BAR: {
-      const itemIndex = action.payload.index
-      const noInCart = state.bar[itemIndex].noInCart
-
-      if (noInCart > 0) {
-        const decreaseNoInCart = Number(noInCart) - 1
-
-        const totalNumberOfItemsAddedFromBar =
-          state.totalNumberOfItemsAddedFromBar
-        const decreaseTotalNumberOfItemsAddedFromBar =
-          Number(totalNumberOfItemsAddedFromBar) - 1
-        const itemPrice = state.bar[itemIndex].price
-        const currentTotalAmount = state.totalAmountOfItemsAddedFromBar
-        const decreaseTotalAmountOfItemsAddedFromBar =
-          Number(currentTotalAmount) - Number(itemPrice)
-
-        const newBar = state.bar.map((item, index) => {
-          if (index === itemIndex) {
-            item.noInCart = decreaseNoInCart
-          }
-          return item
-        })
-
-        const newBarCart = () => {
-          return newBar.filter(item => item.noInCart > 0)
-        }
-        return update(state, {
-          bar: {
-            [itemIndex]: {
-              noInCart: { $set: `${decreaseNoInCart}` }
-            }
-          },
-          totalNumberOfItemsAddedFromBar: {
-            $set: `${decreaseTotalNumberOfItemsAddedFromBar}`
-          },
-          totalAmountOfItemsAddedFromBar: {
-            $set: `${decreaseTotalAmountOfItemsAddedFromBar}`
-          },
-          barCart: { $set: newBarCart() }
-        })
-      }
-    }
-    case Actions.EDIT_NO_OF_ITEM_IN_BAR: {
-      const itemIndex = action.payload.index
-      const userInput = action.payload.userInput
-      const formerNumberOfItemsAdded = state.bar[itemIndex].noInCart
-      const itemPrice = state.bar[itemIndex].price
-      let currentTotalNumberOfItemsAddedFromBar =
-        state.totalNumberOfItemsAddedFromBar
-      let currentTotalAmountOfItemsAddedFromBar =
-        state.totalAmountOfItemsAddedFromBar
-      if (formerNumberOfItemsAdded > 0) {
-        currentTotalNumberOfItemsAddedFromBar =
-          Number(currentTotalNumberOfItemsAddedFromBar) -
-          Number(formerNumberOfItemsAdded)
-        const priceOfFormerNumberOfItemsAdded =
-          Number(formerNumberOfItemsAdded) * itemPrice
-        currentTotalAmountOfItemsAddedFromBar =
-          Number(currentTotalAmountOfItemsAddedFromBar) -
-          priceOfFormerNumberOfItemsAdded
-      }
-      currentTotalNumberOfItemsAddedFromBar =
-        Number(currentTotalNumberOfItemsAddedFromBar) + Number(userInput)
-      const priceOfUserInput = Number(userInput) * itemPrice
-      currentTotalAmountOfItemsAddedFromBar =
-        Number(currentTotalAmountOfItemsAddedFromBar) + priceOfUserInput
-
+    case Actions.CLEAR_ITEMS_IN_BAR: {
       const newBar = state.bar.map((item, index) => {
-        if (index === itemIndex) {
-          item.noInCart = userInput
-        }
+        item.noInCheckOut = 0
         return item
       })
 
-      const newBarCart = () => {
-        return newBar.filter(item => item.noInCart > 0)
+      return {
+        ...state,
+        bar: newBar,
+        totalNumberOfItemsAddedFromBar: 0,
+        totalAmountOfItemsAddedFromBar: 0,
+        barCheckOut: []
       }
-
-      return update(state, {
-        bar: {
-          [itemIndex]: {
-            noInCart: { $set: `${userInput}` }
-          }
-        },
-        totalNumberOfItemsAddedFromBar: {
-          $set: `${currentTotalNumberOfItemsAddedFromBar}`
-        },
-        totalAmountOfItemsAddedFromBar: {
-          $set: `${currentTotalAmountOfItemsAddedFromBar}`
-        },
-        barCart: { $set: newBarCart() }
-      })
     }
     default: {
       return state

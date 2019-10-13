@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
 import GridItem from '../components/GridItem'
+import { updateNoOfItemInBar } from '../store/actions/barActions'
 
 class Bar extends Component {
   constructor() {
@@ -18,7 +19,15 @@ class Bar extends Component {
   //   })
   // }
 
-  renderGridItem = ({ item, index }) => <GridItem item={item} index={index} />
+  renderGridItem = ({ item, index }) => (
+    <GridItem
+      item={item}
+      index={index}
+      onChange={(value, eventType) => {
+        this.props.updateNoOfItemInBar(value, item, index, eventType)
+      }}
+    />
+  )
 
   render() {
     return (
@@ -30,7 +39,7 @@ class Bar extends Component {
             renderItem={this.renderGridItem}
             horizontal={false}
             numColumns={2}
-            style={styles.gridLayout}
+            contentContainerStyle={styles.gridLayout}
           />
         </ScrollView>
       </View>
@@ -41,12 +50,16 @@ class Bar extends Component {
 mapStateToProps = state => {
   return {
     bar: state.barReducer.bar,
-    barCart: state.barReducer.barCart
+    barCheckOut: state.barReducer.barCheckOut
   }
 }
 
 mapDispatchToProps = dispatch => {
-  return {}
+  return {
+    updateNoOfItemInBar: (value, item, index, eventType) => {
+      dispatch(updateNoOfItemInBar(value, item, index, eventType))
+    }
+  }
 }
 
 export default connect(
@@ -64,6 +77,8 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   gridLayout: {
-    marginBottom: 30
+    marginBottom: 30,
+    display: 'flex',
+    justifyContent: 'space-between'
   }
 })

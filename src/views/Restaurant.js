@@ -2,13 +2,22 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
 import GridItem from '../components/GridItem'
+import { updateNoOfItemInRestaurant } from '../store/actions/restaurantActions'
 
 class Restaurant extends Component {
   constructor() {
     super()
   }
 
-  renderGridItem = ({ item, index }) => <GridItem item={item} index={index} />
+  renderGridItem = ({ item, index }) => (
+    <GridItem
+      item={item}
+      index={index}
+      onChange={(value, eventType) => {
+        this.props.updateNoOfItemInRestaurant(value, item, index, eventType)
+      }}
+    />
+  )
 
   render() {
     return (
@@ -20,8 +29,13 @@ class Restaurant extends Component {
             renderItem={this.renderGridItem}
             horizontal={false}
             numColumns={2}
-            style={styles.gridLayout}
+            contentContainerStyle={styles.gridLayout}
           />
+          {/* {this.props.restaurant.map((item, index) => {
+            return (
+              <GridItem style={styles.gridItem} item={item} index={index} />
+            )
+          })} */}
         </ScrollView>
       </View>
     )
@@ -31,12 +45,16 @@ class Restaurant extends Component {
 mapStateToProps = state => {
   return {
     restaurant: state.restaurantReducer.restaurant,
-    restaurantCart: state.restaurantReducer.restaurantCart
+    restaurantCheckOut: state.restaurantReducer.restaurantCheckOut
   }
 }
 
 mapDispatchToProps = dispatch => {
-  return {}
+  return {
+    updateNoOfItemInRestaurant: (value, item, index, eventType) => {
+      dispatch(updateNoOfItemInRestaurant(value, item, index, eventType))
+    }
+  }
 }
 
 export default connect(
@@ -54,6 +72,9 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   gridLayout: {
-    marginBottom: 30
+    flex: 1,
+    marginBottom: 30,
+    display: 'flex',
+    justifyContent: 'space-between'
   }
 })

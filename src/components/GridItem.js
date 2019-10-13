@@ -5,100 +5,82 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  TextInput
+  TextInput,
+  TouchableWithoutFeedback
 } from 'react-native'
 import { connect } from 'react-redux'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
-import {
-  addItemToBar,
-  removeItemFromBar,
-  editNoOfItemInBar
-} from '../store/actions/barActions'
-import {
-  addItemToRestaurant,
-  removeItemFromRestaurant,
-  editNoOfItemInRestaurant
-} from '../store/actions/restaurantActions'
-import { increaseNoInCart } from '../store/actions/cartActions'
 
 class GridItem extends Component {
   constructor(props) {
     super(props)
   }
 
-  onChangeNoInCart = (userInput, item, index) => {
-    this.props.onChangeNoInCart(userInput, item, index, this.props.currentTab)
-    // this.setState({
-    //   bar: update(this.state.bar, {
-    //     3: { noInCart: { $set: `${noInCart}` } }
-    //   })
-    // })
-  }
+  amount = 0
 
-  increaseNumberOfItemsInCart = (item, index) => {
-    this.props.increaseNumberOfItemsInCart(item, index, this.props.currentTab)
-  }
-
-  decreaseNumberOfItemsInCart = (item, index) => {
-    this.props.decreaseNumberOfItemsInCart(item, index, this.props.currentTab)
+  onUpdate = (type, value) => {
+    switch (type) {
+      case 'increment':
+        this.amount = this.amount + 1
+        break
+      case 'decrement':
+        this.amount = this.amount - (this.amount ? 1 : 0)
+        break
+      case 'input':
+        this.amount = value
+        break
+      default:
+        break
+    }
+    this.props.onChange(this.amount, type)
   }
 
   render() {
     return (
       <View style={styles.itemContainer}>
-        <ImageBackground
-          source={{ uri: this.props.item.image.url }}
-          style={styles.itemBgImage}
-          resizeMode="contain"
-        >
-          {this.props.item.isAddedToCart && (
-            <View style={styles.itemBgCheckBoxContainer}>
-              <AntDesignIcon name="checkcircleo" size={20} color="#eeaf3b" />
+        <TouchableWithoutFeedback onPress={() => this.onUpdate('increment')}>
+          <View>
+            <ImageBackground
+              source={{ uri: this.props.item.image.url }}
+              style={styles.itemBgImage}
+              resizeMode="contain"
+            >
+              {this.props.item.isAddedToCart && (
+                <View style={styles.itemBgCheckBoxContainer}>
+                  <AntDesignIcon
+                    name="checkcircleo"
+                    size={20}
+                    color="#eeaf3b"
+                  />
+                </View>
+              )}
+            </ImageBackground>
+            <View style={styles.itemAndPriceContainer}>
+              <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+              <Text
+                style={styles.itemPriceText}
+              >{`₦${this.props.item.price}`}</Text>
             </View>
-          )}
-        </ImageBackground>
-        <View style={styles.itemAndPriceContainer}>
-          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
-          <Text
-            style={styles.itemPriceText}
-          >{`₦${this.props.item.price}`}</Text>
-        </View>
-        <View style={styles.counterContainer}>
-          <TouchableOpacity
-            onPress={() =>
-              this.increaseNumberOfItemsInCart(
-                this.props.item,
-                this.props.index
-              )
-            }
-          >
-            <EntypoIcon name="plus" size={30} color="#eeaf3b" />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.counterText}
-            onChangeText={userInput =>
-              this.onChangeNoInCart(
-                userInput,
-                this.props.item,
-                this.props.index
-              )
-            }
-            value={this.props.item.noInCart.toString()}
-            keyboardType={'numeric'}
-            selectTextOnFocus
-          />
-          <TouchableOpacity
-            onPress={() =>
-              this.decreaseNumberOfItemsInCart(
-                this.props.item,
-                this.props.index
-              )
-            }
-          >
-            <EntypoIcon name="minus" size={30} color="#eeaf3b" />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.counterContainer}>
+              <TouchableOpacity onPress={() => this.onUpdate('increment')}>
+                <EntypoIcon name="plus" size={30} color="#eeaf3b" />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.counterText}
+                onChangeText={userInput =>
+                  this.onUpdate('input', Number(userInput))
+                }
+                value={this.amount.toString()}
+                keyboardType={'numeric'}
+                selectTextOnFocus
+              />
+              <TouchableOpacity onPress={() => this.onUpdate('decrement')}>
+                <EntypoIcon name="minus" size={30} color="#eeaf3b" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     )
   }
@@ -106,35 +88,14 @@ class GridItem extends Component {
 
 mapStateToProps = state => {
   return {
-    currentTab: state.homeReducer.currentTab
+    currentTab: state.homeReducer.currentTab,
+    barCheckOut: state.barReducer.barCheckOut,
+    restaurantCheckOut: state.restaurantReducer.restaurantCheckOut
   }
 }
 
 mapDispatchToProps = dispatch => {
-  return {
-    increaseNumberOfItemsInCart: (item, index, currentTab) => {
-      if (currentTab === 'bar') {
-        dispatch(addItemToBar(item, index))
-      } else if (currentTab === 'restaurant') {
-        dispatch(addItemToRestaurant(item, index))
-      }
-      // dispatch(increaseNoInCart(item))
-    },
-    decreaseNumberOfItemsInCart: (item, index, currentTab) => {
-      if (currentTab === 'bar') {
-        dispatch(removeItemFromBar(item, index))
-      } else if (currentTab === 'restaurant') {
-        dispatch(removeItemFromRestaurant(item, index))
-      }
-    },
-    onChangeNoInCart: (userInput, item, index, currentTab) => {
-      if (currentTab === 'bar') {
-        dispatch(editNoOfItemInBar(userInput, item, index))
-      } else if (currentTab === 'restaurant') {
-        dispatch(editNoOfItemInRestaurant(userInput, item, index))
-      }
-    }
-  }
+  return {}
 }
 
 export default connect(
@@ -148,13 +109,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#fff',
-    margin: 10,
     shadowColor: '#fff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 1,
     elevation: 2,
-    padding: 5
+    padding: 5,
+    maxWidth: '45%',
+    margin: 10
   },
   itemBgImage: {
     width: '100%',

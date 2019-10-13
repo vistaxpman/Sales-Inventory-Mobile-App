@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\user\.yarn\bin\yarn.js add axios
+  C:\Program Files\nodejs\node.exe C:\Users\user\.yarn\bin\yarn.js add reanimated-bottom-sheet
 
 PATH: 
   C:\Users\user\.yarn\bin;C:\Users\user\.config\yarn\global\node_modules\.bin;C:\Users\user\.composer\vendor\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\user\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Git\cmd;C:\composer;C:\Program Files\Java\jdk-11.0.2\bin;C:\Users\user\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Go\bin;C:\Program Files\MongoDB\Server\4.0\bin;C:\Users\user\AppData\Local\Android\Sdk\platform-tools;C:\xampp\php;C:\Program Files\nodejs;C:\ProgramData\chocolatey\bin;C:\Program Files\PuTTY;C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\DTS\Binn;C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\ManagementStudio;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PrivateAssemblies;C:\Program Files (x86)\Microsoft SQL Server\110\DTS\Binn;C:\Users\user\AppData\Local\Programs\Python\Python37-32\Scripts;C:\Users\user\AppData\Local\Programs\Python\Python37-32;C:\Users\user\.windows-build-tools\python27;C:\Users\user\AppData\Roaming\nvm\v10.13.0\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\user\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\user\AppData\Roaming\npm\node_modules\.bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Git\cmd;C:\composer;C:\Program Files\Java\jdk-11.0.2\bin;C:\Users\user\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\user\AppData\Local\Programs\Microsoft VS Code\bin;C:\flutter\bin;C:\xampp\php;C:\Users\user\AppData\Roaming\Composer\vendor\bin;C:\Users\user\AppData\Local\Programs\Python\Python37;C:\Users\user\go\bin;C:\Program Files\MongoDB\Server\4.0\bin;C:\Program Files\heroku\bin;C:\Users\user\AppData\Roaming\npm;C:\Users\user\.composer\vendor\bin
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\user\AppData\Local\Yarn\Cache\v5\npm-which-module-2.0.0-d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a\node_modules\which-module\.yarn-tarball.tgz'
+  Error: EPERM: operation not permitted, open 'C:\NewWebWorkspace\ActiveProjects\InvexRestaurantMobileApp\node_modules\mkdirp-promise\node_modules\.bin\mkdirp.cmd'
 
 npm manifest: 
   {
@@ -46,10 +46,12 @@ npm manifest:
       "react-native-elements": "^1.2.3",
       "react-native-gesture-handler": "~1.3.0",
       "react-native-layout-grid": "^0.0.2",
+      "react-native-modal": "^11.4.0",
       "react-native-paper": "^2.16.0",
       "react-native-reanimated": "~1.2.0",
       "react-native-screens": "~1.0.0-alpha.23",
       "react-native-svg": "~9.9.2",
+      "react-native-tab-view": "^2.10.0",
       "react-native-ui-kitten": "^4.2.0",
       "react-native-web": "^0.11.7",
       "react-navigation": "^4.0.10",
@@ -6844,6 +6846,13 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
     integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
   
+  react-native-animatable@^1.3.1:
+    version "1.3.2"
+    resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.3.2.tgz#4783ee1a73dc98815aef234ce6b819f80bfe7d80"
+    integrity sha512-rmah3KQ63ft8DxkzFUwJSuZeq+oSYwldoGF4DTOR5WM2WR5wiWLgBAtrAHlI3Di3by323uOR21s+MlqPcHz2Kw==
+    dependencies:
+      prop-types "^15.5.10"
+  
   react-native-branch@~3.0.1:
     version "3.0.1"
     resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-3.0.1.tgz#5b07b61cbd290168cd3c3662e017ebe0f356d2ca"
@@ -6907,6 +6916,14 @@ Lockfile:
     version "2.5.6"
     resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
     integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
+  
+  react-native-modal@^11.4.0:
+    version "11.4.0"
+    resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-11.4.0.tgz#29f2fd241aed864f3c7ce25a941498ebe2ab217a"
+    integrity sha512-5AsvppV843bGBOgRotORhb0OJLAf3EOueJ1Z0a9vH/ZO3E2KdnGpxgJFRWx2SZhgUmQ65YP392rsMZl/NYwdIw==
+    dependencies:
+      prop-types "^15.6.2"
+      react-native-animatable "^1.3.1"
   
   react-native-navigation-experimental-compat@shoutem/react-native-navigation-experimental-compat#fbce4b9e478f808634a98dac48901ec6ed4ee9fd:
     version "1.1.1"
@@ -6991,7 +7008,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.9.9.tgz#67c83b56d7a292162762a6d389dc78512558c2ca"
     integrity sha512-a/wxzEaAqWZ3uYwTJKo8sj2gURmEs4xBB83tx5gK9rpoEixzHfsj8+qLacwmQrHab7nf+tWj56INMTSPqm60oA==
   
-  react-native-tab-view@^2.9.0:
+  react-native-tab-view@^2.10.0, react-native-tab-view@^2.9.0:
     version "2.10.0"
     resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.10.0.tgz#5e249e5650502010013449ffd4e5edc18a95364b"
     integrity sha512-qgexVz5eO4yaFjdkmn/sURXgVvaBo6pZD/q1eoca96SbPVbaH3WzVhF3bRUfeTHwZkXwznFTpS3JURqIFU8vQA==

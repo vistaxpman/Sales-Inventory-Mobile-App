@@ -3,7 +3,8 @@ import update from 'react-addons-update'
 
 const initialState = {
   areYouSureModalIsVisible: false,
-  currentTab: 'bar'
+  currentTab: 'bar',
+  checkBottomSheetIsVisible: false
 }
 
 const homeReducer = (state = initialState, action) => {
@@ -18,6 +19,12 @@ const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         areYouSureModalIsVisible: action.payload
+      }
+    }
+    case Actions.TOGGLE_CHECKOUT_BOTTOM_SHEET: {
+      return {
+        ...state,
+        checkBottomSheetIsVisible: action.payload
       }
     }
     default: {
