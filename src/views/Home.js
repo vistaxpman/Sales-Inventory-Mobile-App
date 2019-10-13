@@ -148,7 +148,7 @@ class Home extends Component {
       Number(this.props.totalAmountOfItemsAddedFromRestaurant)
     if (this.props.areYouSureModalIsVisible && totalAmount <= 0) {
       ToastAndroid.show(
-        'Please, select items before you order ?',
+        'Please, select items before you order.',
         ToastAndroid.SHORT
       )
       this.props.setModalVisible()
@@ -245,11 +245,10 @@ class Home extends Component {
                   <TouchableWithoutFeedback onPress={() => this.viewOrder()}>
                     <Text
                       style={[
-                        styles.bottomControls,
+                        styles.bottomControls2,
                         {
                           borderColor: '#c98811',
-                          borderWidth: 1,
-                          color: '#c98811'
+                          borderWidth: 1
                         }
                       ]}
                     >
@@ -530,6 +529,20 @@ const styles = StyleSheet.create({
     paddingBottom: 7,
     borderRadius: 3,
     shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    elevation: 2
+  },
+  bottomControls2: {
+    fontSize: 17,
+    color: '#c98811',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 7,
+    paddingBottom: 7,
+    borderRadius: 3,
+    shadowColor: '#c98811',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 2,

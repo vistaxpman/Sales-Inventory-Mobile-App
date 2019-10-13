@@ -109,8 +109,6 @@ const initialState = {
 const barReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.UPDATE_NO_OF_ITEM_IN_BAR: {
-      // console.log(action.payload)
-
       const newBar = state.bar.map((item, index) => {
         if (index === action.payload.index) {
           item.noInCheckOut = action.payload.value

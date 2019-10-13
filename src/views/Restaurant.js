@@ -14,7 +14,7 @@ class Restaurant extends Component {
       item={item}
       index={index}
       onChange={(value, eventType) => {
-        this.props.updateNoOfItemInRestaurant(value, item, index, eventType)
+        this.props.updateNoOfItemInRestaurant(value, index)
       }}
     />
   )
@@ -51,8 +51,8 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return {
-    updateNoOfItemInRestaurant: (value, item, index, eventType) => {
-      dispatch(updateNoOfItemInRestaurant(value, item, index, eventType))
+    updateNoOfItemInRestaurant: (value, index) => {
+      dispatch(updateNoOfItemInRestaurant(value, index))
     }
   }
 }

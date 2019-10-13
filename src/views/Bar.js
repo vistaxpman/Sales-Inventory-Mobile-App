@@ -24,7 +24,7 @@ class Bar extends Component {
       item={item}
       index={index}
       onChange={(value, eventType) => {
-        this.props.updateNoOfItemInBar(value, item, index, eventType)
+        this.props.updateNoOfItemInBar(value, index)
       }}
     />
   )
@@ -56,8 +56,8 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return {
-    updateNoOfItemInBar: (value, item, index, eventType) => {
-      dispatch(updateNoOfItemInBar(value, item, index, eventType))
+    updateNoOfItemInBar: (value, index) => {
+      dispatch(updateNoOfItemInBar(value, index))
     }
   }
 }

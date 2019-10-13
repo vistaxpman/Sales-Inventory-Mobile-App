@@ -97,8 +97,6 @@ const initialState = {
 const restaurantReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.UPDATE_NO_OF_ITEM_IN_RESTAURANT: {
-      // console.log(action.payload)
-
       const newRestaurant = state.restaurant.map((item, index) => {
         if (index === action.payload.index) {
           item.noInCheckOut = action.payload.value

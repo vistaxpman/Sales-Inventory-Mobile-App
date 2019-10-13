@@ -46,7 +46,7 @@ const NavigationStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'Login'
+    initialRouteName: 'Home'
   }
 )
 

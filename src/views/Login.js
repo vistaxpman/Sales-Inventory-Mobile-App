@@ -55,7 +55,7 @@ export default class Login extends Component {
         })
         .then(response => {
           if (response.data.loginMessage === 'success') {
-            this.storeData(response.data.userData)
+            this.storeData(response.data.staffData)
             this.props.navigation.replace('Home')
           } else if (response.data.loginMessage === 'failed') {
             this.setState({

@@ -55,10 +55,64 @@ class CartItemsContainer extends Component {
 
         <View style={styles.bottomContainer}>
           <TouchableOpacity>
-            <Text style={styles.orderControlButtons}>Cancel Order</Text>
+            <View
+              style={[
+                {
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 15
+                },
+                styles.orderControlButtons
+              ]}
+            >
+              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                Cancel
+              </Text>
+              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                Order
+              </Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text style={styles.orderControlButtons}>Save Changes</Text>
+            <View
+              style={[
+                {
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                },
+                styles.orderControlButtons
+              ]}
+            >
+              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>Edit</Text>
+              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                Order
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View
+              style={[
+                {
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 15
+                },
+                styles.orderControlButtons
+              ]}
+            >
+              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>Save</Text>
+              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                Changes
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -127,7 +181,6 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   orderControlButtons: {
-    color: '#c98811',
     backgroundColor: '#fff',
     borderColor: '#fff',
     borderWidth: 1,
@@ -139,9 +192,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 7,
-    paddingBottom: 7,
-    fontWeight: 'bold',
-    fontSize: 15
+    paddingTop: 5,
+    paddingBottom: 5
   }
 })
