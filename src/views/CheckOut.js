@@ -15,6 +15,8 @@ import {
 import { connect } from 'react-redux'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import CheckOutItem from '../components/CheckOutItem'
+import { updateNoOfItemForBarCheckOut } from '../store/actions/barActions'
+import { updateNoOfItemForRestaurantCheckOut } from '../store/actions/restaurantActions'
 
 class CheckOut extends Component {
   constructor() {
@@ -31,7 +33,28 @@ class CheckOut extends Component {
     return [...this.props.barCheckOut, ...this.props.restaurantCheckOut]
   }
 
-  renderItem = ({ item, index }) => <CheckOutItem item={item} />
+  renderItem = ({ item, index }) => (
+    <CheckOutItem
+      item={item}
+      index={index}
+      onChange={value => {
+        if (item.outlet === 'bar') {
+          this.props.updateNoOfItemForBarCheckOut(value, item.itemId)
+        } else if (item.outlet === 'restaurant') {
+          this.props.updateNoOfItemForRestaurantCheckOut(value, item.itemId)
+        }
+      }}
+      onToBeDeleted={isSelected => {
+        if (isSelected) {
+          if (item.outlet === 'bar') {
+            this.props.updateNoOfItemForBarCheckOut(0, item.itemId)
+          } else if (item.outlet === 'restaurant') {
+            this.props.updateNoOfItemForRestaurantCheckOut(0, item.itemId)
+          }
+        }
+      }}
+    />
+  )
 
   render() {
     return (
@@ -69,7 +92,14 @@ mapStateToProps = state => {
 }
 
 mapDispatchToProps = dispatch => {
-  return {}
+  return {
+    updateNoOfItemForBarCheckOut: (value, itemId) => {
+      dispatch(updateNoOfItemForBarCheckOut(value, itemId))
+    },
+    updateNoOfItemForRestaurantCheckOut: (value, itemId) => {
+      dispatch(updateNoOfItemForRestaurantCheckOut(value, itemId))
+    }
+  }
 }
 
 export default connect(

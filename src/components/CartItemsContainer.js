@@ -24,12 +24,19 @@ class CartItemsContainer extends Component {
     }
   }
 
-  renderItem = ({ item, index }) => <CartItem item={item} />
+  renderItem = ({ item, index }) => (
+    <CartItem
+      item={item}
+      onChange={value => {
+        this.props.onChange(item, value, index)
+      }}
+    />
+  )
 
   toggleItemsVisibility = () => {
-    // this.setState({
-    //   itemsVisibility: !this.state.itemsVisibility
-    // })
+    this.setState({
+      itemsVisibility: !this.state.itemsVisibility
+    })
   }
 
   render() {
@@ -42,79 +49,132 @@ class CartItemsContainer extends Component {
               {this.props.item.transactionId}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => this.toggleItemsVisibility}>
-            <AntDesignIcon name="downcircleo" size={20} color="#c98811" />
+          <View>
+            <Text style={styles.tIdBold}>Table No:</Text>
+            <Text style={styles.tIdNormal}>{this.props.item.tableNumber}</Text>
+          </View>
+          <TouchableOpacity onPress={() => this.toggleItemsVisibility()}>
+            <AntDesignIcon name="downcircleo" size={25} color="#c98811" />
           </TouchableOpacity>
         </View>
 
-        <List
-          data={this.props.item.transactionDetails}
-          renderItem={this.renderItem}
-          style={styles.listLayout}
-        />
+        {this.state.itemsVisibility && (
+          <View style={styles.visibleContainer}>
+            <List
+              data={this.props.item.transactionDetails}
+              renderItem={this.renderItem}
+              style={styles.listLayout}
+            />
 
-        <View style={styles.bottomContainer}>
-          <TouchableOpacity>
-            <View
-              style={[
-                {
+            <View style={styles.bottomContainer}>
+              <View
+                style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontWeight: 'bold',
-                  fontSize: 15
-                },
-                styles.orderControlButtons
-              ]}
-            >
-              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                Cancel
-              </Text>
-              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                Order
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View
-              style={[
-                {
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 20
+                }}
+              >
+                <View style={styles.flexColumn}>
+                  <View style={[styles.flexColumn, { marginBottom: 7 }]}>
+                    <Text style={styles.totalText}>Total Amount:</Text>
+                    <Text
+                      style={styles.noOfText}
+                    >{`₦${this.props.item.transactionTotalAmount}`}</Text>
+                  </View>
+                  <View style={styles.flexColumn}>
+                    <Text style={styles.totalText}>No. of Items:</Text>
+                    <Text
+                      style={styles.noOfText}
+                    >{`₦${this.props.item.transactionTotalNumberOfItems}`}</Text>
+                  </View>
+                </View>
+                <View style={styles.flexColumn}>
+                  <View style={[styles.flexColumn, { marginBottom: 7 }]}>
+                    <Text style={styles.totalText}>New Total Amount:</Text>
+                    <Text
+                      style={styles.noOfText}
+                    >{`₦${this.props.item.updatedTransactionTotalAmount}`}</Text>
+                  </View>
+                  <View style={styles.flexColumn}>
+                    <Text style={styles.totalText}>No. of Items:</Text>
+                    <Text
+                      style={styles.noOfText}
+                    >{`₦${this.props.item.updatedTransactionTotalNumberOfItems}`}</Text>
+                  </View>
+                </View>
+              </View>
+              <View
+                style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                },
-                styles.orderControlButtons
-              ]}
-            >
-              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>Edit</Text>
-              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                Order
-              </Text>
+                  flexDirection: 'row',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <TouchableOpacity>
+                  <View
+                    style={[
+                      {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      },
+                      styles.orderControlButtons
+                    ]}
+                  >
+                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                      Cancel
+                    </Text>
+                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                      Order
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <View
+                    style={[
+                      {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      },
+                      styles.orderControlButtons
+                    ]}
+                  >
+                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                      Edit
+                    </Text>
+                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                      Order
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <View
+                    style={[
+                      {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      },
+                      styles.orderControlButtons
+                    ]}
+                  >
+                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                      Save
+                    </Text>
+                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
+                      Changes
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View
-              style={[
-                {
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontWeight: 'bold',
-                  fontSize: 15
-                },
-                styles.orderControlButtons
-              ]}
-            >
-              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>Save</Text>
-              <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                Changes
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+          </View>
+        )}
       </View>
     )
   }
@@ -153,17 +213,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    alignItems: 'center',
-    paddingBottom: 10
+    alignItems: 'center'
   },
   tIdBold: {
     fontWeight: 'bold',
     color: 'gray'
   },
   tIdNormal: {
-    color: 'gray'
+    color: 'gray',
+    textAlign: 'center'
+  },
+  visibleContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    borderTopColor: '#eee',
+    borderTopWidth: 1,
+    marginTop: 20
   },
   listLayout: {
     marginBottom: 30,
@@ -171,12 +236,9 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     alignSelf: 'flex-end',
-    height: 50,
     width: '100%',
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     paddingLeft: 5,
     paddingRight: 5
   },
@@ -194,5 +256,17 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingTop: 5,
     paddingBottom: 5
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  totalText: {
+    color: 'gray',
+    fontWeight: 'bold'
+  },
+  noOfText: {
+    color: 'gray',
+    textAlign: 'center'
   }
 })

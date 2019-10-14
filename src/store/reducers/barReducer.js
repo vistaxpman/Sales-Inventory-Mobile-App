@@ -1,5 +1,4 @@
 import * as Actions from '../actions'
-
 import update from 'react-addons-update'
 
 const initialState = {
@@ -158,6 +157,45 @@ const barReducer = (state = initialState, action) => {
         totalAmountOfItemsAddedFromBar: 0,
         barCheckOut: []
       }
+    }
+    case Actions.UPDATE_NO_OF_ITEM_FOR_BAR_CHECKOUT: {
+      let itemIndex = ''
+      const newBar = state.bar.map((item, index) => {
+        if (item.itemId === action.payload.itemId) {
+          item.noInCheckOut = action.payload.value
+          itemIndex = index
+        }
+        return item
+      })
+
+      const newBarCheckOut = () => {
+        return newBar.filter(item => item.noInCheckOut > 0)
+      }
+
+      let newTotalNumberOfItemsAddedFromBar = 0
+      let newTotalAmountOfItemsAddedFromBar = 0
+      newBar.map((anItem, index) => {
+        newTotalNumberOfItemsAddedFromBar += Number(anItem.noInCheckOut)
+        if (anItem.noInCheckOut > 0) {
+          newTotalAmountOfItemsAddedFromBar +=
+            Number(anItem.price) * Number(anItem.noInCheckOut)
+        }
+      })
+
+      return update(state, {
+        bar: {
+          [itemIndex]: {
+            noInCheckOut: { $set: action.payload.value }
+          }
+        },
+        totalNumberOfItemsAddedFromBar: {
+          $set: `${newTotalNumberOfItemsAddedFromBar}`
+        },
+        totalAmountOfItemsAddedFromBar: {
+          $set: `${newTotalAmountOfItemsAddedFromBar}`
+        },
+        barCheckOut: { $set: newBarCheckOut() }
+      })
     }
     default: {
       return state

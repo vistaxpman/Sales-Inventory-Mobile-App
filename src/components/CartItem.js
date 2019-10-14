@@ -5,11 +5,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ScrollView,
   TextInput,
-  Modal,
-  TouchableHighlight,
-  ToastAndroid
+  TouchableWithoutFeedback
 } from 'react-native'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { connect } from 'react-redux'
@@ -19,35 +16,70 @@ class CartItem extends Component {
     super(props)
   }
 
+  onUpdate = (type, value) => {
+    let amount = this.props.item.noInCart
+    switch (type) {
+      case 'increment':
+        amount = amount + 1
+        break
+      case 'decrement':
+        amount = amount - (amount ? 1 : 0)
+        break
+      case 'input':
+        amount = value
+        break
+      default:
+        break
+    }
+    this.props.onChange(amount, type)
+  }
+
   render() {
     return (
-      <View style={styles.itemContainer}>
-        <Image
-          source={{ uri: this.props.item.image.url }}
-          style={styles.itemBgImage}
-          resizeMode="contain"
-        />
-        <View style={styles.itemAndPriceContainer}>
-          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
-          <Text
-            style={styles.itemPriceText}
-          >{`₦${this.props.item.price}`}</Text>
-        </View>
-        <View style={styles.counterContainer}>
-          <TouchableOpacity>
-            <EntypoIcon name="plus" size={30} color="#c98811" />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.counterText}
-            value={this.props.item.noInCart.toString()}
-            keyboardType={'numeric'}
-            selectTextOnFocus
+      <TouchableWithoutFeedback
+        onPress={() => {
+          this.onUpdate('increment')
+        }}
+      >
+        <View style={styles.itemContainer}>
+          <Image
+            source={{ uri: this.props.item.image.url }}
+            style={styles.itemBgImage}
+            resizeMode="contain"
           />
-          <TouchableOpacity>
-            <EntypoIcon name="minus" size={30} color="#c98811" />
-          </TouchableOpacity>
+          <View style={styles.itemAndPriceContainer}>
+            <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+            <Text
+              style={styles.itemPriceText}
+            >{`₦${this.props.item.price}`}</Text>
+          </View>
+          <View style={styles.counterContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                this.onUpdate('increment')
+              }}
+            >
+              <EntypoIcon name="plus" size={30} color="#c98811" />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.counterText}
+              value={this.props.item.noInCart.toString()}
+              onChangeText={userInput =>
+                this.onUpdate('input', Number(userInput))
+              }
+              keyboardType={'numeric'}
+              selectTextOnFocus
+            />
+            <TouchableOpacity
+              onPress={() => {
+                this.onUpdate('decrement')
+              }}
+            >
+              <EntypoIcon name="minus" size={30} color="#c98811" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
@@ -74,8 +106,8 @@ const styles = StyleSheet.create({
     height: 110,
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
-    paddingTop: 7,
-    paddingBottom: 7
+    paddingTop: 3,
+    paddingBottom: 3
   },
   itemBgImage: {
     height: '100%',

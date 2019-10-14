@@ -1,9 +1,15 @@
 import * as Actions from '../actions'
+import update from 'react-addons-update'
 
 const initialState = {
   itemsInCart: [
     {
-      transactionId: '#112345678',
+      transactionId: '112345678',
+      tableNumber: '15',
+      transactionTotalAmount: 0,
+      transactionTotalNumberOfItems: 0,
+      updatedTransactionTotalAmount: 0,
+      updatedTransactionTotalNumberOfItems: 0,
       transactionDetails: [
         {
           itemId: '12345',
@@ -32,7 +38,12 @@ const initialState = {
       ]
     },
     {
-      transactionId: '#26376738',
+      transactionId: '26376738',
+      tableNumber: '18',
+      transactionTotalAmount: 0,
+      transactionTotalNumberOfItems: 0,
+      updatedTransactionTotalAmount: 0,
+      updatedTransactionTotalNumberOfItems: 0,
       transactionDetails: [
         {
           itemId: '23456',
@@ -53,10 +64,21 @@ const initialState = {
 
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
-    case Actions.INCREASE_NO_IN_CART: {
-      return {
-        ...state
-      }
+    case Actions.UPDATE_NO_OF_ITEM_IN_CART: {
+      // const newTransactionNumberOfItems = Number(state.transactionNumberOfItems) + Number()
+      // const newTransactionTotalAmount = Number(state.transactionTotalAmount)
+      return update(state, {
+        itemsInCart: {
+          [action.payload.index]: {
+            transactionDetails: {
+              [action.payload.subIndex]: {
+                noInCart: { $set: action.payload.value }
+              }
+            }
+          }
+        }
+        // transactionTotalAmount: {$set: `${newTransactionTotalAmount}`}
+      })
     }
     default: {
       return state

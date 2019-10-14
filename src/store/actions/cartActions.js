@@ -1,9 +1,12 @@
-export const INCREASE_NO_IN_CART = 'INCREASE_NO_IN_CART'
-export const DECREASE_NO_IN_CART = 'DECREASE_NO_IN_CART'
+export const UPDATE_NO_OF_ITEM_IN_CART = 'UPDATE_NO_OF_ITEM_IN_CART'
 
-export const increaseNoInCart = item => ({
-  type: INCREASE_NO_IN_CART,
-  payload: item
+export const updateNoOfItemInCart = (
+  transactionId,
+  itemId,
+  index,
+  value,
+  subIndex
+) => ({
+  type: UPDATE_NO_OF_ITEM_IN_CART,
+  payload: { transactionId, itemId, index, value, subIndex }
 })
-
-export const decreaseNoInCart = () => {}

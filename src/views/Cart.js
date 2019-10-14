@@ -1,35 +1,47 @@
 import React, { Component } from 'react'
 import { List, ListItem } from 'react-native-ui-kitten'
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  TextInput,
-  Modal,
-  TouchableHighlight,
-  ToastAndroid
-} from 'react-native'
+import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import CartItemsContainer from '../components/CartItemsContainer'
-import Header from '../components/Header'
+import { updateNoOfItemInCart } from '../store/actions/cartActions'
 
 class Cart extends Component {
   constructor() {
     super()
   }
 
-  renderItem = ({ item, index }) => <CartItemsContainer item={item} />
+  updateNoOfItemInCart(transactionId, itemId, index, value, subIndex) {
+    this.props.updateNoOfItemInCart(
+      transactionId,
+      itemId,
+      index,
+      value,
+      subIndex
+    )
+  }
+
+  renderItem = ({ item, index }) => (
+    <CartItemsContainer
+      item={item}
+      onChange={(subItem, value, subIndex) => {
+        this.updateNoOfItemInCart(
+          item.transactionId,
+          subItem.itemId,
+          index,
+          value,
+          subIndex
+        )
+      }}
+    />
+  )
 
   render() {
     return (
       <View style={styles.listContainer}>
         {this.props.itemsInCart.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <MaterialIcon name="remove-shopping-cart" size={80} color="gray" />
+            <MaterialIcon name="remove-shopping-cart" size={50} color="gray" />
             <Text style={styles.emptyText}>
               Cart is empty. Place an order now
             </Text>
@@ -55,7 +67,13 @@ mapStateToProps = state => {
 }
 
 mapDispatchToProps = dispatch => {
-  return {}
+  return {
+    updateNoOfItemInCart: (transactionId, itemId, index, value, subIndex) => {
+      dispatch(
+        updateNoOfItemInCart(transactionId, itemId, index, value, subIndex)
+      )
+    }
+  }
 }
 
 export default connect(
@@ -84,7 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   emptyText: {
-    fontSize: 17,
+    fontSize: 15,
     color: 'gray',
     marginTop: 10
   }

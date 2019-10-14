@@ -8,7 +8,7 @@ import {
   ScrollView,
   TextInput,
   Modal,
-  TouchableHighlight,
+  TouchableWithoutFeedback,
   ToastAndroid
 } from 'react-native'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
@@ -17,64 +17,81 @@ import { connect } from 'react-redux'
 class CheckOutOut extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      isSelected: false
+    }
   }
-
-  checkOutItemClick = item => {
-    // console.log(item)
-  }
-
-  amount = 0
 
   onUpdate = (type, value) => {
+    let amount = this.props.item.noInCheckOut
     switch (type) {
       case 'increment':
-        this.amount = this.amount + 1
+        amount = amount + 1
         break
       case 'decrement':
-        this.amount = this.amount - (this.amount ? 1 : 0)
+        amount = amount - (amount ? 1 : 0)
         break
       case 'input':
-        this.amount = value
+        amount = value
         break
       default:
         break
     }
-    this.props.onChange(this.amount, type)
+    this.props.onChange(amount, type)
+  }
+
+  onDelete = () => {
+    this.setState({
+      isSelected: !this.state.isSelected
+    })
+    this.props.onToBeDeleted(this.state.isSelected)
+    this.setState({
+      isSelected: !this.state.isSelected
+    })
   }
 
   render() {
     return (
-      <View style={styles.itemContainer}>
-        <Image
-          source={{ uri: this.props.item.image.url }}
-          style={styles.itemBgImage}
-          resizeMode="contain"
-        />
-        <View style={styles.itemAndPriceContainer}>
-          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
-          <Text
-            style={styles.itemPriceText}
-          >{`₦${this.props.item.price}`}</Text>
-        </View>
-        <View style={styles.counterContainer}>
-          <TouchableOpacity
-            onPress={() => this.checkOutItemClick(this.props.item)}
-          >
-            <EntypoIcon name="plus" size={30} color="#c98811" />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.counterText}
-            value={this.props.item.noInCheckOut.toString()}
-            keyboardType={'numeric'}
-            selectTextOnFocus
+      <TouchableWithoutFeedback
+        onPress={() => this.onUpdate('increment')}
+        onLongPress={() => this.onDelete()}
+      >
+        <View
+          style={[
+            styles.itemContainer,
+            this.state.isSelected ? styles.itemSelectedContainer : null
+          ]}
+        >
+          <Image
+            source={{ uri: this.props.item.image.url }}
+            style={styles.itemBgImage}
+            resizeMode="contain"
           />
-          <TouchableOpacity
-            onPress={() => this.checkOutItemClick(this.props.item)}
-          >
-            <EntypoIcon name="minus" size={30} color="#c98811" />
-          </TouchableOpacity>
+          <View style={styles.itemAndPriceContainer}>
+            <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+            <Text
+              style={styles.itemPriceText}
+            >{`₦${this.props.item.price}`}</Text>
+          </View>
+          <View style={styles.counterContainer}>
+            <TouchableOpacity onPress={() => this.onUpdate('increment')}>
+              <EntypoIcon name="plus" size={30} color="#c98811" />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.counterText}
+              value={this.props.item.noInCheckOut.toString()}
+              onChangeText={userInput =>
+                this.onUpdate('input', Number(userInput))
+              }
+              keyboardType={'numeric'}
+              selectTextOnFocus
+            />
+            <TouchableOpacity onPress={() => this.onUpdate('decrement')}>
+              <EntypoIcon name="minus" size={30} color="#c98811" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
@@ -101,9 +118,15 @@ const styles = StyleSheet.create({
     height: 110,
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
-    paddingTop: 7,
-    paddingBottom: 7,
+    paddingTop: 3,
+    paddingBottom: 3,
     backgroundColor: '#fff'
+  },
+  itemSelectedContainer: {
+    borderColor: 'red',
+    borderWidth: 1,
+    borderBottomColor: 'red',
+    borderBottomWidth: 1
   },
   itemBgImage: {
     height: '100%',

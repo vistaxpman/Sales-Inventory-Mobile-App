@@ -52,7 +52,7 @@ class Home extends Component {
   constructor() {
     super()
     this.state = {
-      index: 0,
+      index: 2,
       routes: [
         { key: 'bar', title: 'Bar' },
         { key: 'restaurant', title: 'Restaurant' },
@@ -87,8 +87,6 @@ class Home extends Component {
   }
 
   placeOrder = () => {
-    // console.log(this.itemsInCheckOut())
-    // this.props.setModalVisible()
     if (socket.connected) {
       this.setState({
         processingOrder: true
@@ -96,16 +94,25 @@ class Home extends Component {
       const dataToSend = {
         barCheckOut: this.props.barCheckOut,
         restaurantCheckOut: this.props.restaurantCheckOut,
+        totalNumberOfItemsAddedFromBar: this.props
+          .totalNumberOfItemsAddedFromBar,
+        totalNumberOfItemsAddedFromRestaurant: this.props
+          .totalNumberOfItemsAddedFromRestaurant,
         totalAmountOfItemsAddedFromBar: this.props
           .totalAmountOfItemsAddedFromBar,
         totalAmountOfItemsAddedFromRestaurant: this.props
           .totalAmountOfItemsAddedFromRestaurant,
-        tableNumber: this.state.tableNumber,
-        customerName: this.state.customerName,
-        staffData: this.state.staffData
+        tableNumber: this.state.tableNumber ? this.state.tableNumber : 'None',
+        customerName: this.state.customerName
+          ? this.state.customerName
+          : 'Walk-In',
+        staffData: this.state.staffData,
+        transactionId: new Date().valueOf(),
+        date: new Date(),
+        Staff_ID: JSON.parse(this.state.staffData).Staff_ID
       }
       socket.emit('newOrder', dataToSend, response => {
-        console.log(response)
+        // console.log(response)
         this.props.setModalVisible()
         this.setState({
           processingOrder: false
@@ -123,7 +130,7 @@ class Home extends Component {
   openClearModal = () => {
     return Alert.alert(
       'Delete Items to Order',
-      'Are you sure you want delete items ?',
+      'Are you sure you want to delete all items ?',
       [
         {
           text: 'Cancel',
@@ -434,6 +441,10 @@ mapStateToProps = state => {
     checkBottomSheetIsVisible: state.homeReducer.checkBottomSheetIsVisible,
     barCheckOut: state.barReducer.barCheckOut,
     restaurantCheckOut: state.restaurantReducer.restaurantCheckOut,
+    totalNumberOfItemsAddedFromBar:
+      state.barReducer.totalNumberOfItemsAddedFromBar,
+    totalNumberOfItemsAddedFromRestaurant:
+      state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant,
     totalAmountOfItemsAddedFromBar:
       state.barReducer.totalAmountOfItemsAddedFromBar,
     totalAmountOfItemsAddedFromRestaurant:
@@ -545,7 +556,6 @@ const styles = StyleSheet.create({
     shadowColor: '#c98811',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 1,
-    shadowRadius: 2,
-    elevation: 2
+    shadowRadius: 2
   }
 })

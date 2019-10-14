@@ -1,15 +1,15 @@
 import { combineReducers } from 'redux'
-import barReducer from './barReducer'
-import cartReducer from './cartReducer'
 import homeReducer from './homeReducer'
+import barReducer from './barReducer'
 import restaurantReducer from './restaurantReducer'
+import cartReducer from './cartReducer'
 import checkOutReducer from './checkOutReducer'
 
 const reducer = combineReducers({
-  barReducer: barReducer,
-  cartReducer: cartReducer,
   homeReducer: homeReducer,
+  barReducer: barReducer,
   restaurantReducer: restaurantReducer,
+  cartReducer: cartReducer,
   checkOutReducer: checkOutReducer
 })
 

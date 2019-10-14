@@ -145,7 +145,45 @@ const restaurantReducer = (state = initialState, action) => {
         totalAmountOfItemsAddedFromRestaurant: 0,
         restaurantCheckOut: []
       }
-      return state
+    }
+    case Actions.UPDATE_NO_OF_ITEM_FOR_RESTAURANT_CHECKOUT: {
+      let itemIndex = ''
+      const newRestaurant = state.restaurant.map((item, index) => {
+        if (item.itemId === action.payload.itemId) {
+          item.noInCheckOut = action.payload.value
+          itemIndex = index
+        }
+        return item
+      })
+
+      const newRestaurantCheckOut = () => {
+        return newRestaurant.filter(item => item.noInCheckOut > 0)
+      }
+
+      let newTotalNumberOfItemsAddedFromRestaurant = 0
+      let newTotalAmountOfItemsAddedFromRestaurant = 0
+      newRestaurant.map((anItem, index) => {
+        newTotalNumberOfItemsAddedFromRestaurant += Number(anItem.noInCheckOut)
+        if (anItem.noInCheckOut > 0) {
+          newTotalAmountOfItemsAddedFromRestaurant +=
+            Number(anItem.price) * Number(anItem.noInCheckOut)
+        }
+      })
+
+      return update(state, {
+        restaurant: {
+          [itemIndex]: {
+            noInCheckOut: { $set: action.payload.value }
+          }
+        },
+        totalNumberOfItemsAddedFromRestaurant: {
+          $set: `${newTotalNumberOfItemsAddedFromRestaurant}`
+        },
+        totalAmountOfItemsAddedFromRestaurant: {
+          $set: `${newTotalAmountOfItemsAddedFromRestaurant}`
+        },
+        restaurantCheckOut: { $set: newRestaurantCheckOut() }
+      })
     }
     default: {
       return state
