@@ -31,5 +31,7 @@ export const socketIO = store => {
       // delete Object.assign(o, { [newKey]: o[oldKey] })[oldKey]
       // store.dispatch(populateOngoingTransactionsInCart(data))
     })
+
+    // socket.emit('getStaffSales', Staff_ID, response => {})
   })
 }

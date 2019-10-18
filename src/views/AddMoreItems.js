@@ -9,44 +9,70 @@ import {
 } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import TabBar from '@mindinventory/react-native-tab-bar-interaction'
+import { List, ListItem } from 'react-native-ui-kitten'
 import { connect } from 'react-redux'
-import GridItem from '../components/GridItem'
-import { updateNoOfItemInRestaurant } from '../store/actions/restaurantActions'
-import { updateNoOfItemInBar } from '../store/actions/barActions'
+import SingleMoreItem from '../components/SingleMoreItem'
+import {
+  updateNoOfItemInMoreBar,
+  clearItemsInMoreBar,
+  updateNoOfItemInMoreRestaurant,
+  clearItemsInMoreRestaurant
+} from '../store/actions/moreItemsToOrderActions'
+import FeatherIcon from 'react-native-vector-icons/Feather'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import CartItem from '../components/CartItem'
 
 class AddMoreItems extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
   }
 
   closeModal = () => {
     this.props.onCloseModal()
   }
 
-  renderGridItem = ({ item, index }) => (
-    <GridItem
+  sendAddMoreItems = () => {
+    console.log('sendAddMoreItems')
+  }
+
+  renderSingleMoreItemToBar = ({ item, index }) => (
+    <SingleMoreItem
       item={item}
       index={index}
       onChange={(value, eventType) => {
-        this.props.updateNoOfItemInRestaurant(value, index)
+        this.props.updateNoOfItemInMoreBar(value, index)
       }}
     />
   )
+
+  renderSingleMoreItemToRestaurant = ({ item, index }) => (
+    <SingleMoreItem
+      item={item}
+      index={index}
+      onChange={(value, eventType) => {
+        this.props.updateNoOfItemInMoreRestaurant(value, index)
+      }}
+    />
+  )
+
+  renderItemsToOrderCart = ({ item, index }) => <CartItem item={item} />
+
+  itemsToOrder = () => {
+    return [...this.props.barCheckOut, ...this.props.restaurantCheckOut]
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.container2}>
           <View style={styles.bottomSheetHeader}>
-            {/* <TouchableOpacity
-                onPress={() => {
-                  this.hideCheckOutModal()
-                  this.setModalVisible()
-                }}
-              >
-                <FeatherIcon name="send" size={25} color="#fff" />
-              </TouchableOpacity> */}
+            <TouchableOpacity
+              onPress={() => {
+                this.sendAddMoreItems()
+              }}
+            >
+              <FeatherIcon name="send" size={25} color="#fff" />
+            </TouchableOpacity>
             <Text style={styles.bottomSheetHeaderText}>
               Add more Items to Order
             </Text>
@@ -70,7 +96,7 @@ class AddMoreItems extends Component {
                   <FlatList
                     data={this.props.restaurant}
                     keyExtractor={item => item.itemId}
-                    renderItem={this.renderGridItem}
+                    renderItem={this.renderSingleMoreItemToRestaurant}
                     horizontal={false}
                     numColumns={2}
                     contentContainerStyle={styles.gridLayout}
@@ -88,7 +114,7 @@ class AddMoreItems extends Component {
                   <FlatList
                     data={this.props.bar}
                     keyExtractor={item => item.itemId}
-                    renderItem={this.renderGridItem}
+                    renderItem={this.renderSingleMoreItemToBar}
                     horizontal={false}
                     numColumns={2}
                     contentContainerStyle={styles.gridLayout}
@@ -102,8 +128,24 @@ class AddMoreItems extends Component {
               selectedIcon={require('../../assets/1570216-200.png')}
               title="Cart"
             >
-              <View>
-                <Text>New Items to Order</Text>
+              <View style={styles.gridContainer}>
+                {this.itemsToOrder().length === 0 ? (
+                  <View style={styles.emptyContainer}>
+                    <MaterialIcon
+                      name="remove-shopping-cart"
+                      size={50}
+                      color="gray"
+                    />
+                    <Text style={styles.emptyText}>None Found.</Text>
+                  </View>
+                ) : (
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <List
+                      data={this.itemsToOrder()}
+                      renderItem={this.renderItemsToOrderCart}
+                    />
+                  </ScrollView>
+                )}
               </View>
             </TabBar.Item>
           </TabBar>
@@ -115,20 +157,21 @@ class AddMoreItems extends Component {
 
 mapStateToProps = state => {
   return {
-    bar: state.barReducer.bar,
-    barCheckOut: state.barReducer.barCheckOut,
-    restaurant: state.restaurantReducer.restaurant,
-    restaurantCheckOut: state.restaurantReducer.restaurantCheckOut
+    bar: state.moreItemsToOrderReducer.bar,
+    restaurant: state.moreItemsToOrderReducer.restaurant,
+    moreItemsToOrderTab: state.moreItemsToOrderReducer.moreItemsToOrderTab,
+    barCheckOut: state.moreItemsToOrderReducer.barCheckOut,
+    restaurantCheckOut: state.moreItemsToOrderReducer.restaurantCheckOut
   }
 }
 
 mapDispatchToProps = dispatch => {
   return {
-    updateNoOfItemInBar: (value, index) => {
-      dispatch(updateNoOfItemInBar(value, index))
+    updateNoOfItemInMoreBar: (value, index) => {
+      dispatch(updateNoOfItemInMoreBar(value, index))
     },
-    updateNoOfItemInRestaurant: (value, index) => {
-      dispatch(updateNoOfItemInRestaurant(value, index))
+    updateNoOfItemInMoreRestaurant: (value, index) => {
+      dispatch(updateNoOfItemInMoreRestaurant(value, index))
     }
   }
 }
@@ -163,7 +206,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#c98811',
-    height: 40,
+    height: 50,
     padding: 10,
     borderTopLeftRadius: 3,
     borderTopRightRadius: 3
@@ -187,5 +230,16 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     display: 'flex',
     justifyContent: 'space-between'
+  },
+  emptyContainer: {
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'gray',
+    marginTop: 10
   }
 })

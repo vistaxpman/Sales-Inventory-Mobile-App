@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 
-class GridItem extends Component {
+class SingleMoreItem extends Component {
   constructor(props) {
     super(props)
   }
@@ -101,7 +101,7 @@ mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GridItem)
+)(SingleMoreItem)
 
 const styles = StyleSheet.create({
   itemContainer: {

@@ -28,12 +28,31 @@ class CartItemsContainer extends Component {
   }
 
   renderItem = ({ item, index }) => (
-    <CartItem
-      item={item}
-      onChange={value => {
-        this.props.onChange(item, value, index)
-      }}
-    />
+    <View style={styles.singleOrder}>
+      <Text style={styles.orderNumberText}>Order {index + 1}</Text>
+      {item.barCheckOut ? (
+        <View>
+          {item.barCheckOut.length > 0 ? (
+            <View>
+              {item.barCheckOut.map(el => {
+                return <CartItem item={el} />
+              })}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+      {item.restaurantCheckOut ? (
+        <View>
+          {item.restaurantCheckOut.length > 0 ? (
+            <View>
+              {item.restaurantCheckOut.map(el => {
+                return <CartItem item={el} />
+              })}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+    </View>
   )
 
   toggleItemsVisibility = () => {
@@ -144,7 +163,6 @@ class CartItemsContainer extends Component {
               renderItem={this.renderItem}
               style={styles.listLayout}
             />
-
             <View style={styles.bottomContainer}>
               <View
                 style={{
@@ -153,31 +171,17 @@ class CartItemsContainer extends Component {
                   marginBottom: 20
                 }}
               >
-                <View style={{ width: '50%' }}>
+                <View style={styles.totalAmountAndTotalPrice}>
                   <View style={[styles.flexColumn, { padding: 7 }]}>
                     <Text style={styles.totalText}>Total Amount</Text>
                     <Text
                       style={styles.noOfText}
                     >{`₦${this.props.item.transactionTotalAmount}`}</Text>
                   </View>
-                  <View style={[styles.flexColumn3, { padding: 7 }]}>
+                  <View style={[styles.flexColumn2, { padding: 7 }]}>
                     <Text style={styles.totalText}>No. of Items</Text>
                     <Text style={styles.noOfText}>
                       {this.props.item.transactionTotalNumberOfItems}
-                    </Text>
-                  </View>
-                </View>
-                <View style={{ width: '50%' }}>
-                  <View style={[styles.flexColumn2, { padding: 7 }]}>
-                    <Text style={styles.totalText}>New Total Amount</Text>
-                    <Text
-                      style={styles.noOfText}
-                    >{`₦${this.props.item.updatedTransactionTotalAmount}`}</Text>
-                  </View>
-                  <View style={[styles.flexColumn4, { padding: 7 }]}>
-                    <Text style={styles.totalText}>No. of Items</Text>
-                    <Text style={styles.noOfText}>
-                      {this.props.item.updatedTransactionTotalNumberOfItems}
                     </Text>
                   </View>
                 </View>
@@ -277,8 +281,6 @@ const styles = StyleSheet.create({
   visibleContainer: {
     display: 'flex',
     flexDirection: 'column',
-    borderTopColor: '#eee',
-    borderTopWidth: 1,
     marginTop: 20
   },
   listLayout: {
@@ -308,16 +310,18 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 7
   },
+  totalAmountAndTotalPrice: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row'
+  },
   flexColumn: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    borderTopColor: '#ddd',
-    borderLeftColor: '#ddd',
-    borderRightColor: '#ddd',
-    borderBottomColor: 'transparent',
+    width: '50%',
+    borderColor: '#ddd',
     borderWidth: 1
   },
   flexColumn2: {
@@ -325,31 +329,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    borderTopColor: '#ddd',
-    borderRightColor: '#ddd',
-    borderLeftColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderWidth: 1
-  },
-  flexColumn3: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    borderTopColor: '#ddd',
-    borderLeftColor: '#ddd',
-    borderRightColor: '#ddd',
-    borderBottomColor: '#ddd',
-    borderWidth: 1
-  },
-  flexColumn4: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    width: '50%',
     borderTopColor: '#ddd',
     borderRightColor: '#ddd',
     borderBottomColor: '#ddd',
@@ -363,5 +343,18 @@ const styles = StyleSheet.create({
   noOfText: {
     color: 'gray',
     textAlign: 'center'
+  },
+  singleOrder: {
+    width: '100%',
+    borderColor: '#eee',
+    borderWidth: 1,
+    marginBottom: 10,
+    borderRadius: 3
+  },
+  orderNumberText: {
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginLeft: 10,
+    color: 'gray'
   }
 })

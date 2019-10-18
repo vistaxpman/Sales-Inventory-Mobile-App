@@ -4,17 +4,8 @@ const initialState = {
   areYouSureModalIsVisible: false,
   currentTab: 'bar',
   checkBottomSheetIsVisible: false,
-  staffData: {
-    AccessLavel: 'High',
-    Branch: 'bar1',
-    Department: 'Cashier',
-    Name: 'cynthia okafor',
-    Staff_ID: '01',
-    Status: 'Open',
-    Title: 'miss',
-    password: 'p',
-    username: 'cash'
-  }
+  staffData: {},
+  staffSales: []
 }
 
 const homeReducer = (state = initialState, action) => {

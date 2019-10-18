@@ -1,17 +1,6 @@
 import React, { Component } from 'react'
 import { List, ListItem } from 'react-native-ui-kitten'
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  TextInput,
-  Modal,
-  TouchableHighlight,
-  ToastAndroid
-} from 'react-native'
+import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import CheckOutItem from '../components/CheckOutItem'

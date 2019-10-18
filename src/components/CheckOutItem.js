@@ -12,7 +12,7 @@ import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { connect } from 'react-redux'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 
-class CheckOutOut extends Component {
+class CheckOutItem extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -103,7 +103,7 @@ mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CheckOutOut)
+)(CheckOutItem)
 
 const styles = StyleSheet.create({
   itemContainer: {

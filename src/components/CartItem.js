@@ -36,32 +36,27 @@ class CartItem extends Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback
-        onPress={() => {
-          this.onUpdate('increment')
-        }}
-      >
-        <View style={styles.itemContainer}>
-          <Image
-            source={{ uri: this.props.item.image.url }}
-            style={styles.itemBgImage}
-            resizeMode="contain"
-          />
-          <View style={styles.itemAndPriceContainer}>
-            <Text style={styles.itemNameText}>{this.props.item.name}</Text>
-            <Text
-              style={styles.itemPriceText}
-            >{`₦${this.props.item.price}`}</Text>
-          </View>
-          <View style={styles.counterContainer}>
-            {/* <TouchableOpacity
+      <View style={styles.itemContainer}>
+        <Image
+          source={{ uri: this.props.item.image.url }}
+          style={styles.itemBgImage}
+          resizeMode="contain"
+        />
+        <View style={styles.itemAndPriceContainer}>
+          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+          <Text
+            style={styles.itemPriceText}
+          >{`₦${this.props.item.price}`}</Text>
+        </View>
+        <View style={styles.counterContainer}>
+          {/* <TouchableOpacity
               onPress={() => {
                 this.onUpdate('increment')
               }}
             >
               <EntypoIcon name="plus" size={30} color="#c98811" />
             </TouchableOpacity> */}
-            {/* <TextInput
+          {/* <TextInput
               style={styles.counterText}
               defaultValue={this.props.item.noInCart.toString()}
               onChangeText={userInput =>
@@ -69,19 +64,18 @@ class CartItem extends Component {
               }
               keyboardType={'numeric'}
             /> */}
-            <Text style={styles.counterText}>
-              {this.props.item.noInCart.toString()}
-            </Text>
-            {/* <TouchableOpacity
+          <Text style={styles.counterText}>
+            {this.props.item.noInCheckOut.toString()}
+          </Text>
+          {/* <TouchableOpacity
               onPress={() => {
                 this.onUpdate('decrement')
               }}
             >
               <EntypoIcon name="minus" size={30} color="#c98811" />
             </TouchableOpacity> */}
-          </View>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     )
   }
 }
