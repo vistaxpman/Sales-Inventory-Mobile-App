@@ -1,23 +1,13 @@
 import React, { Component } from 'react'
 import { withNavigation } from 'react-navigation'
-import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ToastAndroid
-} from 'react-native'
+import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Header as NativeHeader } from 'react-native-elements'
-import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FoundationIcon from 'react-native-vector-icons/Foundation'
-
-const SearchBar = () => (
-  <View style={styles.searchBarStyle}>
-    <TextInput style={styles.searchInputStyle} placeholder="Search" />
-    <AntDesignIcon name="search1" size={17} color="gray" />
-  </View>
-)
+import { connect } from 'react-redux'
+import SearchBar from './SearchBar'
+import { filterItemsInBar } from '../store/actions/barActions'
+import { filterItemsInRestaurant } from '../store/actions/restaurantActions'
+import { filterTransactionsInCart } from '../store/actions/cartActions'
 
 class Header extends Component {
   constructor(props) {
@@ -43,7 +33,14 @@ class Header extends Component {
     return (
       <NativeHeader
         leftComponent={<Invex />}
-        centerComponent={<SearchBar />}
+        centerComponent={
+          <SearchBar
+            currentTab={this.props.currentTab}
+            onChangeText={userInput => {
+              this.props.filterItems(userInput, this.props.currentTab)
+            }}
+          />
+        }
         rightComponent={<CartIcon />}
         containerStyle={{
           backgroundColor: '#c98811',
@@ -54,29 +51,37 @@ class Header extends Component {
   }
 }
 
+mapStateToProps = state => {
+  return {
+    currentTab: state.homeReducer.currentTab
+  }
+}
+
+mapDispatchToProps = dispatch => {
+  return {
+    filterItems: (value, currentTab) => {
+      if (currentTab === 'bar') {
+        dispatch(filterItemsInBar(value))
+      } else if (currentTab === 'restaurant') {
+        dispatch(filterItemsInRestaurant(value))
+      } else {
+        dispatch(filterTransactionsInCart(value))
+      }
+    }
+  }
+}
+
+export default withNavigation(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Header)
+)
+
 const styles = StyleSheet.create({
   invexText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold'
-  },
-  searchBarStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 35,
-    width: 200,
-    backgroundColor: '#fff',
-    borderColor: '#eee',
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingRight: 10,
-    paddingLeft: 10
-  },
-  searchInputStyle: {
-    fontSize: 15,
-    width: 160
   }
 })
-
-export default withNavigation(Header)

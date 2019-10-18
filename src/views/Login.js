@@ -9,8 +9,10 @@ import {
 } from 'react-native'
 import axios from 'axios'
 import { Spinner } from 'react-native-ui-kitten'
+import { setStaffData } from '../store/actions/homeActions'
+import { connect } from 'react-redux'
 
-export default class Login extends Component {
+class Login extends Component {
   constructor() {
     super()
     this.state = {
@@ -26,6 +28,7 @@ export default class Login extends Component {
 
   storeData = async staffData => {
     try {
+      this.props.setStaffData(staffData)
       await AsyncStorage.setItem('staffData', JSON.stringify(staffData))
     } catch (e) {
       console.error(e)
@@ -48,7 +51,7 @@ export default class Login extends Component {
         isLoading: true
       })
       axios
-        .post('http://192.168.43.92:3000/login', {
+        .post('http://192.168.8.112:3000/login', {
           username,
           password,
           appId
@@ -151,6 +154,19 @@ export default class Login extends Component {
     )
   }
 }
+
+mapDispatchToProps = dispatch => {
+  return {
+    setStaffData: staffData => {
+      dispatch(setStaffData(staffData))
+    }
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Login)
 
 const styles = StyleSheet.create({
   container: {

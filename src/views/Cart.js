@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { List, ListItem } from 'react-native-ui-kitten'
-import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import { View, StyleSheet, Text, ScrollView, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import CartItemsContainer from '../components/CartItemsContainer'
@@ -9,6 +9,22 @@ import { updateNoOfItemInCart } from '../store/actions/cartActions'
 class Cart extends Component {
   constructor() {
     super()
+  }
+
+  componentDidMount() {}
+
+  getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('cartItems')
+
+      if (value !== null) {
+        this.setState({
+          staffData: value
+        })
+      }
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   updateNoOfItemInCart(transactionId, itemId, index, value, subIndex) {
@@ -42,9 +58,7 @@ class Cart extends Component {
         {this.props.itemsInCart.length === 0 ? (
           <View style={styles.emptyContainer}>
             <MaterialIcon name="remove-shopping-cart" size={50} color="gray" />
-            <Text style={styles.emptyText}>
-              Cart is empty. Place an order now
-            </Text>
+            <Text style={styles.emptyText}>None Found.</Text>
           </View>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -102,7 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   emptyText: {
-    fontSize: 15,
+    fontSize: 16,
     color: 'gray',
     marginTop: 10
   }

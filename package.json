@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-native-fontawesome": "^0.1.0",
+    "@mindinventory/react-native-tab-bar-interaction": "^1.0.3",
     "@react-native-community/async-storage": "^1.6.2",
     "@shoutem/cli": "^0.10.11",
     "@shoutem/ui": "^1.0.1",

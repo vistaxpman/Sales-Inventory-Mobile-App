@@ -1,25 +1,9 @@
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
+import { AsyncStorage } from 'react-native'
 import Home from './Home'
 import Sales from './Sales'
 import Login from './Login'
-import { AsyncStorage } from 'react-native'
-
-goTo = 'Login'
-
-getData = async () => {
-  try {
-    const value = await AsyncStorage.getItem('staffData')
-
-    if (value !== null) {
-      goTo = 'Home'
-    }
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-getData()
 
 const NavigationStack = createStackNavigator(
   {
@@ -46,7 +30,7 @@ const NavigationStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'Home'
+    initialRouteName: AsyncStorage.getItem('staffData') ? 'Home' : 'Login'
   }
 )
 

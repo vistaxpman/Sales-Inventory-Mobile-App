@@ -1,23 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
+import { View, StyleSheet, ScrollView, FlatList, Text } from 'react-native'
 import GridItem from '../components/GridItem'
 import { updateNoOfItemInBar } from '../store/actions/barActions'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 class Bar extends Component {
   constructor() {
     super()
   }
-
-  // increaseNumberOfItemInCart = itemId => {
-  //   const currentNoInCart = this.state.bar[3].noInCart
-  //   const noInCart = Number(currentNoInCart) + 1
-  //   this.setState({
-  //     bar: update(this.state.bar, {
-  //       3: { noInCart: { $set: `${noInCart}` } }
-  //     })
-  //   })
-  // }
 
   renderGridItem = ({ item, index }) => (
     <GridItem
@@ -32,16 +23,23 @@ class Bar extends Component {
   render() {
     return (
       <View style={styles.gridContainer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <FlatList
-            data={this.props.bar}
-            keyExtractor={item => item.itemId}
-            renderItem={this.renderGridItem}
-            horizontal={false}
-            numColumns={2}
-            contentContainerStyle={styles.gridLayout}
-          />
-        </ScrollView>
+        {this.props.bar.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <MaterialIcon name="hourglass-empty" size={50} color="gray" />
+            <Text style={styles.emptyText}>None Found.</Text>
+          </View>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <FlatList
+              data={this.props.bar}
+              keyExtractor={item => item.itemId}
+              renderItem={this.renderGridItem}
+              horizontal={false}
+              numColumns={2}
+              contentContainerStyle={styles.gridLayout}
+            />
+          </ScrollView>
+        )}
       </View>
     )
   }
@@ -80,5 +78,16 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     display: 'flex',
     justifyContent: 'space-between'
+  },
+  emptyContainer: {
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'gray',
+    marginTop: 10
   }
 })

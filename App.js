@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { YellowBox } from 'react-native'
+import { YellowBox, AsyncStorage } from 'react-native'
 import { Provider } from 'react-redux'
 import AppNavigator from './src/views/AppNavigator'
 import { mapping, light as lightTheme } from '@eva-design/eva'
 import { ApplicationProvider } from 'react-native-ui-kitten'
 import store from './src/store'
-import { startSocketIO } from './src/services/startSocketIO'
+import { socketIO } from './src/services/socketIO'
 
 export default class App extends Component {
   constructor() {
@@ -17,7 +17,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    startSocketIO(store)
+    socketIO(store)
   }
 
   render() {

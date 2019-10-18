@@ -10,7 +10,105 @@ const initialState = {
       name: 'Star',
       category: 'beer',
       price: '300',
-      isAddedToCart: true,
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://produits.bienmanger.com/35133-0w345h345_Star_Lager_Beer_From_Nigeria.jpg'
+      }
+    },
+    {
+      itemId: '23456',
+      name: 'Guiness',
+      category: 'beer',
+      price: '250',
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://dydza6t6xitx6.cloudfront.net/ci-guinness-draught-57a370742d804361.png'
+      }
+    },
+    {
+      itemId: '34567',
+      name: 'Budweiser',
+      category: 'beer',
+      price: '800',
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://dydza6t6xitx6.cloudfront.net/ci-budweiser-9cda9582631c8c77.jpeg'
+      }
+    },
+    {
+      itemId: '45678',
+      name: 'Vodka',
+      category: 'spirit',
+      price: '5000',
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://media-verticommnetwork1.netdna-ssl.com/wines/absolut-vodka-45l-434781_p.jpg'
+      }
+    },
+    {
+      itemId: '56789',
+      name: 'Star',
+      category: 'beer',
+      price: '300',
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://produits.bienmanger.com/35133-0w345h345_Star_Lager_Beer_From_Nigeria.jpg'
+      }
+    },
+    {
+      itemId: '678910',
+      name: 'Guiness',
+      category: 'beer',
+      price: '250',
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://dydza6t6xitx6.cloudfront.net/ci-guinness-draught-57a370742d804361.png'
+      }
+    },
+    {
+      itemId: '7891011',
+      name: 'Budweiser',
+      category: 'beer',
+      price: '800',
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://dydza6t6xitx6.cloudfront.net/ci-budweiser-9cda9582631c8c77.jpeg'
+      }
+    },
+    {
+      itemId: '7891012',
+      name: 'Vodka',
+      category: 'spirit',
+      price: '5000',
+      isAddedToCart: false,
+      noInCheckOut: 0,
+      image: {
+        url:
+          'https://media-verticommnetwork1.netdna-ssl.com/wines/absolut-vodka-45l-434781_p.jpg'
+      }
+    }
+  ],
+  barClone: [
+    {
+      itemId: '12345',
+      name: 'Star',
+      category: 'beer',
+      price: '300',
+      isAddedToCart: false,
       noInCheckOut: 0,
       image: {
         url:
@@ -136,10 +234,10 @@ const barReducer = (state = initialState, action) => {
           }
         },
         totalNumberOfItemsAddedFromBar: {
-          $set: `${newTotalNumberOfItemsAddedFromBar}`
+          $set: newTotalNumberOfItemsAddedFromBar
         },
         totalAmountOfItemsAddedFromBar: {
-          $set: `${newTotalAmountOfItemsAddedFromBar}`
+          $set: newTotalAmountOfItemsAddedFromBar
         },
         barCheckOut: { $set: newBarCheckOut() }
       })
@@ -189,12 +287,28 @@ const barReducer = (state = initialState, action) => {
           }
         },
         totalNumberOfItemsAddedFromBar: {
-          $set: `${newTotalNumberOfItemsAddedFromBar}`
+          $set: newTotalNumberOfItemsAddedFromBar
         },
         totalAmountOfItemsAddedFromBar: {
-          $set: `${newTotalAmountOfItemsAddedFromBar}`
+          $set: newTotalAmountOfItemsAddedFromBar
         },
         barCheckOut: { $set: newBarCheckOut() }
+      })
+    }
+    case Actions.FILTER_ITEMS_IN_BAR: {
+      let newBar = []
+      if (action.payload.value) {
+        newBar = state.barClone.filter(item =>
+          item.name.toLowerCase().includes(action.payload.value.toLowerCase())
+        )
+      } else {
+        newBar = state.barClone
+      }
+
+      return update(state, {
+        bar: {
+          $set: newBar
+        }
       })
     }
     default: {

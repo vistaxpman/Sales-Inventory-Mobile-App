@@ -28,13 +28,14 @@ import {
 } from '../store/actions/homeActions'
 import { clearItemsInBar } from '../store/actions/barActions'
 import { clearItemsInRestaurant } from '../store/actions/restaurantActions'
+import { addNewDataToCart } from '../store/actions/cartActions'
+import { setStaffData } from '../store/actions/homeActions'
 import Bar from './Bar'
 import Restaurant from './Restaurant'
 import Cart from './Cart'
 import CheckOut from './CheckOut'
 import { TextInput } from 'react-native-gesture-handler'
-import { socket } from '../services/startSocketIO'
-import update from 'react-addons-update'
+import { socket } from '../services/socketIO'
 
 barRoute = () => {
   return <Bar />
@@ -70,13 +71,12 @@ class Home extends Component {
 
   getData = async () => {
     try {
-      const value = await AsyncStorage.getItem('staffData')
-
-      if (value !== null) {
-        this.setState({
-          staffData: value
-        })
-      }
+      const staffData = await AsyncStorage.getItem('staffData')
+      const Staff_ID = JSON.parse(staffData).Staff_ID
+      socket.emit('getOngoingTransactions', Staff_ID, response => {
+        console.log(response)
+      })
+      this.props.setStaffData(JSON.parse(staffData))
     } catch (e) {
       console.error(e)
     }
@@ -106,13 +106,35 @@ class Home extends Component {
         customerName: this.state.customerName
           ? this.state.customerName
           : 'Walk-In',
-        staffData: this.state.staffData,
+        staffData: this.props.staffData,
         transactionId: new Date().valueOf(),
         date: new Date(),
-        Staff_ID: JSON.parse(this.state.staffData).Staff_ID
+        Staff_ID: JSON.parse(this.props.staffData).Staff_ID
       }
       socket.emit('newOrder', dataToSend, response => {
-        // console.log(response)
+        if (response.message === 'Order Received') {
+          const aTransaction = {}
+          aTransaction.transactionId = dataToSend.transactionId
+          aTransaction.tableNumber = dataToSend.tableNumber
+          aTransaction.transactionTotalAmount =
+            Number(dataToSend.totalAmountOfItemsAddedFromBar) +
+            Number(dataToSend.totalAmountOfItemsAddedFromRestaurant)
+          aTransaction.transactionTotalNumberOfItems =
+            Number(dataToSend.totalNumberOfItemsAddedFromBar) +
+            Number(dataToSend.totalNumberOfItemsAddedFromRestaurant)
+          aTransaction.updatedTransactionTotalAmount = 0
+          aTransaction.updatedTransactionTotalNumberOfItems = 0
+          aTransaction.transactionDetails = [
+            ...dataToSend.barCheckOut,
+            ...dataToSend.restaurantCheckOut
+          ]
+          aTransaction.transactionDetails.map(item => {
+            item.noInCart = item.noInCheckOut
+            delete item.noInCheckOut
+            return item
+          })
+          this.props.addNewDataToCart(aTransaction)
+        }
         this.props.setModalVisible()
         this.setState({
           processingOrder: false
@@ -448,7 +470,8 @@ mapStateToProps = state => {
     totalAmountOfItemsAddedFromBar:
       state.barReducer.totalAmountOfItemsAddedFromBar,
     totalAmountOfItemsAddedFromRestaurant:
-      state.restaurantReducer.totalAmountOfItemsAddedFromRestaurant
+      state.restaurantReducer.totalAmountOfItemsAddedFromRestaurant,
+    staffData: state.homeReducer.staffData
   }
 }
 
@@ -466,6 +489,12 @@ mapDispatchToProps = dispatch => {
     clearCart: () => {
       dispatch(clearItemsInBar())
       dispatch(clearItemsInRestaurant())
+    },
+    addNewDataToCart: aTransaction => {
+      dispatch(addNewDataToCart(aTransaction))
+    },
+    setStaffData: staffData => {
+      dispatch(setStaffData(staffData))
     }
   }
 }

@@ -4,23 +4,26 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Image,
-  ScrollView,
-  TextInput,
+  Alert,
   Modal,
-  TouchableHighlight,
-  ToastAndroid
+  AsyncStorage,
+  TouchableWithoutFeedback
 } from 'react-native'
 import { List, ListItem } from 'react-native-ui-kitten'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import { connect } from 'react-redux'
 import CartItem from './CartItem'
+import AddMoreItems from '../views/AddMoreItems'
+import { cancelTransactionInCart } from '../store/actions/cartActions'
+import { socket } from '../services/socketIO'
 
 class CartItemsContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      itemsVisibility: true
+      itemsVisibility: true,
+      addMoreItemsModalIsVisible: false,
+      cancelOrderIsVisible: false
     }
   }
 
@@ -39,9 +42,85 @@ class CartItemsContainer extends Component {
     })
   }
 
+  cancelOrder = async () => {
+    const transactionId = this.props.item.transactionId
+    const staffData = await AsyncStorage.getItem('staffData')
+    const Staff_ID = JSON.parse(staffData).Staff_ID
+    socket.emit('cancelOrder', { Staff_ID, transactionId }, response => {
+      if (response.message === 'Order Cancelled') {
+        this.props.cancelTransactionInCart(transactionId)
+        this.setState({
+          cancelOrderIsVisible: false
+        })
+      }
+    })
+  }
+
+  cancelDialog = () => {
+    return this.state.cancelOrderIsVisible
+      ? Alert.alert(
+          'Cancel Order',
+          'Are you sure you want to cancel this order ?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () =>
+                this.setState({
+                  cancelOrderIsVisible: !this.state.cancelOrderIsVisible
+                }),
+              style: 'cancel'
+            },
+            { text: 'OK', onPress: () => this.cancelOrder() }
+          ],
+          {
+            cancelable: true,
+            onDismiss: () =>
+              this.setState({
+                cancelOrderIsVisible: !this.state.cancelOrderIsVisible
+              })
+          }
+        )
+      : null
+  }
+
+  saveChanges = () => {
+    console.log(this.props.item)
+  }
+
+  addMoreItems = () => {
+    this.setState({
+      addMoreItemsModalIsVisible: !this.state.addMoreItemsModalIsVisible
+    })
+  }
+
+  onCloseModal = () => {
+    this.setState({
+      addMoreItemsModalIsVisible: !this.state.addMoreItemsModalIsVisible
+    })
+  }
+
   render() {
     return (
       <View style={styles.cartItemsContainer}>
+        {this.state.addMoreItemsModalIsVisible && (
+          <Modal
+            animationType="slide"
+            transparent
+            visible={this.state.addMoreItemsModalIsVisible}
+            onRequestClose={() => {
+              this.setState({
+                addMoreItemsModalIsVisible: !this.state
+                  .addMoreItemsModalIsVisible
+              })
+            }}
+          >
+            <AddMoreItems
+              onCloseModal={() => {
+                this.onCloseModal()
+              }}
+            />
+          </Modal>
+        )}
         <View style={styles.cartItemsContainerHeader}>
           <View>
             <Text style={styles.tIdBold}>Transaction Id:</Text>
@@ -71,36 +150,35 @@ class CartItemsContainer extends Component {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
                   marginBottom: 20
                 }}
               >
-                <View style={styles.flexColumn}>
-                  <View style={[styles.flexColumn, { marginBottom: 7 }]}>
-                    <Text style={styles.totalText}>Total Amount:</Text>
+                <View style={{ width: '50%' }}>
+                  <View style={[styles.flexColumn, { padding: 7 }]}>
+                    <Text style={styles.totalText}>Total Amount</Text>
                     <Text
                       style={styles.noOfText}
                     >{`₦${this.props.item.transactionTotalAmount}`}</Text>
                   </View>
-                  <View style={styles.flexColumn}>
-                    <Text style={styles.totalText}>No. of Items:</Text>
-                    <Text
-                      style={styles.noOfText}
-                    >{`₦${this.props.item.transactionTotalNumberOfItems}`}</Text>
+                  <View style={[styles.flexColumn3, { padding: 7 }]}>
+                    <Text style={styles.totalText}>No. of Items</Text>
+                    <Text style={styles.noOfText}>
+                      {this.props.item.transactionTotalNumberOfItems}
+                    </Text>
                   </View>
                 </View>
-                <View style={styles.flexColumn}>
-                  <View style={[styles.flexColumn, { marginBottom: 7 }]}>
-                    <Text style={styles.totalText}>New Total Amount:</Text>
+                <View style={{ width: '50%' }}>
+                  <View style={[styles.flexColumn2, { padding: 7 }]}>
+                    <Text style={styles.totalText}>New Total Amount</Text>
                     <Text
                       style={styles.noOfText}
                     >{`₦${this.props.item.updatedTransactionTotalAmount}`}</Text>
                   </View>
-                  <View style={styles.flexColumn}>
-                    <Text style={styles.totalText}>No. of Items:</Text>
-                    <Text
-                      style={styles.noOfText}
-                    >{`₦${this.props.item.updatedTransactionTotalNumberOfItems}`}</Text>
+                  <View style={[styles.flexColumn4, { padding: 7 }]}>
+                    <Text style={styles.totalText}>No. of Items</Text>
+                    <Text style={styles.noOfText}>
+                      {this.props.item.updatedTransactionTotalNumberOfItems}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -111,65 +189,32 @@ class CartItemsContainer extends Component {
                   justifyContent: 'space-between'
                 }}
               >
-                <TouchableOpacity>
-                  <View
+                {this.cancelDialog()}
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      cancelOrderIsVisible: true
+                    })
+                  }
+                >
+                  <Text
                     style={[
-                      {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      },
-                      styles.orderControlButtons
+                      styles.orderControlButtons,
+                      { color: '#c98811', fontWeight: 'bold', fontSize: 17 }
                     ]}
                   >
-                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                      Cancel
-                    </Text>
-                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                      Order
-                    </Text>
-                  </View>
+                    Cancel Order
+                  </Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <View
+                <TouchableOpacity onPress={() => this.addMoreItems()}>
+                  <Text
                     style={[
-                      {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      },
-                      styles.orderControlButtons
+                      styles.orderControlButtons,
+                      { color: '#c98811', fontWeight: 'bold', fontSize: 17 }
                     ]}
                   >
-                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                      Edit
-                    </Text>
-                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                      Order
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <View
-                    style={[
-                      {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      },
-                      styles.orderControlButtons
-                    ]}
-                  >
-                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                      Save
-                    </Text>
-                    <Text style={{ color: '#c98811', fontWeight: 'bold' }}>
-                      Changes
-                    </Text>
-                  </View>
+                    Add More
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -181,11 +226,17 @@ class CartItemsContainer extends Component {
 }
 
 mapStateToProps = state => {
-  return {}
+  return {
+    staffData: state.homeReducer.staffData
+  }
 }
 
 mapDispatchToProps = dispatch => {
-  return {}
+  return {
+    cancelTransactionInCart: transactionId => {
+      dispatch(cancelTransactionInCart(transactionId))
+    }
+  }
 }
 
 export default connect(
@@ -254,12 +305,56 @@ const styles = StyleSheet.create({
     elevation: 2,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 5,
-    paddingBottom: 5
+    paddingTop: 7,
+    paddingBottom: 7
   },
   flexColumn: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    borderTopColor: '#ddd',
+    borderLeftColor: '#ddd',
+    borderRightColor: '#ddd',
+    borderBottomColor: 'transparent',
+    borderWidth: 1
+  },
+  flexColumn2: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    borderTopColor: '#ddd',
+    borderRightColor: '#ddd',
+    borderLeftColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderWidth: 1
+  },
+  flexColumn3: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    borderTopColor: '#ddd',
+    borderLeftColor: '#ddd',
+    borderRightColor: '#ddd',
+    borderBottomColor: '#ddd',
+    borderWidth: 1
+  },
+  flexColumn4: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    borderTopColor: '#ddd',
+    borderRightColor: '#ddd',
+    borderBottomColor: '#ddd',
+    borderLeftColor: 'transparent',
+    borderWidth: 1
   },
   totalText: {
     color: 'gray',

@@ -2,6 +2,7 @@ export const CHANGE_TAB = 'CHANGE_TAB'
 export const TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY =
   'TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY'
 export const TOGGLE_CHECKOUT_BOTTOM_SHEET = 'TOGGLE_CHECKOUT_BOTTOM_SHEET'
+export const SET_STAFF_DATA = 'SET_STAFF_DATA'
 
 export const changeTab = tab => ({
   type: CHANGE_TAB,
@@ -16,4 +17,9 @@ export const toggleAreYouSureModalVisibility = status => ({
 export const toggleCheckOutBottomSheet = status => ({
   type: TOGGLE_CHECKOUT_BOTTOM_SHEET,
   payload: status
+})
+
+export const setStaffData = staffData => ({
+  type: SET_STAFF_DATA,
+  payload: { staffData }
 })

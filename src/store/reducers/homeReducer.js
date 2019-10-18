@@ -1,10 +1,20 @@
 import * as Actions from '../actions'
-import update from 'react-addons-update'
 
 const initialState = {
   areYouSureModalIsVisible: false,
   currentTab: 'bar',
-  checkBottomSheetIsVisible: false
+  checkBottomSheetIsVisible: false,
+  staffData: {
+    AccessLavel: 'High',
+    Branch: 'bar1',
+    Department: 'Cashier',
+    Name: 'cynthia okafor',
+    Staff_ID: '01',
+    Status: 'Open',
+    Title: 'miss',
+    password: 'p',
+    username: 'cash'
+  }
 }
 
 const homeReducer = (state = initialState, action) => {
@@ -25,6 +35,12 @@ const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         checkBottomSheetIsVisible: action.payload
+      }
+    }
+    case Actions.SET_STAFF_DATA: {
+      return {
+        ...state,
+        staffData: action.payload.staffData
       }
     }
     default: {

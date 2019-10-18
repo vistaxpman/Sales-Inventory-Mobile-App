@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
+import { View, StyleSheet, ScrollView, FlatList, Text } from 'react-native'
 import GridItem from '../components/GridItem'
 import { updateNoOfItemInRestaurant } from '../store/actions/restaurantActions'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 class Restaurant extends Component {
   constructor() {
@@ -22,21 +23,23 @@ class Restaurant extends Component {
   render() {
     return (
       <View style={styles.gridContainer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <FlatList
-            data={this.props.restaurant}
-            keyExtractor={item => item.itemId}
-            renderItem={this.renderGridItem}
-            horizontal={false}
-            numColumns={2}
-            contentContainerStyle={styles.gridLayout}
-          />
-          {/* {this.props.restaurant.map((item, index) => {
-            return (
-              <GridItem style={styles.gridItem} item={item} index={index} />
-            )
-          })} */}
-        </ScrollView>
+        {this.props.restaurant.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <MaterialIcon name="hourglass-empty" size={50} color="gray" />
+            <Text style={styles.emptyText}>None Found.</Text>
+          </View>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <FlatList
+              data={this.props.restaurant}
+              keyExtractor={item => item.itemId}
+              renderItem={this.renderGridItem}
+              horizontal={false}
+              numColumns={2}
+              contentContainerStyle={styles.gridLayout}
+            />
+          </ScrollView>
+        )}
       </View>
     )
   }
@@ -76,5 +79,16 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     display: 'flex',
     justifyContent: 'space-between'
+  },
+  emptyContainer: {
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'gray',
+    marginTop: 10
   }
 })

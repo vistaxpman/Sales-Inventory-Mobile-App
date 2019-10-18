@@ -5,14 +5,12 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ScrollView,
   TextInput,
-  Modal,
-  TouchableWithoutFeedback,
-  ToastAndroid
+  TouchableWithoutFeedback
 } from 'react-native'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { connect } from 'react-redux'
+import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 
 class CheckOutOut extends Component {
   constructor(props) {
@@ -52,46 +50,44 @@ class CheckOutOut extends Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback
-        onPress={() => this.onUpdate('increment')}
-        onLongPress={() => this.onDelete()}
-      >
-        <View
-          style={[
-            styles.itemContainer,
-            this.state.isSelected ? styles.itemSelectedContainer : null
-          ]}
-        >
-          <Image
-            source={{ uri: this.props.item.image.url }}
-            style={styles.itemBgImage}
-            resizeMode="contain"
+      <View style={styles.itemContainer}>
+        <TouchableWithoutFeedback onPress={() => this.onDelete()}>
+          <AntDesignIcon
+            style={{ width: '10%', padding: 5 }}
+            name="close"
+            size={25}
+            color="gray"
           />
-          <View style={styles.itemAndPriceContainer}>
-            <Text style={styles.itemNameText}>{this.props.item.name}</Text>
-            <Text
-              style={styles.itemPriceText}
-            >{`₦${this.props.item.price}`}</Text>
-          </View>
-          <View style={styles.counterContainer}>
-            <TouchableOpacity onPress={() => this.onUpdate('increment')}>
-              <EntypoIcon name="plus" size={30} color="#c98811" />
-            </TouchableOpacity>
-            <TextInput
-              style={styles.counterText}
-              value={this.props.item.noInCheckOut.toString()}
-              onChangeText={userInput =>
-                this.onUpdate('input', Number(userInput))
-              }
-              keyboardType={'numeric'}
-              selectTextOnFocus
-            />
-            <TouchableOpacity onPress={() => this.onUpdate('decrement')}>
-              <EntypoIcon name="minus" size={30} color="#c98811" />
-            </TouchableOpacity>
-          </View>
+        </TouchableWithoutFeedback>
+        <Image
+          source={{ uri: this.props.item.image.url }}
+          style={styles.itemBgImage}
+          resizeMode="contain"
+        />
+        <View style={styles.itemAndPriceContainer}>
+          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+          <Text
+            style={styles.itemPriceText}
+          >{`₦${this.props.item.price}`}</Text>
         </View>
-      </TouchableWithoutFeedback>
+        <View style={styles.counterContainer}>
+          <TouchableOpacity onPress={() => this.onUpdate('increment')}>
+            <EntypoIcon name="plus" size={30} color="#c98811" />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.counterText}
+            defaultValue={this.props.item.noInCheckOut.toString()}
+            onChangeText={userInput =>
+              this.onUpdate('input', Number(userInput))
+            }
+            keyboardType={'numeric'}
+            selectTextOnFocus
+          />
+          <TouchableOpacity onPress={() => this.onUpdate('decrement')}>
+            <EntypoIcon name="minus" size={30} color="#c98811" />
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
 }
@@ -122,23 +118,17 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
     backgroundColor: '#fff'
   },
-  itemSelectedContainer: {
-    borderColor: 'red',
-    borderWidth: 1,
-    borderBottomColor: 'red',
-    borderBottomWidth: 1
-  },
   itemBgImage: {
     height: '100%',
     width: '25%',
-    marginRight: 10
+    paddingRight: 5
   },
   itemAndPriceContainer: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    width: '55%',
-    marginRight: 10
+    width: '52%',
+    paddingRight: 5
   },
   itemNameText: {
     fontSize: 17,
@@ -150,7 +140,7 @@ const styles = StyleSheet.create({
   counterContainer: {
     display: 'flex',
     height: '100%',
-    width: '15%',
+    width: '13%',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between'

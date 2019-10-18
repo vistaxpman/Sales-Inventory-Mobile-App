@@ -54,29 +54,31 @@ class CartItem extends Component {
             >{`₦${this.props.item.price}`}</Text>
           </View>
           <View style={styles.counterContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 this.onUpdate('increment')
               }}
             >
               <EntypoIcon name="plus" size={30} color="#c98811" />
-            </TouchableOpacity>
-            <TextInput
+            </TouchableOpacity> */}
+            {/* <TextInput
               style={styles.counterText}
-              value={this.props.item.noInCart.toString()}
+              defaultValue={this.props.item.noInCart.toString()}
               onChangeText={userInput =>
                 this.onUpdate('input', Number(userInput))
               }
               keyboardType={'numeric'}
-              selectTextOnFocus
-            />
-            <TouchableOpacity
+            /> */}
+            <Text style={styles.counterText}>
+              {this.props.item.noInCart.toString()}
+            </Text>
+            {/* <TouchableOpacity
               onPress={() => {
                 this.onUpdate('decrement')
               }}
             >
               <EntypoIcon name="minus" size={30} color="#c98811" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -134,7 +136,8 @@ const styles = StyleSheet.create({
     width: '15%',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'center'
+    // justifyContent: 'space-between'
   },
   counterText: {
     fontSize: 20,

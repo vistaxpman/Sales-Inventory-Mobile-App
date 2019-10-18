@@ -1,11 +1,5 @@
 import React, { Component } from 'react'
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ToastAndroid
-} from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { connect } from 'react-redux'
 import {

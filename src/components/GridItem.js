@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
   ImageBackground,
   TextInput,
   TouchableWithoutFeedback
@@ -72,7 +71,7 @@ class GridItem extends Component {
                 onChangeText={userInput =>
                   this.onUpdate('input', Number(userInput))
                 }
-                value={this.props.item.noInCheckOut.toString()}
+                defaultValue={this.props.item.noInCheckOut.toString()}
                 keyboardType={'numeric'}
                 selectTextOnFocus
               />

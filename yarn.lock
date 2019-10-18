@@ -908,6 +908,11 @@
     humps "^2.0.1"
     prop-types "^15.6.2"
 
+"@mindinventory/react-native-tab-bar-interaction@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@mindinventory/react-native-tab-bar-interaction/-/react-native-tab-bar-interaction-1.0.3.tgz#1690ccb29c7c666aef6cf897f064501afc8ab6bc"
+  integrity sha512-OIv7oRj3XFWIPqZ3W1aZcPe+XHl0FQeGLyQmLh72RJ44BM8EXK94AitORMziClIKbv+l9tfzSIbTCWOgXMKDtw==
+
 "@react-native-community/async-storage@^1.6.2":
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.6.2.tgz#a19ca7149c4dfe8216f2330e6b1ebfe2d075ef92"

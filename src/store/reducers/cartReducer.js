@@ -59,6 +59,64 @@ const initialState = {
         }
       ]
     }
+  ],
+  itemsInCartClone: [
+    {
+      transactionId: '112345678',
+      tableNumber: '15',
+      transactionTotalAmount: 0,
+      transactionTotalNumberOfItems: 0,
+      updatedTransactionTotalAmount: 0,
+      updatedTransactionTotalNumberOfItems: 0,
+      transactionDetails: [
+        {
+          itemId: '12345',
+          name: 'Star',
+          category: 'beer',
+          price: '300',
+          isAddedToCart: true,
+          noInCart: 0,
+          image: {
+            url:
+              'https://produits.bienmanger.com/35133-0w345h345_Star_Lager_Beer_From_Nigeria.jpg'
+          }
+        },
+        {
+          itemId: '23456',
+          name: 'Guiness',
+          category: 'beer',
+          price: '250',
+          isAddedToCart: false,
+          noInCart: 0,
+          image: {
+            url:
+              'https://dydza6t6xitx6.cloudfront.net/ci-guinness-draught-57a370742d804361.png'
+          }
+        }
+      ]
+    },
+    {
+      transactionId: '26376738',
+      tableNumber: '18',
+      transactionTotalAmount: 0,
+      transactionTotalNumberOfItems: 0,
+      updatedTransactionTotalAmount: 0,
+      updatedTransactionTotalNumberOfItems: 0,
+      transactionDetails: [
+        {
+          itemId: '23456',
+          name: 'Guiness',
+          category: 'beer',
+          price: '250',
+          isAddedToCart: false,
+          noInCart: 0,
+          image: {
+            url:
+              'https://dydza6t6xitx6.cloudfront.net/ci-guinness-draught-57a370742d804361.png'
+          }
+        }
+      ]
+    }
   ]
 }
 
@@ -78,6 +136,60 @@ const cartReducer = (state = initialState, action) => {
           }
         }
         // transactionTotalAmount: {$set: `${newTransactionTotalAmount}`}
+      })
+    }
+    case Actions.FILTER_TRANSACTIONS_IN_CART: {
+      let newItemsInCart = []
+      if (action.payload.value) {
+        newItemsInCart = state.itemsInCartClone.filter(
+          item =>
+            item.tableNumber.includes(action.payload.value.toString()) ||
+            item.transactionId.startsWith(action.payload.value.toString())
+        )
+      } else {
+        newItemsInCart = state.itemsInCartClone
+      }
+      return update(state, {
+        itemsInCart: {
+          $set: newItemsInCart
+        }
+      })
+    }
+    case Actions.ADD_NEW_DATA_TO_CART: {
+      const newItemsInCart = state.itemsInCartClone.concat(action.payload)
+      return update(state, {
+        itemsInCart: {
+          $set: newItemsInCart
+        },
+        itemsInCartClone: {
+          $set: newItemsInCart
+        }
+      })
+    }
+    case Actions.CANCEL_TRANSACTION_IN_CART: {
+      const newItemsInCart = state.itemsInCartClone.filter(
+        item => item.transactionId !== action.payload.transactionId
+      )
+      return update(state, {
+        itemsInCart: {
+          $set: newItemsInCart
+        },
+        itemsInCartClone: {
+          $set: newItemsInCart
+        }
+      })
+    }
+    case Actions.POPULATE_ONGOING_TRANSACTIONS_IN_CART: {
+      const newItemsInCart = state.itemsInCartClone.filter(
+        item => item.transactionId !== action.payload.transactionId
+      )
+      return update(state, {
+        itemsInCart: {
+          $set: newItemsInCart
+        },
+        itemsInCartClone: {
+          $set: newItemsInCart
+        }
       })
     }
     default: {
