@@ -91,43 +91,57 @@ class Home extends Component {
       this.setState({
         processingOrder: true
       })
-      const transactionTotalAmount =
-        Number(this.props.totalAmountOfItemsAddedFromBar) +
-        Number(this.props.totalAmountOfItemsAddedFromRestaurant)
-      const transactionTotalNumber =
-        Number(this.props.totalNumberOfItemsAddedFromBar) +
-        Number(this.props.totalNumberOfItemsAddedFromRestaurant)
-      const transactionDetails = []
-      const transactionDetailsObject = {}
-      transactionDetailsObject.barCheckOut = this.props.barCheckOut
-      transactionDetailsObject.restaurantCheckOut = this.props.restaurantCheckOut
-      transactionDetails.push(transactionDetailsObject)
       const dataToSend = {
-        transactionId: new Date().valueOf(),
+        barCheckOut: this.props.barCheckOut,
+        restaurantCheckOut: this.props.restaurantCheckOut,
+        totalNumberOfItemsAddedFromBar: this.props
+          .totalNumberOfItemsAddedFromBar,
+        totalNumberOfItemsAddedFromRestaurant: this.props
+          .totalNumberOfItemsAddedFromRestaurant,
+        totalAmountOfItemsAddedFromBar: this.props
+          .totalAmountOfItemsAddedFromBar,
+        totalAmountOfItemsAddedFromRestaurant: this.props
+          .totalAmountOfItemsAddedFromRestaurant,
         tableNumber: this.state.tableNumber ? this.state.tableNumber : 'None',
-        transactionTotalAmount,
-        transactionTotalNumber,
-        updatedTransactionTotalAmount: 0,
-        updatedTransactionTotalNumberOfItems: 0,
-        transactionDetails: JSON.stringify(transactionDetails),
         customerName: this.state.customerName
           ? this.state.customerName
           : 'Walk-In',
-        staffData: JSON.stringify(this.props.staffData),
+        staffData: this.props.staffData,
+        transactionId: new Date().valueOf(),
         date: new Date(),
-        Staff_ID: this.props.staffData.Staff_ID,
-        Branch: this.props.staffData.Branch
+        Staff_ID: this.props.staffData.Staff_ID
       }
-      socket.emit('newOrder', dataToSend, response => {
-        if (response.message === 'Order Received') {
-          this.props.addNewDataToCart(dataToSend)
-        }
-        this.props.setModalVisible()
-        this.setState({
-          processingOrder: false
-        })
-        this.props.clearCart()
-      })
+      console.log(dataToSend)
+      // socket.emit('newOrder', dataToSend, response => {
+      //   if (response.message === 'Order Received') {
+      //     const aTransaction = {}
+      //     aTransaction.transactionId = dataToSend.transactionId
+      //     aTransaction.tableNumber = dataToSend.tableNumber
+      //     aTransaction.transactionTotalAmount =
+      //       Number(dataToSend.totalAmountOfItemsAddedFromBar) +
+      //       Number(dataToSend.totalAmountOfItemsAddedFromRestaurant)
+      //     aTransaction.transactionTotalNumberOfItems =
+      //       Number(dataToSend.totalNumberOfItemsAddedFromBar) +
+      //       Number(dataToSend.totalNumberOfItemsAddedFromRestaurant)
+      //     aTransaction.updatedTransactionTotalAmount = 0
+      //     aTransaction.updatedTransactionTotalNumberOfItems = 0
+      //     aTransaction.transactionDetails = [
+      //       ...dataToSend.barCheckOut,
+      //       ...dataToSend.restaurantCheckOut
+      //     ]
+      //     aTransaction.transactionDetails.map(item => {
+      //       item.noInCart = item.noInCheckOut
+      //       delete item.noInCheckOut
+      //       return item
+      //     })
+      //     this.props.addNewDataToCart(aTransaction)
+      //   }
+      //   this.props.setModalVisible()
+      //   this.setState({
+      //     processingOrder: false
+      //   })
+      //   this.props.clearCart()
+      // })
     }
   }
 

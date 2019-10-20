@@ -21,7 +21,7 @@ class CartItemsContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      itemsVisibility: true,
+      itemsVisibility: false,
       addMoreItemsModalIsVisible: false,
       cancelOrderIsVisible: false
     }
@@ -34,8 +34,8 @@ class CartItemsContainer extends Component {
         <View>
           {item.barCheckOut.length > 0 ? (
             <View>
-              {item.barCheckOut.map(el => {
-                return <CartItem item={el} />
+              {item.barCheckOut.map((el, index) => {
+                return <CartItem item={el} key={index} />
               })}
             </View>
           ) : null}
@@ -45,8 +45,8 @@ class CartItemsContainer extends Component {
         <View>
           {item.restaurantCheckOut.length > 0 ? (
             <View>
-              {item.restaurantCheckOut.map(el => {
-                return <CartItem item={el} />
+              {item.restaurantCheckOut.map((el, index) => {
+                return <CartItem item={el} key={index} />
               })}
             </View>
           ) : null}

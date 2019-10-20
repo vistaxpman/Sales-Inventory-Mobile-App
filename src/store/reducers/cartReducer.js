@@ -199,12 +199,10 @@ const cartReducer = (state = initialState, action) => {
       })
     }
     case Actions.ADD_NEW_DATA_TO_CART: {
-      const newItemsInCart = state.itemsInCartClone.concat(action.payload)
+      const arr = [action.payload]
+      const newItemsInCart = arr.concat(state.itemsInCart)
       return update(state, {
         itemsInCart: {
-          $set: newItemsInCart
-        },
-        itemsInCartClone: {
           $set: newItemsInCart
         }
       })
