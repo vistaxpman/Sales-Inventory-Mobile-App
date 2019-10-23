@@ -15,21 +15,43 @@ class SalesItemsContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      itemsVisibility: true
+      itemsVisibility: false
     }
   }
 
-  renderItem = ({ item, index }) => <SalesItem item={item} />
-
   toggleItemsVisibility = () => {
-    // this.setState({
-    //   itemsVisibility: !this.state.itemsVisibility
-    // })
-    ToastAndroid.show(
-      'Are you sure you want to place order ?',
-      ToastAndroid.SHORT
-    )
+    this.setState({
+      itemsVisibility: !this.state.itemsVisibility
+    })
   }
+
+  renderItem = ({ item, index }) => (
+    <View style={styles.singleOrder}>
+      <Text style={styles.orderNumberText}>Order {index + 1}</Text>
+      {item.barCheckOut ? (
+        <View>
+          {item.barCheckOut.length > 0 ? (
+            <View>
+              {item.barCheckOut.map((el, index) => {
+                return <SalesItem item={el} key={index} />
+              })}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+      {item.restaurantCheckOut ? (
+        <View>
+          {item.restaurantCheckOut.length > 0 ? (
+            <View>
+              {item.restaurantCheckOut.map((el, index) => {
+                return <SalesItem item={el} key={index} />
+              })}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+    </View>
+  )
 
   render() {
     return (
@@ -41,21 +63,27 @@ class SalesItemsContainer extends Component {
               {this.props.item.transactionId}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => this.toggleItemsVisibility}>
+          <TouchableOpacity onPress={() => this.toggleItemsVisibility()}>
             <AntDesignIcon name="downcircleo" size={20} color="#c98811" />
           </TouchableOpacity>
         </View>
-        <List
-          data={this.props.item.transactionDetails}
-          renderItem={this.renderItem}
-          style={styles.listLayout}
-        />
-        <View style={{ display: 'flex', flexDirection: 'row' }}>
-          <Text style={{ fontWeight: 'bold', marginRight: 7, color: 'gray' }}>
-            SubTotal:
-          </Text>
-          <Text style={{ color: 'gray' }}>{`₦${'500'}`}</Text>
-        </View>
+        {this.state.itemsVisibility && (
+          <View style={styles.visibleContainer}>
+            <List
+              data={this.props.item.transactionDetails}
+              renderItem={this.renderItem}
+              style={styles.listLayout}
+            />
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
+              <Text
+                style={{ fontWeight: 'bold', marginRight: 7, color: 'gray' }}
+              >
+                SubTotal:
+              </Text>
+              <Text style={{ color: 'gray' }}>{`₦${'500'}`}</Text>
+            </View>
+          </View>
+        )}
       </View>
     )
   }
@@ -94,10 +122,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    alignItems: 'center',
-    paddingBottom: 10
+    alignItems: 'center'
   },
   tIdBold: {
     fontWeight: 'bold',
@@ -106,37 +131,25 @@ const styles = StyleSheet.create({
   tIdNormal: {
     color: 'gray'
   },
+  visibleContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: 20
+  },
   listLayout: {
     marginBottom: 15,
     backgroundColor: 'transparent'
   },
-  bottomContainer: {
-    alignSelf: 'flex-end',
-    height: 50,
+  singleOrder: {
     width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingLeft: 5,
-    paddingRight: 5
-  },
-  orderControlButtons: {
-    color: '#c98811',
-    backgroundColor: '#fff',
-    borderColor: '#fff',
+    borderColor: '#eee',
     borderWidth: 1,
-    borderRadius: 3,
-    shadowColor: '#fff',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 2,
-    elevation: 2,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 7,
-    paddingBottom: 7,
+    marginBottom: 10,
+    borderRadius: 3
+  },
+  orderNumberText: {
     fontWeight: 'bold',
-    fontSize: 15
+    margin: 10,
+    color: 'gray'
   }
 })

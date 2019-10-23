@@ -4,6 +4,7 @@ export const ADD_NEW_DATA_TO_CART = 'ADD_NEW_DATA_TO_CART'
 export const CANCEL_TRANSACTION_IN_CART = 'CANCEL_TRANSACTION_IN_CART'
 export const POPULATE_ONGOING_TRANSACTIONS_IN_CART =
   'POPULATE_ONGOING_TRANSACTIONS_IN_CART'
+export const ADD_MORE_TO_CART = 'ADD_MORE_TO_CART'
 
 export const updateNoOfItemInCart = (
   transactionId,
@@ -34,4 +35,13 @@ export const cancelTransactionInCart = transactionId => ({
 export const populateOngoingTransactionsInCart = transactions => ({
   type: POPULATE_ONGOING_TRANSACTIONS_IN_CART,
   payload: transactions
+})
+
+export const addMoreToCart = (
+  transactionId,
+  barCheckOut,
+  restaurantCheckOut
+) => ({
+  type: ADD_MORE_TO_CART,
+  payload: { transactionId, barCheckOut, restaurantCheckOut }
 })

@@ -3,6 +3,7 @@ export const CLEAR_ITEMS_IN_BAR = 'CLEAR_ITEMS_IN_BAR'
 export const UPDATE_NO_OF_ITEM_FOR_BAR_CHECKOUT =
   'UPDATE_NO_OF_ITEM_FOR_BAR_CHECKOUT'
 export const FILTER_ITEMS_IN_BAR = 'FILTER_ITEMS_IN_BAR'
+export const POPULATE_ITEMS_IN_BAR = 'POPULATE_ITEMS_IN_BAR'
 
 export const updateNoOfItemInBar = (value, index) => ({
   type: UPDATE_NO_OF_ITEM_IN_BAR,
@@ -21,4 +22,9 @@ export const updateNoOfItemForBarCheckOut = (value, itemId) => ({
 export const filterItemsInBar = value => ({
   type: FILTER_ITEMS_IN_BAR,
   payload: { value }
+})
+
+export const populateItemsInBar = value => ({
+  type: POPULATE_ITEMS_IN_BAR,
+  payload: value
 })

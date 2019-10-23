@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  TouchableWithoutFeedback
-} from 'react-native'
-import EntypoIcon from 'react-native-vector-icons/Entypo'
+import { View, StyleSheet, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
 
-class CartItem extends Component {
+export default class CartItem extends Component {
   constructor(props) {
     super(props)
   }
@@ -43,7 +34,13 @@ class CartItem extends Component {
           resizeMode="contain"
         />
         <View style={styles.itemAndPriceContainer}>
-          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.itemNameText}
+          >
+            {this.props.item.name}
+          </Text>
           <Text
             style={styles.itemPriceText}
           >{`₦${this.props.item.price}`}</Text>
@@ -80,19 +77,6 @@ class CartItem extends Component {
   }
 }
 
-mapStateToProps = state => {
-  return {}
-}
-
-mapDispatchToProps = dispatch => {
-  return {}
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CartItem)
-
 const styles = StyleSheet.create({
   itemContainer: {
     flex: 1,
@@ -118,6 +102,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   itemNameText: {
+    display: 'flex',
     fontSize: 17,
     marginBottom: 7
   },

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Invex Restaurant",
-    "slug": "InvexRestaurantMobileApp",
+    "name": "InvexBarAndRestaurantMobileApp",
+    "slug": "InvexBarAndRestaurantMobileApp",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": ["ios", "android", "web"],
@@ -18,7 +18,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.excellentbridge.invexbarandrestaurant"
+    },
+    "android": {
+      "package": "com.excellentbridge.invexbarandrestaurant"
     }
   }
 }

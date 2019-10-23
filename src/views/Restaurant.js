@@ -1,13 +1,67 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, StyleSheet, ScrollView, FlatList, Text } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  Text,
+  AsyncStorage
+} from 'react-native'
+import axios from 'axios'
 import GridItem from '../components/GridItem'
-import { updateNoOfItemInRestaurant } from '../store/actions/restaurantActions'
+import {
+  updateNoOfItemInRestaurant,
+  populateItemsInRestaurant
+} from '../store/actions/restaurantActions'
+import { populateMoreItemsInRestaurant } from '../store/actions/moreItemsToOrderActions'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { Spinner } from 'react-native-ui-kitten'
 
 class Restaurant extends Component {
   constructor() {
     super()
+    this.state = {
+      isLoadingRestaurantItems: true
+    }
+  }
+
+  componentDidMount() {
+    this.fetchItemsFromLocalStorage()
+  }
+
+  fetchItemsFromLocalStorage = async () => {
+    await AsyncStorage.getItem('restaurant').then(items => {
+      if (items) {
+        this.props.populateItemsInRestaurant(JSON.parse(items))
+        this.setState({
+          isLoadingRestaurantItems: false
+        })
+      } else {
+        this.fetchItemsFromOnline()
+      }
+    })
+  }
+
+  fetchItemsFromOnline = () => {
+    let url = 'http://192.168.8.105:3000/getItemsFromRestaurant'
+    axios
+      .get(url)
+      .then(async response => {
+        if (response.data.hasItems) {
+          this.props.populateItemsInRestaurant(response.data.items)
+          await AsyncStorage.setItem(
+            'restaurant',
+            JSON.stringify(response.data.items)
+          )
+          this.setState({
+            isLoadingRestaurantItems: false
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   renderGridItem = ({ item, index }) => (
@@ -23,7 +77,11 @@ class Restaurant extends Component {
   render() {
     return (
       <View style={styles.gridContainer}>
-        {this.props.restaurant.length === 0 ? (
+        {this.state.isLoadingRestaurantItems ? (
+          <View style={styles.emptyContainer}>
+            <Spinner size="giant" status="alternative" />
+          </View>
+        ) : this.props.restaurant.length === 0 ? (
           <View style={styles.emptyContainer}>
             <MaterialIcon name="hourglass-empty" size={50} color="gray" />
             <Text style={styles.emptyText}>None Found.</Text>
@@ -56,6 +114,10 @@ mapDispatchToProps = dispatch => {
   return {
     updateNoOfItemInRestaurant: (value, index) => {
       dispatch(updateNoOfItemInRestaurant(value, index))
+    },
+    populateItemsInRestaurant: value => {
+      dispatch(populateItemsInRestaurant(value))
+      dispatch(populateMoreItemsInRestaurant(value))
     }
   }
 }

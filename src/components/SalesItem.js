@@ -1,18 +1,28 @@
 import React, { Component } from 'react'
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  Image,
-  TextInput
-} from 'react-native'
-import EntypoIcon from 'react-native-vector-icons/Entypo'
+import { View, StyleSheet, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
 
 class SalesItem extends Component {
   constructor(props) {
     super(props)
+  }
+
+  onUpdate = (type, value) => {
+    let amount = this.props.item.noInCart
+    switch (type) {
+      case 'increment':
+        amount = amount + 1
+        break
+      case 'decrement':
+        amount = amount - (amount ? 1 : 0)
+        break
+      case 'input':
+        amount = value
+        break
+      default:
+        break
+    }
+    this.props.onChange(amount, type)
   }
 
   render() {
@@ -24,14 +34,20 @@ class SalesItem extends Component {
           resizeMode="contain"
         />
         <View style={styles.itemAndPriceContainer}>
-          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.itemNameText}
+          >
+            {this.props.item.name}
+          </Text>
           <Text
             style={styles.itemPriceText}
           >{`₦${this.props.item.price}`}</Text>
         </View>
         <View style={styles.counterContainer}>
           <Text style={styles.counterText}>
-            {this.props.item.noInCart.toString()}
+            {this.props.item.noInCheckOut.toString()}
           </Text>
         </View>
       </View>
@@ -61,8 +77,8 @@ const styles = StyleSheet.create({
     height: 110,
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
-    paddingTop: 7,
-    paddingBottom: 7
+    paddingTop: 3,
+    paddingBottom: 3
   },
   itemBgImage: {
     height: '100%',
@@ -77,6 +93,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   itemNameText: {
+    flex: 1,
     fontSize: 17,
     marginBottom: 7
   },

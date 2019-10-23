@@ -9,10 +9,9 @@ import {
   TouchableWithoutFeedback
 } from 'react-native'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
-import { connect } from 'react-redux'
-import AntDesignIcon from 'react-native-vector-icons/AntDesign'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-class CheckOutItem extends Component {
+export default class CheckOutItem extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -39,33 +38,30 @@ class CheckOutItem extends Component {
   }
 
   onDelete = () => {
-    this.setState({
-      isSelected: !this.state.isSelected
-    })
-    this.props.onToBeDeleted(this.state.isSelected)
-    this.setState({
-      isSelected: !this.state.isSelected
-    })
+    this.props.onToBeDeleted(true)
   }
 
   render() {
     return (
       <View style={styles.itemContainer}>
-        <TouchableWithoutFeedback onPress={() => this.onDelete()}>
-          <AntDesignIcon
-            style={{ width: '10%', padding: 5 }}
-            name="close"
-            size={25}
-            color="gray"
-          />
-        </TouchableWithoutFeedback>
+        <View style={{ width: '10%', padding: 5 }}>
+          <TouchableOpacity onPress={() => this.onDelete()}>
+            <MaterialCommunityIcons name="close" size={30} color="gray" />
+          </TouchableOpacity>
+        </View>
         <Image
           source={{ uri: this.props.item.image.url }}
           style={styles.itemBgImage}
           resizeMode="contain"
         />
         <View style={styles.itemAndPriceContainer}>
-          <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.itemNameText}
+          >
+            {this.props.item.name}
+          </Text>
           <Text
             style={styles.itemPriceText}
           >{`₦${this.props.item.price}`}</Text>
@@ -91,19 +87,6 @@ class CheckOutItem extends Component {
     )
   }
 }
-
-mapStateToProps = state => {
-  return {}
-}
-
-mapDispatchToProps = dispatch => {
-  return {}
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CheckOutItem)
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -131,6 +114,7 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   itemNameText: {
+    display: 'flex',
     fontSize: 17,
     marginBottom: 7
   },

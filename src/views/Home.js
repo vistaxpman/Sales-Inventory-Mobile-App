@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
-  ToastAndroid,
-  AsyncStorage
+  ToastAndroid
 } from 'react-native'
 import { connect } from 'react-redux'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view'
@@ -29,7 +28,6 @@ import {
 import { clearItemsInBar } from '../store/actions/barActions'
 import { clearItemsInRestaurant } from '../store/actions/restaurantActions'
 import { addNewDataToCart } from '../store/actions/cartActions'
-import { setStaffData } from '../store/actions/homeActions'
 import Bar from './Bar'
 import Restaurant from './Restaurant'
 import Cart from './Cart'
@@ -65,70 +63,59 @@ class Home extends Component {
     }
   }
 
-  componentDidMount() {
-    this.getData()
-  }
-
-  getData = async () => {
-    try {
-      const staffData = await AsyncStorage.getItem('staffData')
-      const Staff_ID = JSON.parse(staffData).Staff_ID
-      socket.emit('getOngoingTransactions', Staff_ID, response => {
-        console.log(response)
-      })
-      this.props.setStaffData(JSON.parse(staffData))
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   itemsInCheckOut = () => {
     return [...this.props.barCheckOut, ...this.props.restaurantCheckOut]
   }
 
   placeOrder = () => {
-    if (socket.connected) {
-      this.setState({
-        processingOrder: true
-      })
-      const transactionTotalAmount =
-        Number(this.props.totalAmountOfItemsAddedFromBar) +
-        Number(this.props.totalAmountOfItemsAddedFromRestaurant)
-      const transactionTotalNumber =
-        Number(this.props.totalNumberOfItemsAddedFromBar) +
-        Number(this.props.totalNumberOfItemsAddedFromRestaurant)
-      const transactionDetails = []
-      const transactionDetailsObject = {}
-      transactionDetailsObject.barCheckOut = this.props.barCheckOut
-      transactionDetailsObject.restaurantCheckOut = this.props.restaurantCheckOut
-      transactionDetails.push(transactionDetailsObject)
-      const dataToSend = {
-        transactionId: new Date().valueOf(),
-        tableNumber: this.state.tableNumber ? this.state.tableNumber : 'None',
-        transactionTotalAmount,
-        transactionTotalNumber,
-        updatedTransactionTotalAmount: 0,
-        updatedTransactionTotalNumberOfItems: 0,
-        transactionDetails: JSON.stringify(transactionDetails),
-        customerName: this.state.customerName
-          ? this.state.customerName
-          : 'Walk-In',
-        staffData: JSON.stringify(this.props.staffData),
-        date: new Date(),
-        Staff_ID: this.props.staffData.Staff_ID,
-        Branch: this.props.staffData.Branch
-      }
-      socket.emit('newOrder', dataToSend, response => {
-        if (response.message === 'Order Received') {
-          this.props.addNewDataToCart(dataToSend)
-        }
-        this.props.setModalVisible()
-        this.setState({
-          processingOrder: false
-        })
-        this.props.clearCart()
-      })
+    this.setState({
+      processingOrder: true
+    })
+    const transactionTotalAmount =
+      Number(this.props.totalAmountOfItemsAddedFromBar) +
+      Number(this.props.totalAmountOfItemsAddedFromRestaurant)
+    const transactionTotalNumber =
+      Number(this.props.totalNumberOfItemsAddedFromBar) +
+      Number(this.props.totalNumberOfItemsAddedFromRestaurant)
+    const transactionDetails = []
+    const transactionDetailsObject = {}
+    transactionDetailsObject.barCheckOut = this.props.barCheckOut
+    transactionDetailsObject.restaurantCheckOut = this.props.restaurantCheckOut
+    transactionDetails.push(transactionDetailsObject)
+    const dataToSend = {
+      transactionId: new Date().valueOf(),
+      tableNumber: this.state.tableNumber ? this.state.tableNumber : 'None',
+      transactionTotalAmount,
+      transactionTotalNumber,
+      updatedTransactionTotalAmount: 0,
+      updatedTransactionTotalNumberOfItems: 0,
+      transactionDetails: JSON.stringify(transactionDetails),
+      customerName: this.state.customerName
+        ? this.state.customerName
+        : 'Walk-In',
+      staffData: JSON.stringify(this.props.staffData),
+      date: new Date(),
+      Staff_ID: this.props.staffData.Staff_ID,
+      Branch: this.props.staffData.Branch
     }
+    socket.emit('newOrder', dataToSend, response => {
+      let showToast = false
+      if (response.message === 'Order Received') {
+        dataToSend.transactionDetails = JSON.parse(
+          dataToSend.transactionDetails
+        )
+        this.props.addNewDataToCart(dataToSend)
+        showToast = true
+      }
+      this.props.setModalVisible()
+      this.setState({
+        processingOrder: false
+      })
+      this.props.clearCart()
+      if (showToast) {
+        ToastAndroid.show('Order sent successfully.', ToastAndroid.SHORT)
+      }
+    })
   }
 
   viewOrder = () => {
@@ -186,7 +173,7 @@ class Home extends Component {
               }
             }}
           >
-            {this.state.processingOrder ? (
+            {/* {this.state.processingOrder ? (
               <View
                 style={{
                   width: '100%',
@@ -210,80 +197,80 @@ class Home extends Component {
                 </Text>
                 <Spinner size="giant" status="info" />
               </View>
-            ) : (
-              <View
+            ) : ( */}
+            <View
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: 10
+              }}
+            >
+              <Text
                 style={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: 10
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  marginBottom: 10,
+                  textAlign: 'center'
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    marginBottom: 10,
-                    textAlign: 'center'
-                  }}
-                >
-                  Confirm Order
-                </Text>
-                <Text style={{ fontSize: 15, marginBottom: 40 }}>
-                  Are you sure you want to place this order ?
-                </Text>
-                <TextInput
-                  placeholder="Table Number"
-                  style={styles.textInputStyle}
-                  onChangeText={tableNumber =>
-                    this.setState({
-                      tableNumber: tableNumber
-                    })
-                  }
-                />
-                <TextInput
-                  placeholder="Customer Name(Optional)"
-                  style={styles.textInputStyle}
-                  onChangeText={customerName =>
-                    this.setState({
-                      customerName: customerName
-                    })
-                  }
-                />
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginTop: 25
-                  }}
-                >
-                  <TouchableWithoutFeedback onPress={() => this.viewOrder()}>
-                    <Text
-                      style={[
-                        styles.bottomControls2,
-                        {
-                          borderColor: '#c98811',
-                          borderWidth: 1
-                        }
-                      ]}
-                    >
-                      View
-                    </Text>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback onPress={() => this.placeOrder()}>
-                    <Text
-                      style={[
-                        styles.bottomControls,
-                        { backgroundColor: '#c98811' }
-                      ]}
-                    >
-                      Send
-                    </Text>
-                  </TouchableWithoutFeedback>
-                </View>
+                Confirm Order
+              </Text>
+              <Text style={{ fontSize: 15, marginBottom: 40 }}>
+                Are you sure you want to place this order ?
+              </Text>
+              <TextInput
+                placeholder="Table Number"
+                style={styles.textInputStyle}
+                onChangeText={tableNumber =>
+                  this.setState({
+                    tableNumber: tableNumber
+                  })
+                }
+              />
+              <TextInput
+                placeholder="Customer Name(Optional)"
+                style={styles.textInputStyle}
+                onChangeText={customerName =>
+                  this.setState({
+                    customerName: customerName
+                  })
+                }
+              />
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 25
+                }}
+              >
+                <TouchableWithoutFeedback onPress={() => this.viewOrder()}>
+                  <Text
+                    style={[
+                      styles.bottomControls2,
+                      {
+                        borderColor: '#c98811',
+                        borderWidth: 1
+                      }
+                    ]}
+                  >
+                    View
+                  </Text>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => this.placeOrder()}>
+                  <Text
+                    style={[
+                      styles.bottomControls,
+                      { backgroundColor: '#c98811' }
+                    ]}
+                  >
+                    Send
+                  </Text>
+                </TouchableWithoutFeedback>
               </View>
-            )}
+            </View>
+            {/* )} */}
           </Overlay>
         )
       } else {
@@ -479,9 +466,6 @@ mapDispatchToProps = dispatch => {
     },
     addNewDataToCart: aTransaction => {
       dispatch(addNewDataToCart(aTransaction))
-    },
-    setStaffData: staffData => {
-      dispatch(setStaffData(staffData))
     }
   }
 }

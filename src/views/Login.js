@@ -5,12 +5,16 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  Image
 } from 'react-native'
 import axios from 'axios'
 import { Spinner } from 'react-native-ui-kitten'
-import { setStaffData } from '../store/actions/homeActions'
 import { connect } from 'react-redux'
+import { socket } from '../services/socketIO'
+import AppLogo from '../assets/invex.png'
+import { setStaffData } from '../store/actions/homeActions'
+import { populateOngoingTransactionsInCart } from '../store/actions/cartActions'
 
 class Login extends Component {
   constructor() {
@@ -26,13 +30,24 @@ class Login extends Component {
     }
   }
 
-  storeData = async staffData => {
+  handleSetUp = async staffData => {
     try {
-      this.props.setStaffData(staffData)
       await AsyncStorage.setItem('staffData', JSON.stringify(staffData))
+      this.props.navigation.replace('Home')
     } catch (e) {
       console.error(e)
     }
+  }
+
+  initialRequests = () => {
+    const { Staff_ID } = this.props.staffData
+    socket.emit('getStaffUpdatedData', Staff_ID, response => {
+      this.props.setStaffData(response)
+    })
+
+    socket.emit('getOngoingTransactions', Staff_ID, response => {
+      this.props.populateOngoingTransactionsInCart(response)
+    })
   }
 
   handleLogin = () => {
@@ -51,15 +66,16 @@ class Login extends Component {
         isLoading: true
       })
       axios
-        .post('http://192.168.8.107:3000/login', {
+        .post('http://192.168.8.105:3000/login', {
           username,
           password,
           appId
         })
         .then(response => {
           if (response.data.loginMessage === 'success') {
-            this.storeData(response.data.staffData)
-            this.props.navigation.replace('Home')
+            this.props.setStaffData(response.data.staffData)
+            this.initialRequests()
+            this.handleSetUp(response.data.staffData)
           } else if (response.data.loginMessage === 'failed') {
             this.setState({
               errorMessage: 'Invalid Login',
@@ -88,13 +104,20 @@ class Login extends Component {
       >
         <View style={styles.container}>
           <View style={styles.container2}>
-            <Text style={styles.titleText}>Invex for Bar & Restaurant</Text>
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%'
+              }}
+            >
+              <Image source={AppLogo} />
+            </View>
             <Text
               style={{
                 color: 'red',
                 textAlign: 'center',
-                marginTop: 20,
-                marginBottom: 20
+                marginTop: 20
               }}
             >
               {this.state.errorMessage}
@@ -155,16 +178,23 @@ class Login extends Component {
   }
 }
 
+mapStateToProps = state => {
+  return { staffData: state.homeReducer.staffData }
+}
+
 mapDispatchToProps = dispatch => {
   return {
     setStaffData: staffData => {
       dispatch(setStaffData(staffData))
+    },
+    populateOngoingTransactionsInCart: ongoingTransactions => {
+      dispatch(populateOngoingTransactionsInCart(ongoingTransactions))
     }
   }
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Login)
 
@@ -177,14 +207,8 @@ const styles = StyleSheet.create({
   container2: {
     display: 'flex',
     flexDirection: 'column',
-    padding: 30
-  },
-  titleText: {
-    fontSize: 22,
-    color: '#303030',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: 20
+    paddingLeft: 30,
+    paddingRight: 30
   },
   textInputContainer: {
     display: 'flex',
@@ -197,28 +221,34 @@ const styles = StyleSheet.create({
   textInputStyle: {
     height: 40,
     borderWidth: 1,
-    borderColor: 'transparent',
-    borderBottomColor: '#ccc',
+    borderColor: '#ddd',
+    borderRadius: 3,
     fontSize: 16,
-    marginTop: 5
+    marginTop: 5,
+    padding: 7
   },
   loginButtonStyle: {
-    marginTop: 30,
-    paddingTop: 13,
-    paddingBottom: 13,
+    marginTop: 40,
+    paddingTop: 10,
+    paddingBottom: 10,
     marginLeft: 30,
     marginRight: 30,
     backgroundColor: '#c98811',
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: '#fff',
+    borderColor: '#c98811',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    elevation: 2
   },
   loginTextStyle: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 17
   }
 })

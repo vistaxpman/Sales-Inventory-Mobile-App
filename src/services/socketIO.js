@@ -1,13 +1,13 @@
 import socketIOClient from 'socket.io-client'
-import { AsyncStorage } from 'react-native'
-import { populateOngoingTransactionsInCart } from '../store/actions/cartActions'
 
-export const socket = socketIOClient('http://192.168.8.107:3000', {
+export const socket = socketIOClient('http://192.168.8.105:3000', {
   transports: ['websocket'],
   jsonp: false
 })
 
 export const socketIO = store => {
+  const { Staff_ID } = store.getState().homeReducer.staffData
+
   socket.connect()
 
   socket.on('connect', () => {
@@ -15,6 +15,10 @@ export const socketIO = store => {
 
     socket.on('disconnect', () => {
       console.log('connection to server lost.')
+    })
+
+    socket.on('Holla', () => {
+      console.log('Holla')
     })
 
     // store.subscribe(() => {

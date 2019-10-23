@@ -6,16 +6,20 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  AsyncStorage,
-  TouchableWithoutFeedback
+  AsyncStorage
 } from 'react-native'
-import { List, ListItem } from 'react-native-ui-kitten'
+import { List } from 'react-native-ui-kitten'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import { connect } from 'react-redux'
 import CartItem from './CartItem'
 import AddMoreItems from '../views/AddMoreItems'
 import { cancelTransactionInCart } from '../store/actions/cartActions'
 import { socket } from '../services/socketIO'
+import { changeSelectedOrderTransactionId } from '../store/actions/moreItemsToOrderActions'
+import {
+  clearItemsInMoreBar,
+  clearItemsInMoreRestaurant
+} from '../store/actions/moreItemsToOrderActions'
 
 class CartItemsContainer extends Component {
   constructor(props) {
@@ -68,10 +72,11 @@ class CartItemsContainer extends Component {
     socket.emit('cancelOrder', { Staff_ID, transactionId }, response => {
       if (response.message === 'Order Cancelled') {
         this.props.cancelTransactionInCart(transactionId)
-        this.setState({
-          cancelOrderIsVisible: false
-        })
       }
+    })
+    this.setState({
+      cancelOrderIsVisible: false,
+      itemsVisibility: false
     })
   }
 
@@ -85,7 +90,7 @@ class CartItemsContainer extends Component {
               text: 'Cancel',
               onPress: () =>
                 this.setState({
-                  cancelOrderIsVisible: !this.state.cancelOrderIsVisible
+                  cancelOrderIsVisible: false
                 }),
               style: 'cancel'
             },
@@ -95,18 +100,15 @@ class CartItemsContainer extends Component {
             cancelable: true,
             onDismiss: () =>
               this.setState({
-                cancelOrderIsVisible: !this.state.cancelOrderIsVisible
+                cancelOrderIsVisible: false
               })
           }
         )
       : null
   }
 
-  saveChanges = () => {
-    console.log(this.props.item)
-  }
-
   addMoreItems = () => {
+    this.props.changeSelectedOrderTransactionId(this.props.item.transactionId)
     this.setState({
       addMoreItemsModalIsVisible: !this.state.addMoreItemsModalIsVisible
     })
@@ -116,6 +118,8 @@ class CartItemsContainer extends Component {
     this.setState({
       addMoreItemsModalIsVisible: !this.state.addMoreItemsModalIsVisible
     })
+    this.props.clearItemsInMoreBar()
+    this.props.clearItemsInMoreRestaurant()
   }
 
   render() {
@@ -181,7 +185,7 @@ class CartItemsContainer extends Component {
                   <View style={[styles.flexColumn2, { padding: 7 }]}>
                     <Text style={styles.totalText}>No. of Items</Text>
                     <Text style={styles.noOfText}>
-                      {this.props.item.transactionTotalNumberOfItems}
+                      {this.props.item.transactionTotalNumber}
                     </Text>
                   </View>
                 </View>
@@ -239,7 +243,12 @@ mapDispatchToProps = dispatch => {
   return {
     cancelTransactionInCart: transactionId => {
       dispatch(cancelTransactionInCart(transactionId))
-    }
+    },
+    changeSelectedOrderTransactionId: transactionId => {
+      dispatch(changeSelectedOrderTransactionId(transactionId))
+    },
+    clearItemsInMoreBar: () => dispatch(clearItemsInMoreBar()),
+    clearItemsInMoreRestaurant: () => dispatch(clearItemsInMoreRestaurant())
   }
 }
 
@@ -353,8 +362,7 @@ const styles = StyleSheet.create({
   },
   orderNumberText: {
     fontWeight: 'bold',
-    marginTop: 10,
-    marginLeft: 10,
+    margin: 10,
     color: 'gray'
   }
 })

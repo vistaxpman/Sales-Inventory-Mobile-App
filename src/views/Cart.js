@@ -11,8 +11,6 @@ class Cart extends Component {
     super()
   }
 
-  componentDidMount() {}
-
   getData = async () => {
     try {
       const value = await AsyncStorage.getItem('cartItems')

@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import { withNavigation } from 'react-navigation'
-import { Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, AsyncStorage } from 'react-native'
 import { Header as NativeHeader } from 'react-native-elements'
-import FoundationIcon from 'react-native-vector-icons/Foundation'
 import { connect } from 'react-redux'
 import SearchBar from './SearchBar'
 import { filterItemsInBar } from '../store/actions/barActions'
 import { filterItemsInRestaurant } from '../store/actions/restaurantActions'
 import { filterTransactionsInCart } from '../store/actions/cartActions'
+import PopupMenu from './PopupMenu'
+import { clearItemsInBar } from '../store/actions/barActions'
+import { clearItemsInRestaurant } from '../store/actions/restaurantActions'
 
 class Header extends Component {
   constructor(props) {
@@ -17,18 +19,23 @@ class Header extends Component {
     }
   }
 
-  handleCartIcon = () => {
-    this.props.navigation.navigate('Sales')
+  onPopupEvent = (eventName, index) => {
+    if (index === 0) {
+      this.props.navigation.navigate('Sales')
+    } else if (index === 1) {
+      this.props.navigation.navigate('Profile')
+    } else if (index === 2) {
+      this.props.clearCart()
+      ;(async () => {
+        await AsyncStorage.setItem('staffData', '').then(value =>
+          this.props.navigation.navigate('Login')
+        )
+      })()
+    }
   }
 
   render() {
     Invex = () => <Text style={styles.invexText}>Invex</Text>
-
-    CartIcon = () => (
-      <TouchableOpacity onPress={this.handleCartIcon}>
-        <FoundationIcon name="burst-sale" size={35} color="#fff" />
-      </TouchableOpacity>
-    )
 
     return (
       <NativeHeader
@@ -41,7 +48,12 @@ class Header extends Component {
             }}
           />
         }
-        rightComponent={<CartIcon />}
+        rightComponent={
+          <PopupMenu
+            actions={['Sales', 'Profile', 'LogOut']}
+            onPress={this.onPopupEvent}
+          />
+        }
         containerStyle={{
           backgroundColor: '#c98811',
           justifyContent: 'space-around'
@@ -67,6 +79,10 @@ mapDispatchToProps = dispatch => {
       } else {
         dispatch(filterTransactionsInCart(value))
       }
+    },
+    clearCart: () => {
+      dispatch(clearItemsInBar())
+      dispatch(clearItemsInRestaurant())
     }
   }
 }

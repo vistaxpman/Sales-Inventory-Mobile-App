@@ -9,22 +9,26 @@ import {
 } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import TabBar from '@mindinventory/react-native-tab-bar-interaction'
-import { List, ListItem } from 'react-native-ui-kitten'
+import { List } from 'react-native-ui-kitten'
 import { connect } from 'react-redux'
 import SingleMoreItem from '../components/SingleMoreItem'
 import {
   updateNoOfItemInMoreBar,
-  clearItemsInMoreBar,
-  updateNoOfItemInMoreRestaurant,
-  clearItemsInMoreRestaurant
+  updateNoOfItemInMoreRestaurant
 } from '../store/actions/moreItemsToOrderActions'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import CartItem from '../components/CartItem'
+import { socket } from '../services/socketIO'
+import { addMoreToCart } from '../store/actions/cartActions'
 
 class AddMoreItems extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      barCheckOut: this.props.barCheckOut,
+      restaurantCheckOut: this.props.restaurantCheckOut
+    }
   }
 
   closeModal = () => {
@@ -32,7 +36,17 @@ class AddMoreItems extends Component {
   }
 
   sendAddMoreItems = () => {
-    console.log('sendAddMoreItems')
+    const transactionId = this.props.selectedOrderTransactionId
+    const barCheckOut = this.props.barCheckOut
+    const restaurantCheckOut = this.props.restaurantCheckOut
+    this.props.addMoreToCart(transactionId, barCheckOut, restaurantCheckOut)
+    setTimeout(() => {
+      const data = this.props.selectedItem
+      socket.emit('moreAdded', data, response => {
+        this.closeModal()
+        console.log('More Added')
+      })
+    }, 2000)
   }
 
   renderSingleMoreItemToBar = ({ item, index }) => (
@@ -61,6 +75,21 @@ class AddMoreItems extends Component {
     return [...this.props.barCheckOut, ...this.props.restaurantCheckOut]
   }
 
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   if (
+  //     nextProps.barCheckOut !== prevState.barCheckOut ||
+  //     nextProps.restaurantCheckOut !== prevState.restaurantCheckOut
+  //   ) {
+  //     const transactionId = prevState.selectedOrderTransactionId
+  //     const barCheckOut = nextProps.barCheckOut
+  //     const restaurantCheckOut = nextProps.restaurantCheckOut
+  //     nextProps.addMoreToCart(transactionId, barCheckOut, restaurantCheckOut)
+  //     console.log(nextProps.selectedItem)
+  //   }
+
+  //   return null
+  // }
+
   render() {
     return (
       <View style={styles.container}>
@@ -87,8 +116,8 @@ class AddMoreItems extends Component {
           </View>
           <TabBar>
             <TabBar.Item
-              icon={require('../../assets/2325619-200.png')}
-              selectedIcon={require('../../assets/2325619-200.png')}
+              icon={require('../assets/2325619-200.png')}
+              selectedIcon={require('../assets/2325619-200.png')}
               title="Restaurant"
             >
               <View style={styles.gridContainer}>
@@ -105,8 +134,8 @@ class AddMoreItems extends Component {
               </View>
             </TabBar.Item>
             <TabBar.Item
-              icon={require('../../assets/917640-200.png')}
-              selectedIcon={require('../../assets/917640-200.png')}
+              icon={require('../assets/917640-200.png')}
+              selectedIcon={require('../assets/917640-200.png')}
               title="Bar"
             >
               <View style={styles.gridContainer}>
@@ -124,8 +153,8 @@ class AddMoreItems extends Component {
             </TabBar.Item>
 
             <TabBar.Item
-              icon={require('../../assets/1570216-200.png')}
-              selectedIcon={require('../../assets/1570216-200.png')}
+              icon={require('../assets/1570216-200.png')}
+              selectedIcon={require('../assets/1570216-200.png')}
               title="Cart"
             >
               <View style={styles.gridContainer}>
@@ -161,7 +190,10 @@ mapStateToProps = state => {
     restaurant: state.moreItemsToOrderReducer.restaurant,
     moreItemsToOrderTab: state.moreItemsToOrderReducer.moreItemsToOrderTab,
     barCheckOut: state.moreItemsToOrderReducer.barCheckOut,
-    restaurantCheckOut: state.moreItemsToOrderReducer.restaurantCheckOut
+    restaurantCheckOut: state.moreItemsToOrderReducer.restaurantCheckOut,
+    selectedOrderTransactionId:
+      state.moreItemsToOrderReducer.selectedOrderTransactionId,
+    selectedItem: state.cartReducer.selectedItem
   }
 }
 
@@ -172,6 +204,9 @@ mapDispatchToProps = dispatch => {
     },
     updateNoOfItemInMoreRestaurant: (value, index) => {
       dispatch(updateNoOfItemInMoreRestaurant(value, index))
+    },
+    addMoreToCart: (transactionId, barCheckOut, restaurantCheckOut) => {
+      dispatch(addMoreToCart(transactionId, barCheckOut, restaurantCheckOut))
     }
   }
 }
