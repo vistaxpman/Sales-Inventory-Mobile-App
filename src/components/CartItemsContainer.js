@@ -194,11 +194,12 @@ class CartItemsContainer extends Component {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between'
+                  justifyContent: 'center'
+                  // justifyContent: 'space-between'
                 }}
               >
                 {this.cancelDialog()}
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() =>
                     this.setState({
                       cancelOrderIsVisible: true
@@ -213,12 +214,16 @@ class CartItemsContainer extends Component {
                   >
                     Cancel Order
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => this.addMoreItems()}>
                   <Text
                     style={[
                       styles.orderControlButtons,
-                      { color: '#c98811', fontWeight: 'bold', fontSize: 17 }
+                      {
+                        color: '#c98811',
+                        fontWeight: 'bold',
+                        fontSize: 17
+                      }
                     ]}
                   >
                     Add More
@@ -314,8 +319,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 2,
     elevation: 2,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 25,
+    paddingRight: 25,
     paddingTop: 7,
     paddingBottom: 7
   },

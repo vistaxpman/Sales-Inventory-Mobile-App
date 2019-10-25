@@ -31,41 +31,41 @@ class Bar extends Component {
   }
 
   fetchItemsFromLocalStorage = async () => {
-    let location = 'oldbar'
-    if (this.props.staffData.Branch === 'newbar') {
-      location = 'newbar'
-    }
-    await AsyncStorage.getItem(location).then(items => {
-      if (items) {
-        this.props.populateItemsInBar(JSON.parse(items))
-        this.setState({
-          isLoadingBarItems: false
-        })
-      } else {
-        this.fetchItemsFromOnline()
-      }
-    })
+    // let location = 'OldBar'
+    // if (this.props.staffData.Branch === 'New Bar') {
+    //   location = 'NewBar'
+    // }
+    // await AsyncStorage.getItem(location).then(items => {
+    //   if (items) {
+    //     this.props.populateItemsInBar(JSON.parse(items))
+    //     this.setState({
+    //       isLoadingBarItems: false
+    //     })
+    //   } else {
+    this.fetchItemsFromOnline()
+    //   }
+    // })
   }
 
   fetchItemsFromOnline = () => {
     let url = '',
       location = ''
-    if (this.props.staffData.Branch === 'oldbar') {
-      url = 'http://192.168.8.105:3000/getItemsFromOldBar'
-      location = 'oldbar'
-    } else if (this.props.staffData.Branch === 'newbar') {
-      url = 'http://192.168.8.105:3000/getItemsFromNewBar'
-      location = 'newbar'
+    if (this.props.staffData.Branch === 'Old Bar') {
+      url = 'http://192.168.8.109:3000/getItemsFromOldBar'
+      location = 'OldBar'
+    } else if (this.props.staffData.Branch === 'New Bar') {
+      url = 'http://192.168.8.109:3000/getItemsFromNewBar'
+      location = 'NewBar'
     }
     axios
       .get(url)
       .then(async response => {
         if (response.data.hasItems) {
           this.props.populateItemsInBar(response.data.items)
-          await AsyncStorage.setItem(
-            location,
-            JSON.stringify(response.data.items)
-          )
+          // await AsyncStorage.setItem(
+          //   location,
+          //   JSON.stringify(response.data.items)
+          // )
           this.setState({
             isLoadingBarItems: false
           })

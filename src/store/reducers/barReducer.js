@@ -206,20 +206,20 @@ const initialState = {
 const barReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.UPDATE_NO_OF_ITEM_IN_BAR: {
-      const newBar = state.bar.map((item, index) => {
+      const newbar = state.bar.map((item, index) => {
         if (index === action.payload.index) {
           item.noInCheckOut = action.payload.value
         }
         return item
       })
 
-      const newBarCheckOut = () => {
-        return newBar.filter(item => item.noInCheckOut > 0)
+      const newbarCheckOut = () => {
+        return newbar.filter(item => item.noInCheckOut > 0)
       }
 
       let newTotalNumberOfItemsAddedFromBar = 0
       let newTotalAmountOfItemsAddedFromBar = 0
-      newBar.map((anItem, index) => {
+      newbar.map((anItem, index) => {
         newTotalNumberOfItemsAddedFromBar += Number(anItem.noInCheckOut)
         if (anItem.noInCheckOut > 0) {
           newTotalAmountOfItemsAddedFromBar +=
@@ -239,18 +239,18 @@ const barReducer = (state = initialState, action) => {
         totalAmountOfItemsAddedFromBar: {
           $set: newTotalAmountOfItemsAddedFromBar
         },
-        barCheckOut: { $set: newBarCheckOut() }
+        barCheckOut: { $set: newbarCheckOut() }
       })
     }
     case Actions.CLEAR_ITEMS_IN_BAR: {
-      const newBar = state.bar.map((item, index) => {
+      const newbar = state.bar.map((item, index) => {
         item.noInCheckOut = 0
         return item
       })
 
       return {
         ...state,
-        bar: newBar,
+        bar: newbar,
         totalNumberOfItemsAddedFromBar: 0,
         totalAmountOfItemsAddedFromBar: 0,
         barCheckOut: []
@@ -258,7 +258,7 @@ const barReducer = (state = initialState, action) => {
     }
     case Actions.UPDATE_NO_OF_ITEM_FOR_BAR_CHECKOUT: {
       let itemIndex = ''
-      const newBar = state.bar.map((item, index) => {
+      const newbar = state.bar.map((item, index) => {
         if (item.itemId === action.payload.itemId) {
           item.noInCheckOut = action.payload.value
           itemIndex = index
@@ -266,13 +266,13 @@ const barReducer = (state = initialState, action) => {
         return item
       })
 
-      const newBarCheckOut = () => {
-        return newBar.filter(item => item.noInCheckOut > 0)
+      const newbarCheckOut = () => {
+        return newbar.filter(item => item.noInCheckOut > 0)
       }
 
       let newTotalNumberOfItemsAddedFromBar = 0
       let newTotalAmountOfItemsAddedFromBar = 0
-      newBar.map((anItem, index) => {
+      newbar.map((anItem, index) => {
         newTotalNumberOfItemsAddedFromBar += Number(anItem.noInCheckOut)
         if (anItem.noInCheckOut > 0) {
           newTotalAmountOfItemsAddedFromBar +=
@@ -292,22 +292,22 @@ const barReducer = (state = initialState, action) => {
         totalAmountOfItemsAddedFromBar: {
           $set: newTotalAmountOfItemsAddedFromBar
         },
-        barCheckOut: { $set: newBarCheckOut() }
+        barCheckOut: { $set: newbarCheckOut() }
       })
     }
     case Actions.FILTER_ITEMS_IN_BAR: {
-      let newBar = []
+      let newbar = []
       if (action.payload.value) {
-        newBar = state.barClone.filter(item =>
+        newbar = state.barClone.filter(item =>
           item.name.toLowerCase().includes(action.payload.value.toLowerCase())
         )
       } else {
-        newBar = state.barClone
+        newbar = state.barClone
       }
 
       return update(state, {
         bar: {
-          $set: newBar
+          $set: newbar
         }
       })
     }

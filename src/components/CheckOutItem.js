@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { getImage } from '../config'
 
 export default class CheckOutItem extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ export default class CheckOutItem extends Component {
           </TouchableOpacity>
         </View>
         <Image
-          source={{ uri: this.props.item.image.url }}
+          source={{ uri: getImage(this.props.item.image.url) }}
           style={styles.itemBgImage}
           resizeMode="contain"
         />

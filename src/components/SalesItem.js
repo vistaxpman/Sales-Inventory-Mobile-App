@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
+import { getImage } from '../config'
 
 class SalesItem extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class SalesItem extends Component {
     return (
       <View style={styles.itemContainer}>
         <Image
-          source={{ uri: this.props.item.image.url }}
+          source={{ uri: getImage(this.props.item.image.url) }}
           style={styles.itemBgImage}
           resizeMode="contain"
         />

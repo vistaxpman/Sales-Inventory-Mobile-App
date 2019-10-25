@@ -31,29 +31,29 @@ class Restaurant extends Component {
   }
 
   fetchItemsFromLocalStorage = async () => {
-    await AsyncStorage.getItem('restaurant').then(items => {
-      if (items) {
-        this.props.populateItemsInRestaurant(JSON.parse(items))
-        this.setState({
-          isLoadingRestaurantItems: false
-        })
-      } else {
-        this.fetchItemsFromOnline()
-      }
-    })
+    // await AsyncStorage.getItem('restaurant').then(items => {
+    //   if (items) {
+    //     this.props.populateItemsInRestaurant(JSON.parse(items))
+    //     this.setState({
+    //       isLoadingRestaurantItems: false
+    //     })
+    //   } else {
+    this.fetchItemsFromOnline()
+    //   }
+    // })
   }
 
   fetchItemsFromOnline = () => {
-    let url = 'http://192.168.8.105:3000/getItemsFromRestaurant'
+    let url = 'http://192.168.8.109:3000/getItemsFromRestaurant'
     axios
       .get(url)
       .then(async response => {
         if (response.data.hasItems) {
           this.props.populateItemsInRestaurant(response.data.items)
-          await AsyncStorage.setItem(
-            'restaurant',
-            JSON.stringify(response.data.items)
-          )
+          // await AsyncStorage.setItem(
+          //   'restaurant',
+          //   JSON.stringify(response.data.items)
+          // )
           this.setState({
             isLoadingRestaurantItems: false
           })

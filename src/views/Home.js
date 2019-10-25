@@ -107,10 +107,11 @@ class Home extends Component {
         this.props.addNewDataToCart(dataToSend)
         showToast = true
       }
-      this.props.setModalVisible()
       this.setState({
         processingOrder: false
       })
+      this.props.setModalVisible()
+
       this.props.clearCart()
       if (showToast) {
         ToastAndroid.show('Order sent successfully.', ToastAndroid.SHORT)

@@ -44,9 +44,8 @@ class AddMoreItems extends Component {
       const data = this.props.selectedItem
       socket.emit('moreAdded', data, response => {
         this.closeModal()
-        console.log('More Added')
       })
-    }, 2000)
+    }, 1000)
   }
 
   renderSingleMoreItemToBar = ({ item, index }) => (

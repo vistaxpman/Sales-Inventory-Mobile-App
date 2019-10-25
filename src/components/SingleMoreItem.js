@@ -10,6 +10,7 @@ import {
 import { connect } from 'react-redux'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
+import { getImage } from '../config'
 
 class SingleMoreItem extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class SingleMoreItem extends Component {
         <TouchableWithoutFeedback onPress={() => this.onUpdate('increment')}>
           <View>
             <ImageBackground
-              source={{ uri: this.props.item.image.url }}
+              source={{ uri: getImage(this.props.item.image.url) }}
               style={styles.itemBgImage}
               resizeMode="contain"
             >
