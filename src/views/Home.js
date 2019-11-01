@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import {
   View,
   Text,
@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
-  ToastAndroid
+  ToastAndroid,
+  Picker
 } from 'react-native'
 import { connect } from 'react-redux'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view'
@@ -17,7 +18,6 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
-import { Spinner } from 'react-native-ui-kitten'
 import Header from '../components/Header'
 import Bottom from '../components/Bottom'
 import {
@@ -68,55 +68,79 @@ class Home extends Component {
   }
 
   placeOrder = () => {
-    this.setState({
-      processingOrder: true
-    })
-    const transactionTotalAmount =
-      Number(this.props.totalAmountOfItemsAddedFromBar) +
-      Number(this.props.totalAmountOfItemsAddedFromRestaurant)
-    const transactionTotalNumber =
-      Number(this.props.totalNumberOfItemsAddedFromBar) +
-      Number(this.props.totalNumberOfItemsAddedFromRestaurant)
-    const transactionDetails = []
-    const transactionDetailsObject = {}
-    transactionDetailsObject.barCheckOut = this.props.barCheckOut
-    transactionDetailsObject.restaurantCheckOut = this.props.restaurantCheckOut
-    transactionDetails.push(transactionDetailsObject)
-    const dataToSend = {
-      transactionId: new Date().valueOf(),
-      tableNumber: this.state.tableNumber ? this.state.tableNumber : 'None',
-      transactionTotalAmount,
-      transactionTotalNumber,
-      updatedTransactionTotalAmount: 0,
-      updatedTransactionTotalNumberOfItems: 0,
-      transactionDetails: JSON.stringify(transactionDetails),
-      customerName: this.state.customerName
-        ? this.state.customerName
-        : 'Walk-In',
-      staffData: JSON.stringify(this.props.staffData),
-      date: new Date(),
-      Staff_ID: this.props.staffData.Staff_ID,
-      Branch: this.props.staffData.Branch
-    }
-    socket.emit('newOrder', dataToSend, response => {
-      let showToast = false
-      if (response.message === 'Order Received') {
-        dataToSend.transactionDetails = JSON.parse(
-          dataToSend.transactionDetails
-        )
-        this.props.addNewDataToCart(dataToSend)
-        showToast = true
-      }
+    if (socket.connected) {
       this.setState({
-        processingOrder: false
+        processingOrder: true
       })
       this.props.setModalVisible()
-
-      this.props.clearCart()
-      if (showToast) {
-        ToastAndroid.show('Order sent successfully.', ToastAndroid.SHORT)
+      const transactionTotalAmount =
+        Number(this.props.totalAmountOfItemsAddedFromBar) +
+        Number(this.props.totalAmountOfItemsAddedFromRestaurant)
+      const transactionTotalNumber =
+        Number(this.props.totalNumberOfItemsAddedFromBar) +
+        Number(this.props.totalNumberOfItemsAddedFromRestaurant)
+      const transactionDetails = []
+      const transactionDetailsObject = {}
+      const barCheckOut = this.props.barCheckOut
+      if (barCheckOut.length > 0) {
+        barCheckOut.map(bc => {
+          bc.isPosted = false
+          return bc
+        })
       }
-    })
+      const restaurantCheckOut = this.props.restaurantCheckOut
+      if (restaurantCheckOut.length > 0) {
+        restaurantCheckOut.map(bc => {
+          bc.isPosted = false
+          return bc
+        })
+      }
+      transactionDetailsObject.barCheckOut = barCheckOut
+      transactionDetailsObject.restaurantCheckOut = restaurantCheckOut
+      transactionDetails.push(transactionDetailsObject)
+      const dataToSend = {
+        transactionId: new Date().valueOf(),
+        tableNumber: this.state.tableNumber ? this.state.tableNumber : 'None',
+        transactionTotalAmount,
+        transactionTotalNumber,
+        updatedTransactionTotalAmount: 0,
+        updatedTransactionTotalNumberOfItems: 0,
+        transactionDetails: JSON.stringify(transactionDetails),
+        customerName: this.state.customerName
+          ? this.state.customerName
+          : 'Walk-In',
+        staffData: JSON.stringify(this.props.staffData),
+        date: new Date(),
+        Staff_ID: this.props.staffData.Staff_ID,
+        Branch: this.props.staffData.Branch
+      }
+
+      socket.emit('newOrder', dataToSend, response => {
+        let showToast = false
+
+        if (response.message === 'Order Received') {
+          dataToSend.transactionDetails = JSON.parse(
+            dataToSend.transactionDetails
+          )
+          this.props.addNewDataToCart(dataToSend)
+          showToast = true
+        }
+        if (showToast) {
+          ToastAndroid.show('Order sent successfully.', ToastAndroid.SHORT)
+        }
+        this.setState({
+          processingOrder: false,
+          tableNumber: '',
+          customerName: ''
+        })
+        this.props.clearCart()
+      })
+    } else {
+      ToastAndroid.show(
+        'Please check your network connection.',
+        ToastAndroid.SHORT
+      )
+    }
   }
 
   viewOrder = () => {
@@ -238,6 +262,34 @@ class Home extends Component {
                   })
                 }
               />
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  marginBottom: 15
+                }}
+              >
+                OR
+              </Text>
+              <Picker
+                selectedValue={this.state.customerName}
+                style={styles.textInputStyle}
+                onValueChange={(itemValue, itemIndex) =>
+                  this.setState({ customerName: itemValue })
+                }
+              >
+                {this.props.customerNames && this.props.customerNames.length > 0
+                  ? this.props.customerNames.map((customer, index) => {
+                      return (
+                        <Picker.Item
+                          label={customer}
+                          value={customer}
+                          key={index}
+                        />
+                      )
+                    })
+                  : null}
+              </Picker>
               <View
                 style={{
                   display: 'flex',
@@ -246,7 +298,7 @@ class Home extends Component {
                   marginTop: 25
                 }}
               >
-                <TouchableWithoutFeedback onPress={() => this.viewOrder()}>
+                <TouchableOpacity onPress={() => this.viewOrder()}>
                   <Text
                     style={[
                       styles.bottomControls2,
@@ -258,8 +310,8 @@ class Home extends Component {
                   >
                     View
                   </Text>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => this.placeOrder()}>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.placeOrder()}>
                   <Text
                     style={[
                       styles.bottomControls,
@@ -268,7 +320,7 @@ class Home extends Component {
                   >
                     Send
                   </Text>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               </View>
             </View>
             {/* )} */}
@@ -446,7 +498,8 @@ mapStateToProps = state => {
       state.barReducer.totalAmountOfItemsAddedFromBar,
     totalAmountOfItemsAddedFromRestaurant:
       state.restaurantReducer.totalAmountOfItemsAddedFromRestaurant,
-    staffData: state.homeReducer.staffData
+    staffData: state.homeReducer.staffData,
+    customerNames: state.homeReducer.customerNames
   }
 }
 
@@ -528,7 +581,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     fontSize: 16,
-    marginBottom: 25,
+    marginBottom: 20,
     padding: 7,
     borderRadius: 3
   },

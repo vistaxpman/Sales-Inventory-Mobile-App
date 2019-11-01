@@ -5,8 +5,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  TextInput,
-  TouchableWithoutFeedback
+  TextInput
 } from 'react-native'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -65,7 +64,7 @@ export default class CheckOutItem extends Component {
           </Text>
           <Text
             style={styles.itemPriceText}
-          >{`₦${this.props.item.price}`}</Text>
+          >{`₦${this.props.item.newPrice}`}</Text>
         </View>
         <View style={styles.counterContainer}>
           <TouchableOpacity onPress={() => this.onUpdate('increment')}>
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
   itemBgImage: {
     height: '100%',
     width: '25%',
-    paddingRight: 5
+    marginRight: 5
   },
   itemAndPriceContainer: {
     display: 'flex',

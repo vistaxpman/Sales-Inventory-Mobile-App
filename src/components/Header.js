@@ -20,12 +20,11 @@ class Header extends Component {
   }
 
   onPopupEvent = (eventName, index) => {
-    // if (index === 0) {
-    //   this.props.navigation.navigate('Sales')
-    // }
     if (index === 0) {
       this.props.navigation.navigate('Profile')
     } else if (index === 1) {
+      this.props.navigation.navigate('Sales')
+    } else if (index === 2) {
       this.props.clearCart()
       ;(async () => {
         await AsyncStorage.setItem('staffData', '').then(value =>
@@ -51,7 +50,7 @@ class Header extends Component {
         }
         rightComponent={
           <PopupMenu
-            actions={['Profile', 'LogOut']}
+            actions={['Profile', 'Sales', 'LogOut']}
             onPress={this.onPopupEvent}
           />
         }

@@ -56,7 +56,13 @@ class SingleMoreItem extends Component {
               )}
             </ImageBackground>
             <View style={styles.itemAndPriceContainer}>
-              <Text style={styles.itemNameText}>{this.props.item.name}</Text>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.itemNameText}
+              >
+                {this.props.item.name}
+              </Text>
               <Text
                 style={styles.itemPriceText}
               >{`₦${this.props.item.price}`}</Text>
@@ -133,6 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   itemNameText: {
+    flex: 1,
     fontWeight: 'bold',
     fontSize: 15
   },

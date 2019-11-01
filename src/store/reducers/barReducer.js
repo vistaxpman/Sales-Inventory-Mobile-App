@@ -209,6 +209,7 @@ const barReducer = (state = initialState, action) => {
       const newbar = state.bar.map((item, index) => {
         if (index === action.payload.index) {
           item.noInCheckOut = action.payload.value
+          item.newPrice = Number(action.payload.value) * Number(item.price)
         }
         return item
       })
@@ -261,6 +262,7 @@ const barReducer = (state = initialState, action) => {
       const newbar = state.bar.map((item, index) => {
         if (item.itemId === action.payload.itemId) {
           item.noInCheckOut = action.payload.value
+          item.newPrice = Number(action.payload.value) * Number(item.price)
           itemIndex = index
         }
         return item

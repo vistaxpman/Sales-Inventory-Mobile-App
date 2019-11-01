@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   AsyncStorage,
-  Image
+  Image,
+  KeyboardAvoidingView
 } from 'react-native'
 import axios from 'axios'
 import { Spinner } from 'react-native-ui-kitten'
@@ -15,6 +16,7 @@ import { socket } from '../services/socketIO'
 import AppLogo from '../assets/invex.png'
 import { setStaffData } from '../store/actions/homeActions'
 import { populateOngoingTransactionsInCart } from '../store/actions/cartActions'
+import { appUrl } from '../config'
 
 class Login extends Component {
   constructor() {
@@ -66,7 +68,7 @@ class Login extends Component {
         isLoading: true
       })
       axios
-        .post('http://192.168.8.109:3000/login', {
+        .post(appUrl + '/login', {
           username,
           password,
           appId
@@ -102,7 +104,11 @@ class Login extends Component {
           backgroundColor: '#F5FCFF'
         }}
       >
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior="padding"
+          enabled
+        >
           <View style={styles.container2}>
             <View
               style={{
@@ -137,7 +143,7 @@ class Login extends Component {
                   })
                 }
                 style={styles.textInputStyle}
-                placeholder="Email"
+                placeholder="Username"
               />
             </View>
             <View style={styles.textInputContainer}>
@@ -146,6 +152,7 @@ class Login extends Component {
                   Password cannot be empty
                 </Text>
               )}
+
               <TextInput
                 onChangeText={password =>
                   this.setState({
@@ -172,7 +179,7 @@ class Login extends Component {
               )}
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </View>
     )
   }

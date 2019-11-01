@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  FlatList
+  FlatList,
+  ToastAndroid
 } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import TabBar from '@mindinventory/react-native-tab-bar-interaction'
@@ -25,10 +26,6 @@ import { addMoreToCart } from '../store/actions/cartActions'
 class AddMoreItems extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      barCheckOut: this.props.barCheckOut,
-      restaurantCheckOut: this.props.restaurantCheckOut
-    }
   }
 
   closeModal = () => {
@@ -42,10 +39,17 @@ class AddMoreItems extends Component {
     this.props.addMoreToCart(transactionId, barCheckOut, restaurantCheckOut)
     setTimeout(() => {
       const data = this.props.selectedItem
-      socket.emit('moreAdded', data, response => {
-        this.closeModal()
-      })
-    }, 1000)
+      if (socket.connected) {
+        socket.emit('moreAdded', data, response => {
+          this.closeModal()
+        })
+      } else {
+        ToastAndroid.show(
+          'Please check your network connection.',
+          ToastAndroid.SHORT
+        )
+      }
+    }, 2000)
   }
 
   renderSingleMoreItemToBar = ({ item, index }) => (

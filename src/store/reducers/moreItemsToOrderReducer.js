@@ -197,6 +197,7 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
       const newbar = state.bar.map((item, index) => {
         if (index === action.payload.index) {
           item.noInCheckOut = action.payload.value
+          item.newPrice = Number(action.payload.value) * Number(item.price)
         }
         return item
       })
@@ -248,6 +249,7 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
       const newRestaurant = state.restaurant.map((item, index) => {
         if (index === action.payload.index) {
           item.noInCheckOut = action.payload.value
+          item.newPrice = Number(action.payload.value) * Number(item.price)
         }
         return item
       })

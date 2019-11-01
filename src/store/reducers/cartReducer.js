@@ -326,8 +326,6 @@ const initialState = {
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.UPDATE_NO_OF_ITEM_IN_CART: {
-      // const newTransactionNumberOfItems = Number(state.transactionNumberOfItems) + Number()
-      // const newTransactionTotalAmount = Number(state.transactionTotalAmount)
       return update(state, {
         itemsInCart: {
           [action.payload.index]: {
@@ -338,7 +336,6 @@ const cartReducer = (state = initialState, action) => {
             }
           }
         }
-        // transactionTotalAmount: {$set: `${newTransactionTotalAmount}`}
       })
     }
     case Actions.FILTER_TRANSACTIONS_IN_CART: {
@@ -441,6 +438,41 @@ const cartReducer = (state = initialState, action) => {
         },
         selectedItem: {
           $set: selectedItem
+        }
+      })
+    }
+    case Actions.UPDATE_ONGOING_TRANSACTION_IN_CART: {
+      const newItemsInCart = state.itemsInCartClone.map(transaction => {
+        if (transaction.transactionId === action.payload.transactionId) {
+          const transactionDetails = transaction.transactionDetails
+          if (action.payload.outlet === 'bar') {
+            transactionDetails.map(transactionDetail => {
+              const barCheckOut = transactionDetail.barCheckOut
+              barCheckOut.map(b => {
+                b.isPosted = true
+                return b
+              })
+              return transactionDetail
+            })
+          } else {
+            transactionDetails.map(transactionDetail => {
+              const restaurantCheckOut = transactionDetail.restaurantCheckOut
+              restaurantCheckOut.map(b => {
+                b.isPosted = true
+                return b
+              })
+              return transactionDetail
+            })
+          }
+        }
+        return transaction
+      })
+      return update(state, {
+        itemsInCart: {
+          $set: newItemsInCart
+        },
+        itemsInCartClone: {
+          $set: newItemsInCart
         }
       })
     }

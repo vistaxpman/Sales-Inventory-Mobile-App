@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   itemNameText: {
-    flex: 1,
+    display: 'flex',
     fontSize: 17,
     marginBottom: 7
   },

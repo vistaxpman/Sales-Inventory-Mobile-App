@@ -5,7 +5,10 @@ const initialState = {
   currentTab: 'bar',
   checkBottomSheetIsVisible: false,
   staffData: {},
-  staffSales: []
+  staffSales: [],
+  customerNames: [],
+  sales: [],
+  salesTotalAmount: 0
 }
 
 const homeReducer = (state = initialState, action) => {
@@ -32,6 +35,26 @@ const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         staffData: action.payload.staffData
+      }
+    }
+    case Actions.SET_CUSTOMER_NAMES: {
+      const ncm = action.payload
+      const newCustomerNames = Array.from(new Set(ncm))
+      newCustomerNames.unshift('Choose Customer')
+      return {
+        ...state,
+        customerNames: newCustomerNames
+      }
+    }
+    case Actions.POPULATE_ITEMS_IN_SALES: {
+      const newSalesTotalAmount = action.payload.reduce(
+        (total, obj) => obj.transactionTotalAmount + total,
+        0
+      )
+      return {
+        ...state,
+        sales: action.payload,
+        salesTotalAmount: newSalesTotalAmount
       }
     }
     default: {

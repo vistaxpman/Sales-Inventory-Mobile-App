@@ -1,13 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  FlatList,
-  Text,
-  AsyncStorage
-} from 'react-native'
+import { View, StyleSheet, ScrollView, FlatList, Text } from 'react-native'
 import axios from 'axios'
 import GridItem from '../components/GridItem'
 import {
@@ -17,6 +10,7 @@ import {
 import { populateMoreItemsInBar } from '../store/actions/moreItemsToOrderActions'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { Spinner } from 'react-native-ui-kitten'
+import { appUrl } from '../config'
 
 class Bar extends Component {
   constructor() {
@@ -51,10 +45,10 @@ class Bar extends Component {
     let url = '',
       location = ''
     if (this.props.staffData.Branch === 'Old Bar') {
-      url = 'http://192.168.8.109:3000/getItemsFromOldBar'
+      url = appUrl + '/getItemsFromOldBar'
       location = 'OldBar'
     } else if (this.props.staffData.Branch === 'New Bar') {
-      url = 'http://192.168.8.109:3000/getItemsFromNewBar'
+      url = appUrl + '/getItemsFromNewBar'
       location = 'NewBar'
     }
     axios

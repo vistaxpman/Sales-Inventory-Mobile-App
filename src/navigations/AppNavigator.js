@@ -23,7 +23,7 @@ const NavigationStack = createStackNavigator(
       screen: Sales,
       navigationOptions: {
         // headerLeft: <Invex />,
-        title: 'Invex',
+        title: 'Sales History',
         headerTitleStyle: { color: '#fff' },
         headerStyle: { backgroundColor: '#c98811' },
         headerTintColor: '#fff'

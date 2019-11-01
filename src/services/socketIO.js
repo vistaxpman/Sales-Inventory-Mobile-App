@@ -1,6 +1,8 @@
 import socketIOClient from 'socket.io-client'
+import { appUrl } from '../config'
+import * as actions from '../store/actions'
 
-export const socket = socketIOClient('http://192.168.8.109:3000', {
+export const socket = socketIOClient(appUrl, {
   transports: ['websocket'],
   jsonp: false
 })
@@ -17,8 +19,16 @@ export const socketIO = store => {
       console.log('connection to server lost.')
     })
 
-    socket.on('Holla', () => {
-      console.log('Holla')
+    socket.on('transactionDetailsUpdated', data => {
+      store.dispatch(actions.updateOngoingTransactionInCart(data))
+    })
+
+    socket.on('cancelOrder', data => {
+      store.dispatch(actions.updateOngoingTransactionInCart(data))
+    })
+
+    socket.emit('getAllCustomers', data => {
+      store.dispatch(actions.setCustomerNames(data))
     })
 
     // store.subscribe(() => {
@@ -35,7 +45,5 @@ export const socketIO = store => {
       // delete Object.assign(o, { [newKey]: o[oldKey] })[oldKey]
       // store.dispatch(populateOngoingTransactionsInCart(data))
     })
-
-    // socket.emit('getStaffSales', Staff_ID, response => {})
   })
 }

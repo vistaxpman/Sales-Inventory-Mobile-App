@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { List, ListItem } from 'react-native-ui-kitten'
+import { List } from 'react-native-ui-kitten'
 import { View, StyleSheet, Text, ScrollView, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -9,6 +9,15 @@ import { updateNoOfItemInCart } from '../store/actions/cartActions'
 class Cart extends Component {
   constructor() {
     super()
+  }
+
+  totalAmountInCart = () => {
+    return (
+      this.props.itemsInCart.reduce(
+        (total, obj) => obj.transactionTotalAmount + total,
+        0
+      ) || 0
+    )
   }
 
   getData = async () => {
@@ -59,13 +68,32 @@ class Cart extends Component {
             <Text style={styles.emptyText}>None Found.</Text>
           </View>
         ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <List
-              data={this.props.itemsInCart}
-              renderItem={this.renderItem}
-              style={styles.listLayout}
-            />
-          </ScrollView>
+          <View>
+            <View
+              style={{
+                marginLeft: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                paddingBottom: 15
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                Total Amount:{' '}
+              </Text>
+              <Text
+                style={{ fontSize: 16, fontWeight: 'bold' }}
+              >{`₦${this.totalAmountInCart()}`}</Text>
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <List
+                data={this.props.itemsInCart}
+                renderItem={this.renderItem}
+                style={styles.listLayout}
+              />
+            </ScrollView>
+          </View>
         )}
       </View>
     )
@@ -100,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 10,
+    paddingTop: 5,
     marginTop: 15
   },
   listLayout: {

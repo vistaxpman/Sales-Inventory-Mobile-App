@@ -27,7 +27,12 @@ export default class CartItem extends Component {
 
   render() {
     return (
-      <View style={styles.itemContainer}>
+      <View
+        style={[
+          styles.itemContainer,
+          this.props.item.isPosted ? styles.postedRow : null
+        ]}
+      >
         <Image
           source={{ uri: getImage(this.props.item.image.url) }}
           style={styles.itemBgImage}
@@ -88,6 +93,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingTop: 3,
     paddingBottom: 3
+  },
+  postedRow: {
+    opacity: 0.3
   },
   itemBgImage: {
     height: '100%',

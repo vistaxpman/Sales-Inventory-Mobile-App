@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  AsyncStorage
+  ToastAndroid
 } from 'react-native'
 import { List } from 'react-native-ui-kitten'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
@@ -27,7 +27,8 @@ class CartItemsContainer extends Component {
     this.state = {
       itemsVisibility: false,
       addMoreItemsModalIsVisible: false,
-      cancelOrderIsVisible: false
+      cancelOrderIsVisible: false,
+      finishTransactionIsVisible: false
     }
   }
 
@@ -65,19 +66,24 @@ class CartItemsContainer extends Component {
     })
   }
 
-  cancelOrder = async () => {
+  finishTransaction = async () => {
     const transactionId = this.props.item.transactionId
-    const staffData = await AsyncStorage.getItem('staffData')
-    const Staff_ID = JSON.parse(staffData).Staff_ID
-    socket.emit('cancelOrder', { Staff_ID, transactionId }, response => {
-      if (response.message === 'Order Cancelled') {
-        this.props.cancelTransactionInCart(transactionId)
-      }
-    })
-    this.setState({
-      cancelOrderIsVisible: false,
-      itemsVisibility: false
-    })
+    if (socket.connected) {
+      socket.emit('finishTransaction', { transactionId }, response => {
+        if (response.message === 'Transaction Finished') {
+          this.props.cancelTransactionInCart(transactionId)
+        }
+      })
+      this.setState({
+        finishTransactionIsVisible: false,
+        itemsVisibility: false
+      })
+    } else {
+      ToastAndroid.show(
+        'Please check your network connection.',
+        ToastAndroid.SHORT
+      )
+    }
   }
 
   cancelDialog = () => {
@@ -107,7 +113,36 @@ class CartItemsContainer extends Component {
       : null
   }
 
+  finishTransactionDialog = () => {
+    return this.state.finishTransactionIsVisible
+      ? Alert.alert(
+          'Finish Transaction',
+          'Are you sure you want to finish this transaction ?',
+          [
+            {
+              text: 'Finish',
+              onPress: () =>
+                this.setState({
+                  finishTransactionIsVisible: false
+                }),
+              style: 'cancel'
+            },
+            { text: 'OK', onPress: () => this.finishTransaction() }
+          ],
+          {
+            cancelable: true,
+            onDismiss: () =>
+              this.setState({
+                finishTransactionIsVisible: false
+              })
+          }
+        )
+      : null
+  }
+
   addMoreItems = () => {
+    this.props.clearItemsInMoreBar()
+    this.props.clearItemsInMoreRestaurant()
     this.props.changeSelectedOrderTransactionId(this.props.item.transactionId)
     this.setState({
       addMoreItemsModalIsVisible: !this.state.addMoreItemsModalIsVisible
@@ -194,12 +229,12 @@ class CartItemsContainer extends Component {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'center'
-                  // justifyContent: 'space-between'
+                  // justifyContent: 'center'
+                  justifyContent: 'space-between'
                 }}
               >
-                {this.cancelDialog()}
-                {/* <TouchableOpacity
+                {/* {this.cancelDialog()}
+                <TouchableOpacity
                   onPress={() =>
                     this.setState({
                       cancelOrderIsVisible: true
@@ -215,6 +250,23 @@ class CartItemsContainer extends Component {
                     Cancel Order
                   </Text>
                 </TouchableOpacity> */}
+                {this.finishTransactionDialog()}
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      finishTransactionIsVisible: true
+                    })
+                  }
+                >
+                  <Text
+                    style={[
+                      styles.orderControlButtons,
+                      { color: '#c98811', fontWeight: 'bold', fontSize: 17 }
+                    ]}
+                  >
+                    Finish
+                  </Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.addMoreItems()}>
                   <Text
                     style={[

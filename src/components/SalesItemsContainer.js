@@ -70,7 +70,7 @@ class SalesItemsContainer extends Component {
         {this.state.itemsVisibility && (
           <View style={styles.visibleContainer}>
             <List
-              data={this.props.item.transactionDetails}
+              data={JSON.parse(this.props.item.transactionDetails)}
               renderItem={this.renderItem}
               style={styles.listLayout}
             />
@@ -78,7 +78,7 @@ class SalesItemsContainer extends Component {
               <Text
                 style={{ fontWeight: 'bold', marginRight: 7, color: 'gray' }}
               >
-                SubTotal:
+                Total:
               </Text>
               <Text style={{ color: 'gray' }}>{`₦${'500'}`}</Text>
             </View>
