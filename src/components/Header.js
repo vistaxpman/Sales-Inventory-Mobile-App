@@ -10,6 +10,7 @@ import { filterTransactionsInCart } from '../store/actions/cartActions'
 import PopupMenu from './PopupMenu'
 import { clearItemsInBar } from '../store/actions/barActions'
 import { clearItemsInRestaurant } from '../store/actions/restaurantActions'
+import { logOut } from '../store/actions/homeActions'
 
 class Header extends Component {
   constructor(props) {
@@ -27,9 +28,10 @@ class Header extends Component {
     } else if (index === 2) {
       this.props.clearCart()
       ;(async () => {
-        await AsyncStorage.setItem('staffData', '').then(value =>
+        await AsyncStorage.setItem('staffData', '').then(value => {
+          this.props.logOut()
           this.props.navigation.navigate('Login')
-        )
+        })
       })()
     }
   }
@@ -83,6 +85,9 @@ mapDispatchToProps = dispatch => {
     clearCart: () => {
       dispatch(clearItemsInBar())
       dispatch(clearItemsInRestaurant())
+    },
+    logOut: () => {
+      dispatch(logOut())
     }
   }
 }

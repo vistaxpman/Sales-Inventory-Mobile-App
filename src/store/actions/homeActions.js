@@ -3,8 +3,10 @@ export const TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY =
   'TOGGLE_ARE_YOU_SURE_MODAL_VISIBILTY'
 export const TOGGLE_CHECKOUT_BOTTOM_SHEET = 'TOGGLE_CHECKOUT_BOTTOM_SHEET'
 export const SET_STAFF_DATA = 'SET_STAFF_DATA'
-export const SET_CUSTOMER_NAMES = 'SET_CUSTOMER_NAMES'
+export const SET_CUSTOMERS = 'SET_CUSTOMERS'
+export const ADD_NEW_CUSTOMER = 'ADD_NEW_CUSTOMER'
 export const POPULATE_ITEMS_IN_SALES = 'POPULATE_ITEMS_IN_SALES'
+export const LOGOUT = 'LOGOUT'
 
 export const changeTab = tab => ({
   type: CHANGE_TAB,
@@ -26,12 +28,21 @@ export const setStaffData = staffData => ({
   payload: { staffData }
 })
 
-export const setCustomerNames = customerNames => ({
-  type: SET_CUSTOMER_NAMES,
-  payload: customerNames
+export const setCustomers = customers => ({
+  type: SET_CUSTOMERS,
+  payload: customers
+})
+
+export const addNewCustomer = customer => ({
+  type: ADD_NEW_CUSTOMER,
+  payload: customer
 })
 
 export const populateItemsInSales = value => ({
   type: POPULATE_ITEMS_IN_SALES,
   payload: value
+})
+
+export const logOut = () => ({
+  type: LOGOUT
 })

@@ -34,6 +34,7 @@ class Sales extends Component {
     let url = appUrl + '/getStaffSales',
       Staff_ID = this.props.staffData.Staff_ID,
       chosenDate = this.state.chosenDate
+    console.log(chosenDate)
 
     axios
       .post(url, { Staff_ID, chosenDate })

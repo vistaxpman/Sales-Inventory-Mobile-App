@@ -32,24 +32,36 @@ class AddMoreItems extends Component {
     this.props.onCloseModal()
   }
 
-  sendAddMoreItems = () => {
-    const transactionId = this.props.selectedOrderTransactionId
-    const barCheckOut = this.props.barCheckOut
-    const restaurantCheckOut = this.props.restaurantCheckOut
-    this.props.addMoreToCart(transactionId, barCheckOut, restaurantCheckOut)
-    setTimeout(() => {
-      const data = this.props.selectedItem
-      if (socket.connected) {
+  sendAddMoreItems = async () => {
+    if (socket.connected) {
+      const transactionId = this.props.selectedOrderTransactionId
+      const barCheckOut = this.props.barCheckOut
+      const restaurantCheckOut = this.props.restaurantCheckOut
+
+      if (barCheckOut.length === 0 && restaurantCheckOut.length === 0) {
+        //This line takes a while to run, hence the need to wait for it
+        ToastAndroid.show(
+          'Please, select items before you order.',
+          ToastAndroid.SHORT
+        )
+      } else {
+        await this.props.addMoreToCart(
+          transactionId,
+          barCheckOut,
+          restaurantCheckOut
+        )
+        const data = this.props.selectedItem
+        ToastAndroid.show('Order sent successfully.', ToastAndroid.SHORT)
         socket.emit('moreAdded', data, response => {
           this.closeModal()
         })
-      } else {
-        ToastAndroid.show(
-          'Please check your network connection.',
-          ToastAndroid.SHORT
-        )
       }
-    }, 2000)
+    } else {
+      ToastAndroid.show(
+        'Please check your network connection.',
+        ToastAndroid.SHORT
+      )
+    }
   }
 
   renderSingleMoreItemToBar = ({ item, index }) => (

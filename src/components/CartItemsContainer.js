@@ -117,7 +117,7 @@ class CartItemsContainer extends Component {
     return this.state.finishTransactionIsVisible
       ? Alert.alert(
           'Finish Transaction',
-          'Are you sure you want to finish this transaction ?',
+          'Are you sure you want to end this transaction ?',
           [
             {
               text: 'Finish',

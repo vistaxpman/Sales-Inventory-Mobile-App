@@ -24,11 +24,19 @@ export const socketIO = store => {
     })
 
     socket.on('cancelOrder', data => {
-      store.dispatch(actions.updateOngoingTransactionInCart(data))
+      store.dispatch(actions.cancelTransactionInCart(data))
     })
 
-    socket.emit('getAllCustomers', data => {
-      store.dispatch(actions.setCustomerNames(data))
+    socket.on('removeItem', data => {
+      store.dispatch(actions.removeItemFromOngoingTransactionInCart(data))
+    })
+
+    socket.on('newCustomersAdded', data => {
+      store.dispatch(actions.addNewCustomer(data))
+    })
+
+    socket.on('salesClosed', data => {
+      store.dispatch(actions.removeAllItemsFromOngoingTransactionsInCart())
     })
 
     // store.subscribe(() => {

@@ -5,8 +5,9 @@ import restaurantReducer from './restaurantReducer'
 import cartReducer from './cartReducer'
 import checkOutReducer from './checkOutReducer'
 import moreItemsToOrderReducer from './moreItemsToOrderReducer'
+import { LOGOUT } from '../actions/homeActions'
 
-const reducer = combineReducers({
+const appReducer = combineReducers({
   homeReducer: homeReducer,
   barReducer: barReducer,
   restaurantReducer: restaurantReducer,
@@ -15,4 +16,10 @@ const reducer = combineReducers({
   moreItemsToOrderReducer: moreItemsToOrderReducer
 })
 
-export default reducer
+export default rootReducer = (state, action) => {
+  if (action.type === LOGOUT) {
+    state = undefined
+  }
+
+  return appReducer(state, action)
+}

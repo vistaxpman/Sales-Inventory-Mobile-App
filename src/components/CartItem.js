@@ -46,9 +46,9 @@ export default class CartItem extends Component {
           >
             {this.props.item.name}
           </Text>
-          <Text
-            style={styles.itemPriceText}
-          >{`₦${this.props.item.price}`}</Text>
+          <Text style={styles.itemPriceText}>{`₦${Number(
+            this.props.item.price
+          ) * Number(this.props.item.noInCheckOut)}`}</Text>
         </View>
         <View style={styles.counterContainer}>
           {/* <TouchableOpacity

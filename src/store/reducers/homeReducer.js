@@ -6,7 +6,7 @@ const initialState = {
   checkBottomSheetIsVisible: false,
   staffData: {},
   staffSales: [],
-  customerNames: [],
+  customers: [],
   sales: [],
   salesTotalAmount: 0
 }
@@ -37,13 +37,30 @@ const homeReducer = (state = initialState, action) => {
         staffData: action.payload.staffData
       }
     }
-    case Actions.SET_CUSTOMER_NAMES: {
-      const ncm = action.payload
-      const newCustomerNames = Array.from(new Set(ncm))
-      newCustomerNames.unshift('Choose Customer')
+    case Actions.SET_CUSTOMERS: {
+      const newCustomers = action.payload.map(customer => {
+        customer.customerName = customer.LastName
+        return customer
+      })
+      const dummyCustomer = {
+        Cust_ID: 'Choose Customer',
+        LastName: 'Choose Customer',
+        customerName: 'Choose Customer'
+      }
+      newCustomers.unshift(dummyCustomer)
       return {
         ...state,
-        customerNames: newCustomerNames
+        customers: newCustomers
+      }
+    }
+    case Actions.ADD_NEW_CUSTOMER: {
+      const customers = state.customers
+      const newCustomer = action.payload
+      newCustomer.customerName = newCustomer.LastName
+      customers.push(newCustomer)
+      return {
+        ...state,
+        customers: customers
       }
     }
     case Actions.POPULATE_ITEMS_IN_SALES: {

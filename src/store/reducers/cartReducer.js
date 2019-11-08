@@ -357,9 +357,12 @@ const cartReducer = (state = initialState, action) => {
     }
     case Actions.ADD_NEW_DATA_TO_CART: {
       const arr = [action.payload]
-      const newItemsInCart = arr.concat(state.itemsInCart)
+      const newItemsInCart = arr.concat(state.itemsInCartClone)
       return update(state, {
         itemsInCart: {
+          $set: newItemsInCart
+        },
+        itemsInCartClone: {
           $set: newItemsInCart
         }
       })
@@ -473,6 +476,66 @@ const cartReducer = (state = initialState, action) => {
         },
         itemsInCartClone: {
           $set: newItemsInCart
+        }
+      })
+    }
+    case Actions.REMOVE_ITEM_FROM_ONGOING_TRANSACTION_IN_CART: {
+      const {
+        itemIndex,
+        outlet,
+        checkOutIndex,
+        newPrice,
+        noInCheckOut,
+        transactionId,
+        Staff_ID,
+        transactionDetails,
+        transactionTotalAmount,
+        transactionTotalNumber
+      } = action.payload
+      const newItemsInCart = state.itemsInCartClone.map(transaction => {
+        if (transaction.transactionId === transactionId) {
+          transaction.transactionTotalNumber = transactionTotalNumber
+          transaction.transactionTotalAmount = transactionTotalAmount
+          transaction.transactionDetails = transactionDetails
+          // const transactionDetails = transaction.transactionDetails
+          // if (outlet === 'bar') {
+          //   transactionDetails.map(transactionDetail => {
+          //     const barCheckOut = transactionDetail.barCheckOut
+          //     barCheckOut.map(b => {
+          //       b.isPosted = true
+          //       return b
+          //     })
+          //     return transactionDetail
+          //   })
+          // } else {
+          //   transactionDetails.map(transactionDetail => {
+          //     const restaurantCheckOut = transactionDetail.restaurantCheckOut
+          //     restaurantCheckOut.map(b => {
+          //       b.isPosted = true
+          //       return b
+          //     })
+          //     return transactionDetail
+          //   })
+          // }
+        }
+        return transaction
+      })
+      return update(state, {
+        itemsInCart: {
+          $set: newItemsInCart
+        },
+        itemsInCartClone: {
+          $set: newItemsInCart
+        }
+      })
+    }
+    case Actions.REMOVE_ALL_ITEMS_FROM_ONGOING_TRANSACTIONS_IN_CART: {
+      return update(state, {
+        itemsInCart: {
+          $set: []
+        },
+        itemsInCartClone: {
+          $set: []
         }
       })
     }

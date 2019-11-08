@@ -23,7 +23,8 @@ import Bottom from '../components/Bottom'
 import {
   toggleAreYouSureModalVisibility,
   toggleCheckOutBottomSheet,
-  changeTab
+  changeTab,
+  setCustomers
 } from '../store/actions/homeActions'
 import { clearItemsInBar } from '../store/actions/barActions'
 import { clearItemsInRestaurant } from '../store/actions/restaurantActions'
@@ -58,9 +59,15 @@ class Home extends Component {
         { key: 'cart', title: 'Cart' }
       ],
       tableNumber: '',
-      customerName: '',
+      customer: {},
       processingOrder: false
     }
+  }
+
+  componentDidMount() {
+    socket.emit('getAllCustomers', data => {
+      this.props.setCustomers(data)
+    })
   }
 
   itemsInCheckOut = () => {
@@ -95,6 +102,13 @@ class Home extends Component {
           return bc
         })
       }
+      let customerName = this.state.customer.customerName
+      let Cust_ID = this.state.customer.Cust_ID
+      if (!customerName || customerName === 'Choose Customer') {
+        customerName = 'Walk-In'
+        Cust_ID = '000101'
+      }
+
       transactionDetailsObject.barCheckOut = barCheckOut
       transactionDetailsObject.restaurantCheckOut = restaurantCheckOut
       transactionDetails.push(transactionDetailsObject)
@@ -106,11 +120,9 @@ class Home extends Component {
         updatedTransactionTotalAmount: 0,
         updatedTransactionTotalNumberOfItems: 0,
         transactionDetails: JSON.stringify(transactionDetails),
-        customerName: this.state.customerName
-          ? this.state.customerName
-          : 'Walk-In',
+        customerName: customerName,
+        Cust_ID: Cust_ID,
         staffData: JSON.stringify(this.props.staffData),
-        date: new Date(),
         Staff_ID: this.props.staffData.Staff_ID,
         Branch: this.props.staffData.Branch
       }
@@ -131,7 +143,7 @@ class Home extends Component {
         this.setState({
           processingOrder: false,
           tableNumber: '',
-          customerName: ''
+          customer: {}
         })
         this.props.clearCart()
       })
@@ -258,7 +270,10 @@ class Home extends Component {
                 style={styles.textInputStyle}
                 onChangeText={customerName =>
                   this.setState({
-                    customerName: customerName
+                    customer: {
+                      Cust_ID: new Date().valueOf(),
+                      customerName
+                    }
                   })
                 }
               />
@@ -272,17 +287,17 @@ class Home extends Component {
                 OR
               </Text>
               <Picker
-                selectedValue={this.state.customerName}
+                selectedValue={this.state.customer}
                 style={styles.textInputStyle}
-                onValueChange={(itemValue, itemIndex) =>
-                  this.setState({ customerName: itemValue })
-                }
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ customer: itemValue })
+                }}
               >
-                {this.props.customerNames && this.props.customerNames.length > 0
-                  ? this.props.customerNames.map((customer, index) => {
+                {this.props.customers && this.props.customers.length > 0
+                  ? this.props.customers.map((customer, index) => {
                       return (
                         <Picker.Item
-                          label={customer}
+                          label={customer.customerName}
                           value={customer}
                           key={index}
                         />
@@ -349,6 +364,9 @@ class Home extends Component {
     let tab = ''
     index === 0 ? (tab = 'bar') : index === 1 ? (tab = 'restaurant') : ''
     this.props.toggleActiveTab(tab)
+    if (index === 0 || index === 1) {
+      this.props.clearCart()
+    }
   }
 
   renderIcon = ({ route, focused, color }) => {
@@ -499,7 +517,7 @@ mapStateToProps = state => {
     totalAmountOfItemsAddedFromRestaurant:
       state.restaurantReducer.totalAmountOfItemsAddedFromRestaurant,
     staffData: state.homeReducer.staffData,
-    customerNames: state.homeReducer.customerNames
+    customers: state.homeReducer.customers
   }
 }
 
@@ -520,6 +538,9 @@ mapDispatchToProps = dispatch => {
     },
     addNewDataToCart: aTransaction => {
       dispatch(addNewDataToCart(aTransaction))
+    },
+    setCustomers: data => {
+      dispatch(setCustomers(data))
     }
   }
 }

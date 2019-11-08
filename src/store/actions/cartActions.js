@@ -7,6 +7,10 @@ export const POPULATE_ONGOING_TRANSACTIONS_IN_CART =
 export const ADD_MORE_TO_CART = 'ADD_MORE_TO_CART'
 export const UPDATE_ONGOING_TRANSACTION_IN_CART =
   'UPDATE_ONGOING_TRANSACTION_IN_CART'
+export const REMOVE_ITEM_FROM_ONGOING_TRANSACTION_IN_CART =
+  'REMOVE_ITEM_FROM_ONGOING_TRANSACTION_IN_CART'
+export const REMOVE_ALL_ITEMS_FROM_ONGOING_TRANSACTIONS_IN_CART =
+  'REMOVE_ALL_ITEMS_FROM_ONGOING_TRANSACTIONS_IN_CART'
 
 export const updateNoOfItemInCart = (
   transactionId,
@@ -51,4 +55,13 @@ export const addMoreToCart = (
 export const updateOngoingTransactionInCart = transaction => ({
   type: UPDATE_ONGOING_TRANSACTION_IN_CART,
   payload: transaction
+})
+
+export const removeItemFromOngoingTransactionInCart = transaction => ({
+  type: REMOVE_ITEM_FROM_ONGOING_TRANSACTION_IN_CART,
+  payload: transaction
+})
+
+export const removeAllItemsFromOngoingTransactionsInCart = () => ({
+  type: REMOVE_ALL_ITEMS_FROM_ONGOING_TRANSACTIONS_IN_CART
 })

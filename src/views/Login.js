@@ -154,6 +154,7 @@ class Login extends Component {
               )}
 
               <TextInput
+                secureTextEntry={true}
                 onChangeText={password =>
                   this.setState({
                     passwordError: false,
@@ -173,7 +174,7 @@ class Login extends Component {
               onPress={this.handleLogin}
             >
               {this.state.isLoading ? (
-                <Spinner size="large" status="primary" />
+                <Spinner size="large" status="info" />
               ) : (
                 <Text style={styles.loginTextStyle}> LOGIN </Text>
               )}
