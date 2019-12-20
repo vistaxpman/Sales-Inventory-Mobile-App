@@ -1,43 +1,66 @@
-import socketIOClient from 'socket.io-client'
-import { appUrl } from '../config'
-import * as actions from '../store/actions'
+import socketIOClient from "socket.io-client";
+import { appUrl } from "../config";
+import * as actions from "../store/actions";
+import { AsyncStorage } from 'react-native';
 
 export const socket = socketIOClient(appUrl, {
-  transports: ['websocket'],
+  transports: ["websocket"],
   jsonp: false
-})
+});
 
 export const socketIO = store => {
-  const { Staff_ID } = store.getState().homeReducer.staffData
 
-  socket.connect()
+  socket.connect();
 
-  socket.on('connect', () => {
-    console.log('connected to server.')
+  socket.on("connect", () => {
+    console.log("connected to server.");
 
-    socket.on('disconnect', () => {
-      console.log('connection to server lost.')
-    })
+    // const {Staff_ID} = store.getState().homeReducer.staffData;
 
-    socket.on('transactionDetailsUpdated', data => {
-      store.dispatch(actions.updateOngoingTransactionInCart(data))
-    })
+    (async function () {
+      await AsyncStorage.getItem('staffData').then(value => {
+        if (value) {
+          const { Staff_ID } = JSON.parse(value)
 
-    socket.on('cancelOrder', data => {
-      store.dispatch(actions.cancelTransactionInCart(data))
-    })
+          socket.emit('saveSocketId', Staff_ID)
 
-    socket.on('removeItem', data => {
-      store.dispatch(actions.removeItemFromOngoingTransactionInCart(data))
-    })
+          socket.emit('getOngoingTransactions', Staff_ID, response => {
+            store.dispatch(actions.populateOngoingTransactionsInCart(response))
+          })
+        }
+      })
 
-    socket.on('newCustomersAdded', data => {
-      store.dispatch(actions.addNewCustomer(data))
-    })
+    })()
 
-    socket.on('salesClosed', data => {
-      store.dispatch(actions.removeAllItemsFromOngoingTransactionsInCart())
-    })
+    socket.on("disconnect", () => {
+      console.log("connection to server lost.");
+    });
+
+    socket.on("transactionDetailsUpdated", data => {
+      store.dispatch(actions.updateOngoingTransactionInCart(data));
+    });
+
+    socket.on("cancelOrder", data => {
+      store.dispatch(actions.cancelTransactionInCart(data));
+    });
+
+    socket.on("removeItem", data => {
+      store.dispatch(actions.removeItemFromOngoingTransactionInCart(data));
+    });
+
+    socket.on("newCustomersAdded", data => {
+      store.dispatch(actions.addNewCustomer(data));
+    });
+
+    socket.on("salesClosed", data => {
+      store.dispatch(actions.removeAllItemsFromOngoingTransactionsInCart());
+    });
+
+    socket.on("singleSalesClosed", data => {
+      store.dispatch(
+        actions.removeSingleItemFromOngoingTransactionsInCart(data)
+      );
+    });
 
     // store.subscribe(() => {
     //   const { Staff_ID } = store.getState().homeReducer.staffData
@@ -46,12 +69,12 @@ export const socketIO = store => {
     //   }
     // })
 
-    socket.on('receiveOngoingTransactions', data => {
+    socket.on("receiveOngoingTransactions", data => {
       // console.log('receiveOngoingTransactions')
       // console.log(data)
       // data.map(transaction => {})
       // delete Object.assign(o, { [newKey]: o[oldKey] })[oldKey]
       // store.dispatch(populateOngoingTransactionsInCart(data))
-    })
-  })
-}
+    });
+  });
+};

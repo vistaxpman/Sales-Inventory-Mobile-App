@@ -7,6 +7,7 @@ export const SET_CUSTOMERS = 'SET_CUSTOMERS'
 export const ADD_NEW_CUSTOMER = 'ADD_NEW_CUSTOMER'
 export const POPULATE_ITEMS_IN_SALES = 'POPULATE_ITEMS_IN_SALES'
 export const LOGOUT = 'LOGOUT'
+export const POPULATE_REMOVED_ITEMS = 'POPULATE_REMOVED_ITEMS'
 
 export const changeTab = tab => ({
   type: CHANGE_TAB,
@@ -45,4 +46,9 @@ export const populateItemsInSales = value => ({
 
 export const logOut = () => ({
   type: LOGOUT
+})
+
+export const populateRemovedItems = value => ({
+  type: POPULATE_REMOVED_ITEMS,
+  payload: value
 })

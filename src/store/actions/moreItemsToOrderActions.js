@@ -8,6 +8,8 @@ export const CHANGE_SELECTED_ORDER_TRANSACTION_ID =
 export const POPULATE_ITEMS_IN_MORE_BAR = 'POPULATE_ITEMS_IN_MORE_BAR'
 export const POPULATE_ITEMS_IN_MORE_RESTAURANT =
   'POPULATE_ITEMS_IN_MORE_RESTAURANT'
+export const FILTER_ITEMS_IN_MORE_BAR = 'FILTER_ITEMS_IN_MORE_BAR'
+export const FILTER_ITEMS_IN_MORE_RESTAURANT = 'FILTER_ITEMS_IN_MORE_RESTAURANT'
 
 export const updateNoOfItemInMoreBar = (value, index) => ({
   type: UPDATE_NO_OF_ITEM_IN_MORE_BAR,
@@ -40,4 +42,14 @@ export const populateMoreItemsInBar = value => ({
 export const populateMoreItemsInRestaurant = value => ({
   type: POPULATE_ITEMS_IN_MORE_RESTAURANT,
   payload: value
+})
+
+export const filterItemsInMoreBar = value => ({
+  type: FILTER_ITEMS_IN_MORE_BAR,
+  payload: { value }
+})
+
+export const filterItemsInMoreRestaurant = value => ({
+  type: FILTER_ITEMS_IN_MORE_RESTAURANT,
+  payload: { value }
 })

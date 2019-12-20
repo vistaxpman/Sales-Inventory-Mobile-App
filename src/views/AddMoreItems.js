@@ -20,6 +20,7 @@ import {
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import CartItem from '../components/CartItem'
+import MoreItemsSearchBar from '../components/MoreItemsSearchBar'
 import { socket } from '../services/socketIO'
 import { addMoreToCart } from '../store/actions/cartActions'
 
@@ -90,21 +91,6 @@ class AddMoreItems extends Component {
     return [...this.props.barCheckOut, ...this.props.restaurantCheckOut]
   }
 
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (
-  //     nextProps.barCheckOut !== prevState.barCheckOut ||
-  //     nextProps.restaurantCheckOut !== prevState.restaurantCheckOut
-  //   ) {
-  //     const transactionId = prevState.selectedOrderTransactionId
-  //     const barCheckOut = nextProps.barCheckOut
-  //     const restaurantCheckOut = nextProps.restaurantCheckOut
-  //     nextProps.addMoreToCart(transactionId, barCheckOut, restaurantCheckOut)
-  //     console.log(nextProps.selectedItem)
-  //   }
-
-  //   return null
-  // }
-
   render() {
     return (
       <View style={styles.container}>
@@ -136,16 +122,30 @@ class AddMoreItems extends Component {
               title="Restaurant"
             >
               <View style={styles.gridContainer}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <FlatList
-                    data={this.props.restaurant}
-                    keyExtractor={item => item.itemId}
-                    renderItem={this.renderSingleMoreItemToRestaurant}
-                    horizontal={false}
-                    numColumns={2}
-                    contentContainerStyle={styles.gridLayout}
-                  />
-                </ScrollView>
+                <View style={styles.searchContainer}>
+                  <MoreItemsSearchBar tab='Restaurant' />
+                </View>
+                {this.props.restaurant.length === 0 ? (
+                  <View style={styles.emptyContainer}>
+                    <MaterialIcon
+                      name="remove-shopping-cart"
+                      size={50}
+                      color="gray"
+                    />
+                    <Text style={styles.emptyText}>None Found.</Text>
+                  </View>
+                ) : (
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      <FlatList
+                        data={this.props.restaurant}
+                        keyExtractor={item => item.itemId}
+                        renderItem={this.renderSingleMoreItemToRestaurant}
+                        horizontal={false}
+                        numColumns={2}
+                        contentContainerStyle={styles.gridLayout}
+                      />
+                    </ScrollView>
+                  )}
               </View>
             </TabBar.Item>
             <TabBar.Item
@@ -154,16 +154,30 @@ class AddMoreItems extends Component {
               title="Bar"
             >
               <View style={styles.gridContainer}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <FlatList
-                    data={this.props.bar}
-                    keyExtractor={item => item.itemId}
-                    renderItem={this.renderSingleMoreItemToBar}
-                    horizontal={false}
-                    numColumns={2}
-                    contentContainerStyle={styles.gridLayout}
-                  />
-                </ScrollView>
+                <View style={styles.searchContainer}>
+                  <MoreItemsSearchBar tab='Bar' />
+                </View>
+                {this.props.bar.length === 0 ? (
+                  <View style={styles.emptyContainer}>
+                    <MaterialIcon
+                      name="remove-shopping-cart"
+                      size={50}
+                      color="gray"
+                    />
+                    <Text style={styles.emptyText}>None Found.</Text>
+                  </View>
+                ) : (
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      <FlatList
+                        data={this.props.bar}
+                        keyExtractor={item => item.itemId}
+                        renderItem={this.renderSingleMoreItemToBar}
+                        horizontal={false}
+                        numColumns={2}
+                        contentContainerStyle={styles.gridLayout}
+                      />
+                    </ScrollView>
+                  )}
               </View>
             </TabBar.Item>
 
@@ -175,21 +189,17 @@ class AddMoreItems extends Component {
               <View style={styles.gridContainer}>
                 {this.itemsToOrder().length === 0 ? (
                   <View style={styles.emptyContainer}>
-                    <MaterialIcon
-                      name="remove-shopping-cart"
-                      size={50}
-                      color="gray"
-                    />
+                    <MaterialIcon name="hourglass-empty" size={50} color="gray" />
                     <Text style={styles.emptyText}>None Found.</Text>
                   </View>
                 ) : (
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <List
-                      data={this.itemsToOrder()}
-                      renderItem={this.renderItemsToOrderCart}
-                    />
-                  </ScrollView>
-                )}
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      <List
+                        data={this.itemsToOrder()}
+                        renderItem={this.renderItemsToOrderCart}
+                      />
+                    </ScrollView>
+                  )}
               </View>
             </TabBar.Item>
           </TabBar>
@@ -270,11 +280,10 @@ const styles = StyleSheet.create({
   },
   gridContainer: {
     flex: 1,
-    backgroundColor: '#eee',
+    display: 'flex',
     flexDirection: 'column',
-    paddingTop: 5,
-    paddingLeft: 5,
-    paddingRight: 5
+    backgroundColor: '#eee',
+    flexDirection: 'column'
   },
   gridLayout: {
     marginBottom: 30,
@@ -291,5 +300,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'gray',
     marginTop: 10
+  },
+  searchContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingTop: 5,
+    paddingBottom: 5,
+    backgroundColor: '#c98811',
   }
 })

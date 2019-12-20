@@ -14,6 +14,9 @@ class SplashScreen extends Component {
 
   initialRequests = () => {
     const { Staff_ID } = this.props.staffData
+
+    socket.emit('saveSocketId', Staff_ID)
+
     socket.emit('getStaffUpdatedData', Staff_ID, response => {
       if (Staff_ID !== response.Staff_ID) {
       }
@@ -26,7 +29,7 @@ class SplashScreen extends Component {
   }
 
   componentDidMount() {
-    ;(staffData = async () => {
+    ; (staffData = async () => {
       await AsyncStorage.getItem('staffData').then(value => {
         if (value) {
           this.props.setStaffData(JSON.parse(value))

@@ -14,9 +14,7 @@ class Cart extends Component {
   totalAmountInCart = () => {
     return (
       this.props.itemsInCart.reduce(
-        (total, obj) => obj.transactionTotalAmount + total,
-        0
-      ) || 0
+        (total, obj) => obj.transactionTotalAmount + total, 0) || 0
     )
   }
 
@@ -68,33 +66,33 @@ class Cart extends Component {
             <Text style={styles.emptyText}>None Found.</Text>
           </View>
         ) : (
-          <View>
-            <View
-              style={{
-                marginLeft: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                paddingBottom: 15
-              }}
-            >
-              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-                Total Amount:{' '}
-              </Text>
-              <Text
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >{`₦${this.totalAmountInCart()}`}</Text>
+            <View>
+              <View
+                style={{
+                  marginLeft: 'auto',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  paddingBottom: 15
+                }}
+              >
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                  Total Amount:{' '}
+                </Text>
+                <Text
+                  style={{ fontSize: 16, fontWeight: 'bold' }}
+                >{`₦${this.totalAmountInCart()}`}</Text>
+              </View>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <List
+                  data={this.props.itemsInCart}
+                  renderItem={this.renderItem}
+                  style={styles.listLayout}
+                />
+              </ScrollView>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <List
-                data={this.props.itemsInCart}
-                renderItem={this.renderItem}
-                style={styles.listLayout}
-              />
-            </ScrollView>
-          </View>
-        )}
+          )}
       </View>
     )
   }

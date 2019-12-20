@@ -101,13 +101,9 @@ mapStateToProps = state => {
   }
 }
 
-mapDispatchToProps = dispatch => {
-  return {}
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(SingleMoreItem)
 
 const styles = StyleSheet.create({

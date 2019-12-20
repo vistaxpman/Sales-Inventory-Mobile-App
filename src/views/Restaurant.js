@@ -69,8 +69,8 @@ class Restaurant extends Component {
     <GridItem
       item={item}
       index={index}
-      onChange={(value, eventType) => {
-        this.props.updateNoOfItemInRestaurant(value, index)
+      onChange={(value, eventType, itemId) => {
+        this.props.updateNoOfItemInRestaurant(value, index, itemId)
       }}
     />
   )
@@ -88,17 +88,17 @@ class Restaurant extends Component {
             <Text style={styles.emptyText}>None Found.</Text>
           </View>
         ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <FlatList
-              data={this.props.restaurant}
-              keyExtractor={item => item.itemId}
-              renderItem={this.renderGridItem}
-              horizontal={false}
-              numColumns={2}
-              contentContainerStyle={styles.gridLayout}
-            />
-          </ScrollView>
-        )}
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <FlatList
+                  data={this.props.restaurant}
+                  keyExtractor={item => item.itemId}
+                  renderItem={this.renderGridItem}
+                  horizontal={false}
+                  numColumns={2}
+                  contentContainerStyle={styles.gridLayout}
+                />
+              </ScrollView>
+            )}
       </View>
     )
   }
@@ -113,8 +113,8 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return {
-    updateNoOfItemInRestaurant: (value, index) => {
-      dispatch(updateNoOfItemInRestaurant(value, index))
+    updateNoOfItemInRestaurant: (value, index, itemId) => {
+      dispatch(updateNoOfItemInRestaurant(value, index, itemId))
     },
     populateItemsInRestaurant: value => {
       dispatch(populateItemsInRestaurant(value))

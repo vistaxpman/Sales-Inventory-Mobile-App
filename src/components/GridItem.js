@@ -17,7 +17,7 @@ class GridItem extends Component {
     super(props)
   }
 
-  onUpdate = (type, value) => {
+  onUpdate = (type, itemId, value) => {
     let amount = this.props.item.noInCheckOut
     switch (type) {
       case 'increment':
@@ -32,13 +32,13 @@ class GridItem extends Component {
       default:
         break
     }
-    this.props.onChange(amount, type)
+    this.props.onChange(amount, type, itemId)
   }
 
   render() {
     return (
       <View style={styles.itemContainer}>
-        <TouchableWithoutFeedback onPress={() => this.onUpdate('increment')}>
+        <TouchableWithoutFeedback onPress={() => this.onUpdate('increment', this.props.item.itemId)}>
           <View>
             <ImageBackground
               source={{ uri: getImage(this.props.item.image.url) }}
@@ -69,21 +69,21 @@ class GridItem extends Component {
             </View>
             <View style={styles.counterContainer}>
               <TouchableWithoutFeedback
-                onPress={() => this.onUpdate('increment')}
+                onPress={() => this.onUpdate('increment', this.props.item.itemId)}
               >
                 <EntypoIcon name="plus" size={30} color="#c98811" />
               </TouchableWithoutFeedback>
               <TextInput
                 style={styles.counterText}
                 onChangeText={userInput =>
-                  this.onUpdate('input', Number(userInput))
+                  this.onUpdate('input', this.props.item.itemId, Number(userInput))
                 }
                 defaultValue={this.props.item.noInCheckOut.toString()}
                 keyboardType={'numeric'}
                 selectTextOnFocus
               />
               <TouchableWithoutFeedback
-                onPress={() => this.onUpdate('decrement')}
+                onPress={() => this.onUpdate('decrement', this.props.item.itemId)}
               >
                 <EntypoIcon name="minus" size={30} color="#c98811" />
               </TouchableWithoutFeedback>
@@ -101,13 +101,9 @@ mapStateToProps = state => {
   }
 }
 
-mapDispatchToProps = dispatch => {
-  return {}
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(GridItem)
 
 const styles = StyleSheet.create({

@@ -89,54 +89,54 @@ class CartItemsContainer extends Component {
   cancelDialog = () => {
     return this.state.cancelOrderIsVisible
       ? Alert.alert(
-          'Cancel Order',
-          'Are you sure you want to cancel this order ?',
-          [
-            {
-              text: 'Cancel',
-              onPress: () =>
-                this.setState({
-                  cancelOrderIsVisible: false
-                }),
-              style: 'cancel'
-            },
-            { text: 'OK', onPress: () => this.cancelOrder() }
-          ],
+        'Cancel Order',
+        'Are you sure you want to cancel this order ?',
+        [
           {
-            cancelable: true,
-            onDismiss: () =>
+            text: 'Cancel',
+            onPress: () =>
               this.setState({
                 cancelOrderIsVisible: false
-              })
-          }
-        )
+              }),
+            style: 'cancel'
+          },
+          { text: 'OK', onPress: () => this.cancelOrder() }
+        ],
+        {
+          cancelable: true,
+          onDismiss: () =>
+            this.setState({
+              cancelOrderIsVisible: false
+            })
+        }
+      )
       : null
   }
 
   finishTransactionDialog = () => {
     return this.state.finishTransactionIsVisible
       ? Alert.alert(
-          'Finish Transaction',
-          'Are you sure you want to end this transaction ?',
-          [
-            {
-              text: 'Finish',
-              onPress: () =>
-                this.setState({
-                  finishTransactionIsVisible: false
-                }),
-              style: 'cancel'
-            },
-            { text: 'OK', onPress: () => this.finishTransaction() }
-          ],
+        'Finish Transaction',
+        'Are you sure you want to end this transaction ?',
+        [
           {
-            cancelable: true,
-            onDismiss: () =>
+            text: 'Cancel',
+            onPress: () =>
               this.setState({
                 finishTransactionIsVisible: false
-              })
-          }
-        )
+              }),
+            style: 'cancel'
+          },
+          { text: 'OK', onPress: () => this.finishTransaction() }
+        ],
+        {
+          cancelable: true,
+          onDismiss: () =>
+            this.setState({
+              finishTransactionIsVisible: false
+            })
+        }
+      )
       : null
   }
 
@@ -229,8 +229,8 @@ class CartItemsContainer extends Component {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  // justifyContent: 'center'
-                  justifyContent: 'space-between'
+                  justifyContent: 'center'
+                  // justifyContent: 'space-between'
                 }}
               >
                 {/* {this.cancelDialog()}
@@ -250,7 +250,7 @@ class CartItemsContainer extends Component {
                     Cancel Order
                   </Text>
                 </TouchableOpacity> */}
-                {this.finishTransactionDialog()}
+                {/* {this.finishTransactionDialog()}
                 <TouchableOpacity
                   onPress={() =>
                     this.setState({
@@ -266,7 +266,7 @@ class CartItemsContainer extends Component {
                   >
                     Finish
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => this.addMoreItems()}>
                   <Text
                     style={[

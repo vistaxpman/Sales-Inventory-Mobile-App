@@ -74,8 +74,8 @@ class Bar extends Component {
     <GridItem
       item={item}
       index={index}
-      onChange={(value, eventType) => {
-        this.props.updateNoOfItemInBar(value, index)
+      onChange={(value, eventType, itemId) => {
+        this.props.updateNoOfItemInBar(value, index, itemId)
       }}
     />
   )
@@ -93,17 +93,17 @@ class Bar extends Component {
             <Text style={styles.emptyText}>None Found.</Text>
           </View>
         ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <FlatList
-              data={this.props.bar}
-              keyExtractor={item => item.itemId}
-              renderItem={this.renderGridItem}
-              horizontal={false}
-              numColumns={2}
-              contentContainerStyle={styles.gridLayout}
-            />
-          </ScrollView>
-        )}
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <FlatList
+                  data={this.props.bar}
+                  keyExtractor={item => item.itemId}
+                  renderItem={this.renderGridItem}
+                  horizontal={false}
+                  numColumns={2}
+                  contentContainerStyle={styles.gridLayout}
+                />
+              </ScrollView>
+            )}
       </View>
     )
   }
@@ -119,8 +119,8 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return {
-    updateNoOfItemInBar: (value, index) => {
-      dispatch(updateNoOfItemInBar(value, index))
+    updateNoOfItemInBar: (value, index, itemId) => {
+      dispatch(updateNoOfItemInBar(value, index, itemId))
     },
     populateItemsInBar: value => {
       dispatch(populateItemsInBar(value))

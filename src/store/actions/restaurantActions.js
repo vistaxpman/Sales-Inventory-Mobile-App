@@ -5,9 +5,9 @@ export const UPDATE_NO_OF_ITEM_FOR_RESTAURANT_CHECKOUT =
 export const FILTER_ITEMS_IN_RESTAURANT = 'FILTER_ITEMS_IN_RESTAURANT'
 export const POPULATE_ITEMS_IN_RESTAURANT = 'POPULATE_ITEMS_IN_RESTAURANT'
 
-export const updateNoOfItemInRestaurant = (value, index) => ({
+export const updateNoOfItemInRestaurant = (value, index, itemId) => ({
   type: UPDATE_NO_OF_ITEM_IN_RESTAURANT,
-  payload: { value, index }
+  payload: { value, index, itemId }
 })
 
 export const clearItemsInRestaurant = () => ({

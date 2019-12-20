@@ -11,6 +11,7 @@ import PopupMenu from './PopupMenu'
 import { clearItemsInBar } from '../store/actions/barActions'
 import { clearItemsInRestaurant } from '../store/actions/restaurantActions'
 import { logOut } from '../store/actions/homeActions'
+import { socket } from '../services/socketIO'
 
 class Header extends Component {
   constructor(props) {
@@ -26,13 +27,16 @@ class Header extends Component {
     } else if (index === 1) {
       this.props.navigation.navigate('Sales')
     } else if (index === 2) {
+      this.props.navigation.navigate('RemovedItems')
+    } else if (index === 3) {
       this.props.clearCart()
-      ;(async () => {
-        await AsyncStorage.setItem('staffData', '').then(value => {
-          this.props.logOut()
-          this.props.navigation.navigate('Login')
-        })
-      })()
+        ; (async () => {
+          await AsyncStorage.setItem('staffData', '').then(value => {
+            this.props.logOut()
+            this.props.navigation.navigate('Login')
+            socket
+          })
+        })()
     }
   }
 
@@ -52,7 +56,7 @@ class Header extends Component {
         }
         rightComponent={
           <PopupMenu
-            actions={['Profile', 'Sales', 'LogOut']}
+            actions={['Profile', 'Sales', 'Removed Items', 'LogOut']}
             onPress={this.onPopupEvent}
           />
         }

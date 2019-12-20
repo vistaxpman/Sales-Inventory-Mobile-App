@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  ToastAndroid
 } from 'react-native'
 import { List, ListItem } from 'react-native-ui-kitten'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
@@ -80,7 +79,7 @@ class SalesItemsContainer extends Component {
               >
                 Total:
               </Text>
-              <Text style={{ color: 'gray' }}>{`₦${'500'}`}</Text>
+              <Text style={{ color: 'gray' }}>{`₦${this.props.item.transactionTotalAmount}`}</Text>
             </View>
           </View>
         )}
@@ -89,18 +88,8 @@ class SalesItemsContainer extends Component {
   }
 }
 
-mapStateToProps = state => {
-  return {}
-}
 
-mapDispatchToProps = dispatch => {
-  return {}
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SalesItemsContainer)
+export default SalesItemsContainer
 
 const styles = StyleSheet.create({
   cartItemsContainer: {

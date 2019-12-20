@@ -34,7 +34,6 @@ class Sales extends Component {
     let url = appUrl + '/getStaffSales',
       Staff_ID = this.props.staffData.Staff_ID,
       chosenDate = this.state.chosenDate
-    console.log(chosenDate)
 
     axios
       .post(url, { Staff_ID, chosenDate })
@@ -44,9 +43,7 @@ class Sales extends Component {
           this.props.populateItemsInSales(sales)
           if (sales.length > 0) {
             const totalSales = sales.reduce(
-              (total, obj) => obj.transactionTotalAmount + total,
-              0
-            )
+              (total, obj) => obj.transactionTotalAmount + total, 0)
             this.setState({
               totalSales
             })
@@ -126,14 +123,15 @@ class Sales extends Component {
                 <Text style={styles.emptyText}>No Sales.</Text>
               </View>
             ) : (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <List
-                  data={this.props.itemsInSales}
-                  renderItem={this.renderItem}
-                  style={styles.listLayout}
-                />
-              </ScrollView>
-            )}
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    {console.log(this.props.itemsInSales)}
+                    <List
+                      data={this.props.itemsInSales}
+                      renderItem={this.renderItem}
+                      style={styles.listLayout}
+                    />
+                  </ScrollView>
+                )}
           </View>
         </View>
       </View>

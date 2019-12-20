@@ -56,18 +56,8 @@ class SalesItem extends Component {
   }
 }
 
-mapStateToProps = state => {
-  return {}
-}
 
-mapDispatchToProps = dispatch => {
-  return {}
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SalesItem)
+export default SalesItem
 
 const styles = StyleSheet.create({
   itemContainer: {

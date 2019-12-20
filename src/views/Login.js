@@ -43,6 +43,9 @@ class Login extends Component {
 
   initialRequests = () => {
     const { Staff_ID } = this.props.staffData
+
+    socket.emit('saveSocketId', Staff_ID)
+
     socket.emit('getStaffUpdatedData', Staff_ID, response => {
       this.props.setStaffData(response)
     })
@@ -176,8 +179,8 @@ class Login extends Component {
               {this.state.isLoading ? (
                 <Spinner size="large" status="info" />
               ) : (
-                <Text style={styles.loginTextStyle}> LOGIN </Text>
-              )}
+                  <Text style={styles.loginTextStyle}> LOGIN </Text>
+                )}
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>

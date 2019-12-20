@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   Alert,
   Dimensions,
@@ -35,18 +34,6 @@ import Cart from './Cart'
 import CheckOut from './CheckOut'
 import { TextInput } from 'react-native-gesture-handler'
 import { socket } from '../services/socketIO'
-
-barRoute = () => {
-  return <Bar />
-}
-
-restaurantRoute = () => {
-  return <Restaurant />
-}
-
-cartRoute = () => {
-  return <Cart />
-}
 
 class Home extends Component {
   constructor() {
@@ -88,20 +75,7 @@ class Home extends Component {
         Number(this.props.totalNumberOfItemsAddedFromRestaurant)
       const transactionDetails = []
       const transactionDetailsObject = {}
-      const barCheckOut = this.props.barCheckOut
-      if (barCheckOut.length > 0) {
-        barCheckOut.map(bc => {
-          bc.isPosted = false
-          return bc
-        })
-      }
-      const restaurantCheckOut = this.props.restaurantCheckOut
-      if (restaurantCheckOut.length > 0) {
-        restaurantCheckOut.map(bc => {
-          bc.isPosted = false
-          return bc
-        })
-      }
+
       let customerName = this.state.customer.customerName
       let Cust_ID = this.state.customer.Cust_ID
       if (!customerName || customerName === 'Choose Customer') {
@@ -109,8 +83,8 @@ class Home extends Component {
         Cust_ID = '000101'
       }
 
-      transactionDetailsObject.barCheckOut = barCheckOut
-      transactionDetailsObject.restaurantCheckOut = restaurantCheckOut
+      transactionDetailsObject.barCheckOut = this.props.barCheckOut
+      transactionDetailsObject.restaurantCheckOut = this.props.restaurantCheckOut
       transactionDetails.push(transactionDetailsObject)
       const dataToSend = {
         transactionId: new Date().valueOf(),
@@ -259,6 +233,7 @@ class Home extends Component {
               <TextInput
                 placeholder="Table Number"
                 style={styles.textInputStyle}
+                keyboardType={'numeric'}
                 onChangeText={tableNumber =>
                   this.setState({
                     tableNumber: tableNumber
@@ -295,14 +270,14 @@ class Home extends Component {
               >
                 {this.props.customers && this.props.customers.length > 0
                   ? this.props.customers.map((customer, index) => {
-                      return (
-                        <Picker.Item
-                          label={customer.customerName}
-                          value={customer}
-                          key={index}
-                        />
-                      )
-                    })
+                    return (
+                      <Picker.Item
+                        label={customer.customerName}
+                        value={customer}
+                        key={index}
+                      />
+                    )
+                  })
                   : null}
               </Picker>
               <View
@@ -364,9 +339,9 @@ class Home extends Component {
     let tab = ''
     index === 0 ? (tab = 'bar') : index === 1 ? (tab = 'restaurant') : ''
     this.props.toggleActiveTab(tab)
-    if (index === 0 || index === 1) {
-      this.props.clearCart()
-    }
+    // if (index === 0 || index === 1) {
+    //   this.props.clearCart()
+    // }
   }
 
   renderIcon = ({ route, focused, color }) => {
@@ -423,7 +398,22 @@ class Home extends Component {
     )
   }
 
+  barRoute = () => {
+    return <Bar />
+  }
+
+  restaurantRoute = () => {
+    return <Restaurant />
+  }
+
+  cartRoute = () => {
+    return <Cart />
+  }
+
   render() {
+    let barRoute = this.barRoute,
+      restaurantRoute = this.restaurantRoute,
+      cartRoute = this.cartRoute;
     return (
       <View style={{ flex: 1 }}>
         {this.showConfirmationDialog()}
