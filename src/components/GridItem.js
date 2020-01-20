@@ -5,10 +5,10 @@ import {
   Text,
   ImageBackground,
   TextInput,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ToastAndroid,
 } from 'react-native'
 import { connect } from 'react-redux'
-import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { getImage } from '../config'
 
@@ -18,16 +18,27 @@ class GridItem extends Component {
   }
 
   onUpdate = (type, itemId, value) => {
-    let amount = this.props.item.noInCheckOut
+    let amount = this.props.item.noInCheckOut,
+    quantity = this.props.item.Quantity;
+        
     switch (type) {
       case 'increment':
-        amount = amount + 1
+        let newAmount = amount + 1;
+        if(newAmount > quantity){
+          ToastAndroid.show('Item cannot be more than quantity in inventory!', ToastAndroid.SHORT)
+        }else{
+          amount = newAmount
+        }
         break
       case 'decrement':
         amount = amount - (amount ? 1 : 0)
         break
       case 'input':
-        amount = value
+        if(value > quantity){
+          ToastAndroid.show('Item cannot be more than quantity in inventory!', ToastAndroid.SHORT)
+        }else{
+          amount = value
+        }     
         break
       default:
         break
@@ -43,18 +54,7 @@ class GridItem extends Component {
             <ImageBackground
               source={{ uri: getImage(this.props.item.image.url) }}
               style={styles.itemBgImage}
-              resizeMode="contain"
-            >
-              {this.props.item.isAddedToCart && (
-                <View style={styles.itemBgCheckBoxContainer}>
-                  <AntDesignIcon
-                    name="checkcircleo"
-                    size={20}
-                    color="#c98811"
-                  />
-                </View>
-              )}
-            </ImageBackground>
+              resizeMode="contain"/>
             <View style={styles.itemAndPriceContainer}>
               <Text
                 numberOfLines={1}
@@ -78,7 +78,7 @@ class GridItem extends Component {
                 onChangeText={userInput =>
                   this.onUpdate('input', this.props.item.itemId, Number(userInput))
                 }
-                defaultValue={this.props.item.noInCheckOut.toString()}
+                value={this.props.item.noInCheckOut.toString()}
                 keyboardType={'numeric'}
                 selectTextOnFocus
               />

@@ -13,9 +13,9 @@ class SplashScreen extends Component {
   }
 
   initialRequests = () => {
-    const { Staff_ID } = this.props.staffData
+    const { Staff_ID, Branch } = this.props.staffData
 
-    socket.emit('saveSocketId', Staff_ID)
+    socket.emit('saveSocketId', { Staff_ID, Branch })
 
     socket.emit('getStaffUpdatedData', Staff_ID, response => {
       if (Staff_ID !== response.Staff_ID) {

@@ -265,6 +265,7 @@ class Home extends Component {
                 selectedValue={this.state.customer}
                 style={styles.textInputStyle}
                 onValueChange={(itemValue, itemIndex) => {
+                  console.log(itemValue)
                   this.setState({ customer: itemValue })
                 }}
               >

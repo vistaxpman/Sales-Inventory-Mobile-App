@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   AsyncStorage,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native'
 import axios from 'axios'
 import { Spinner } from 'react-native-ui-kitten'
@@ -56,6 +57,7 @@ class Login extends Component {
   }
 
   handleLogin = () => {
+    Keyboard.dismiss();
     this.setState({
       errorMessage: ''
     })

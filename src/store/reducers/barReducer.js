@@ -17,8 +17,8 @@ const barReducer = (state = initialState, action) => {
         if (item.itemId === action.payload.itemId) {
           item.isPosted = false
           item.noInCheckOut = action.payload.value
+          item.formerNoInCheckOut = action.payload.value
           item.newPrice = Number(action.payload.value) * Number(item.price)
-          console.log(`${item.newPrice}`)
           itemIndex = index
         }
 

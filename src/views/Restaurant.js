@@ -32,29 +32,18 @@ class Restaurant extends Component {
   }
 
   fetchItemsFromLocalStorage = async () => {
-    // await AsyncStorage.getItem('restaurant').then(items => {
-    //   if (items) {
-    //     this.props.populateItemsInRestaurant(JSON.parse(items))
-    //     this.setState({
-    //       isLoadingRestaurantItems: false
-    //     })
-    //   } else {
     this.fetchItemsFromOnline()
-    //   }
-    // })
   }
 
   fetchItemsFromOnline = () => {
-    let url = appUrl + '/getItemsFromRestaurant'
+    let url = appUrl + "/getItemsFromBranch";
     axios
-      .get(url)
+      .post(url, {
+        Branch: 'Restaurant'
+      })
       .then(async response => {
         if (response.data.hasItems) {
           this.props.populateItemsInRestaurant(response.data.items)
-          // await AsyncStorage.setItem(
-          //   'restaurant',
-          //   JSON.stringify(response.data.items)
-          // )
           this.setState({
             isLoadingRestaurantItems: false
           })

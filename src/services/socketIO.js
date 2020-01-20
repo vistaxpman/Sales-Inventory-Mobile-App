@@ -1,7 +1,7 @@
 import socketIOClient from "socket.io-client";
 import { appUrl } from "../config";
 import * as actions from "../store/actions";
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage } from "react-native";
 
 export const socket = socketIOClient(appUrl, {
   transports: ["websocket"],
@@ -9,28 +9,45 @@ export const socket = socketIOClient(appUrl, {
 });
 
 export const socketIO = store => {
-
   socket.connect();
 
   socket.on("connect", () => {
     console.log("connected to server.");
 
-    // const {Staff_ID} = store.getState().homeReducer.staffData;
-
-    (async function () {
-      await AsyncStorage.getItem('staffData').then(value => {
+    (async function() {
+      await AsyncStorage.getItem("staffData").then(value => {
         if (value) {
-          const { Staff_ID } = JSON.parse(value)
+          const { Staff_ID, Branch } = JSON.parse(value);
 
-          socket.emit('saveSocketId', Staff_ID)
+          socket.emit("saveSocketId", Staff_ID);
 
-          socket.emit('getOngoingTransactions', Staff_ID, response => {
-            store.dispatch(actions.populateOngoingTransactionsInCart(response))
-          })
+          setInterval(()=>{
+            socket.emit("getOngoingTransactions", Staff_ID, response => {
+              store.dispatch(
+                actions.populateOngoingTransactionsInCart(response)
+              );
+            })
+          }, 5000);
+
+          // socket.emit("getItems", Branch, response => {
+          //   if (response) {
+          //     let { barItems, restaurantItems } = response;
+
+          //     store.dispatch(
+          //       actions.populateItemsInRestaurant(restaurantItems)
+          //     );
+
+          //     store.dispatch(
+          //       actions.populateMoreItemsInRestaurant(restaurantItems)
+          //     );
+
+          //     store.dispatch(actions.populateItemsInBar(barItems));
+          //     store.dispatch(actions.populateMoreItemsInBar(barItems));
+          //   }
+          // });
         }
-      })
-
-    })()
+      });
+    })();
 
     socket.on("disconnect", () => {
       console.log("connection to server lost.");
@@ -62,19 +79,15 @@ export const socketIO = store => {
       );
     });
 
-    // store.subscribe(() => {
-    //   const { Staff_ID } = store.getState().homeReducer.staffData
-    //   if (Staff_ID) {
-    //     socket.emit('getOngoingTransactions', Staff_ID, response => {})
-    //   }
-    // })
+    socket.on("updateItems", data => {
+      if (data) {
+        let { items, items2 } = data;
+        store.dispatch(actions.populateItemsInRestaurant(items2));
+        store.dispatch(actions.populateMoreItemsInRestaurant(items2));
 
-    socket.on("receiveOngoingTransactions", data => {
-      // console.log('receiveOngoingTransactions')
-      // console.log(data)
-      // data.map(transaction => {})
-      // delete Object.assign(o, { [newKey]: o[oldKey] })[oldKey]
-      // store.dispatch(populateOngoingTransactionsInCart(data))
+        store.dispatch(actions.populateItemsInBar(items));
+        store.dispatch(actions.populateMoreItemsInBar(items));
+      }
     });
   });
 };

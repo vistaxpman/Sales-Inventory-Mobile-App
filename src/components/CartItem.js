@@ -7,24 +7,6 @@ export default class CartItem extends Component {
     super(props)
   }
 
-  onUpdate = (type, value) => {
-    let amount = this.props.item.noInCart
-    switch (type) {
-      case 'increment':
-        amount = amount + 1
-        break
-      case 'decrement':
-        amount = amount - (amount ? 1 : 0)
-        break
-      case 'input':
-        amount = value
-        break
-      default:
-        break
-    }
-    this.props.onChange(amount, type)
-  }
-
   render() {
     return (
       <View
@@ -51,31 +33,9 @@ export default class CartItem extends Component {
           ) * Number(this.props.item.noInCheckOut)}`}</Text>
         </View>
         <View style={styles.counterContainer}>
-          {/* <TouchableOpacity
-              onPress={() => {
-                this.onUpdate('increment')
-              }}
-            >
-              <EntypoIcon name="plus" size={30} color="#c98811" />
-            </TouchableOpacity> */}
-          {/* <TextInput
-              style={styles.counterText}
-              defaultValue={this.props.item.noInCart.toString()}
-              onChangeText={userInput =>
-                this.onUpdate('input', Number(userInput))
-              }
-              keyboardType={'numeric'}
-            /> */}
           <Text style={styles.counterText}>
             {this.props.item.noInCheckOut.toString()}
           </Text>
-          {/* <TouchableOpacity
-              onPress={() => {
-                this.onUpdate('decrement')
-              }}
-            >
-              <EntypoIcon name="minus" size={30} color="#c98811" />
-            </TouchableOpacity> */}
         </View>
       </View>
     )

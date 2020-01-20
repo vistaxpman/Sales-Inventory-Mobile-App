@@ -4,7 +4,8 @@ import update from "react-addons-update";
 const initialState = {
   itemsInCart: [],
   itemsInCartClone: [],
-  selectedItem: []
+  selectedItem: [],
+
 };
 
 const cartReducer = (state = initialState, action) => {
@@ -84,8 +85,7 @@ const cartReducer = (state = initialState, action) => {
       const transactionId = action.payload.transactionId;
       const barCheckOut = action.payload.barCheckOut;
       const restaurantCheckOut = action.payload.restaurantCheckOut;
-      let newTransactionTotalNumber = 0;
-      let newTransactionTotalAmount = 0;
+      let newTransactionTotalNumber = 0, newTransactionTotalAmount = 0;
 
       for (let anItem of barCheckOut) {
         newTransactionTotalNumber += Number(anItem.noInCheckOut);
@@ -135,7 +135,8 @@ const cartReducer = (state = initialState, action) => {
       const newItemsInCart = state.itemsInCartClone.map(transaction => {
         if (transaction.transactionId === action.payload.transactionId) {
           const transactionDetails = transaction.transactionDetails;
-          if (action.payload.outlet === "bar") {
+          let Branch = transaction.Branch;
+          if (Branch == "Old Bar" || Branch == "New Bar") {
             transactionDetails.map(transactionDetail => {
               const barCheckOut = transactionDetail.barCheckOut;
               barCheckOut.map(b => {

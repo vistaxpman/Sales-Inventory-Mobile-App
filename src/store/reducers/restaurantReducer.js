@@ -18,6 +18,7 @@ const restaurantReducer = (state = initialState, action) => {
         if (index === action.payload.index) {
           item.isPosted = false
           item.noInCheckOut = action.payload.value
+          item.formerNoInCheckOut = action.payload.value
           item.newPrice = Number(action.payload.value) * Number(item.price)
           itemIndex = index
         }

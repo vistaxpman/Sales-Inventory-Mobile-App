@@ -25,41 +25,18 @@ class Bar extends Component {
   }
 
   fetchItemsFromLocalStorage = async () => {
-    // let location = 'OldBar'
-    // if (this.props.staffData.Branch === 'New Bar') {
-    //   location = 'NewBar'
-    // }
-    // await AsyncStorage.getItem(location).then(items => {
-    //   if (items) {
-    //     this.props.populateItemsInBar(JSON.parse(items))
-    //     this.setState({
-    //       isLoadingBarItems: false
-    //     })
-    //   } else {
     this.fetchItemsFromOnline()
-    //   }
-    // })
   }
 
   fetchItemsFromOnline = () => {
-    let url = '',
-      location = ''
-    if (this.props.staffData.Branch === 'Old Bar') {
-      url = appUrl + '/getItemsFromOldBar'
-      location = 'OldBar'
-    } else if (this.props.staffData.Branch === 'New Bar') {
-      url = appUrl + '/getItemsFromNewBar'
-      location = 'NewBar'
-    }
+    let url = appUrl + '/getItemsFromBranch'
     axios
-      .get(url)
+      .post(url, {
+        Branch: this.props.staffData.Branch
+      })
       .then(async response => {
         if (response.data.hasItems) {
           this.props.populateItemsInBar(response.data.items)
-          // await AsyncStorage.setItem(
-          //   location,
-          //   JSON.stringify(response.data.items)
-          // )
           this.setState({
             isLoadingBarItems: false
           })
