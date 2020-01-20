@@ -28,7 +28,8 @@ import {
 import { clearItemsInBar } from '../store/actions/barActions'
 import { clearItemsInRestaurant } from '../store/actions/restaurantActions'
 import { addNewDataToCart } from '../store/actions/cartActions'
-import Bar from './Bar'
+// import Bar from './Bar'
+import BarAPI from './BarAPI'
 import Restaurant from './Restaurant'
 import Cart from './Cart'
 import CheckOut from './CheckOut'
@@ -400,7 +401,8 @@ class Home extends Component {
   }
 
   barRoute = () => {
-    return <Bar />
+    // return <Bar />
+    return <BarAPI />
   }
 
   restaurantRoute = () => {

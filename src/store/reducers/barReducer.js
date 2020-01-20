@@ -12,26 +12,32 @@ const initialState = {
 const barReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.UPDATE_NO_OF_ITEM_IN_BAR: {
-      let itemIndex = ''
-      const newbar = state.barClone.map((item, index) => {
-        if (item.itemId === action.payload.itemId) {
-          item.isPosted = false
-          item.noInCheckOut = action.payload.value
-          item.formerNoInCheckOut = action.payload.value
-          item.newPrice = Number(action.payload.value) * Number(item.price)
-          itemIndex = index
-        }
+      
+      let itemIndex
+      state.barClone[action.payload.index].isPosted = false
+      state.barClone[action.payload.index].noInCheckOut = action.payload.value
+      state.barClone[action.payload.index].newPrice = Number(action.payload.value) * Number(state.barClone[action.payload.index].price)
+      itemIndex = action.payload.index
 
-        return item
-      })
+      // const newbar = state.barClone.map((item, index) => {
+      //   if (item.itemId === action.payload.itemId) {
+      //     item.isPosted = false
+      //     item.noInCheckOut = action.payload.value
+      //     item.newPrice = Number(action.payload.value) * Number(item.price)
+      //     console.log(`${item.newPrice}`)
+      //     itemIndex = index
+      //   }
+      //   return item
+      // })
+      // console.log('newbar: ', newbar);
 
       const newbarCheckOut = () => {
-        return newbar.filter(item => item.noInCheckOut > 0)
+        return state.barClone.filter(item => item.noInCheckOut > 0)
       }
 
       let newTotalNumberOfItemsAddedFromBar = 0
       let newTotalAmountOfItemsAddedFromBar = 0
-      for (let anItem of newbar) {
+      for (let anItem of state.barClone) {
         newTotalNumberOfItemsAddedFromBar += Number(anItem.noInCheckOut)
         if (anItem.noInCheckOut > 0) {
           newTotalAmountOfItemsAddedFromBar +=
@@ -58,7 +64,10 @@ const barReducer = (state = initialState, action) => {
         },
         barCheckOut: { $set: newbarCheckOut() }
       })
+      console.log('state: ',state);
+      
     }
+
     case Actions.CLEAR_ITEMS_IN_BAR: {
       const newbar = state.bar.map((item, index) => {
         item.noInCheckOut = 0
@@ -119,6 +128,7 @@ const barReducer = (state = initialState, action) => {
         barCheckOut: { $set: newbarCheckOut() }
       })
     }
+
     case Actions.FILTER_ITEMS_IN_BAR: {
       let newbar = []
       if (action.payload.value) {
@@ -136,6 +146,8 @@ const barReducer = (state = initialState, action) => {
       })
     }
     case Actions.POPULATE_ITEMS_IN_BAR: {
+      console.log('state initial: ', state, action.payload);
+
       return {
         ...state,
         bar: action.payload,

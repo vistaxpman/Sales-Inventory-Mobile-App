@@ -6,7 +6,6 @@ import {
   ScrollView,
   FlatList,
   Text,
-  AsyncStorage
 } from 'react-native'
 import axios from 'axios'
 import GridItem from '../components/GridItem'
@@ -65,6 +64,7 @@ class Restaurant extends Component {
   )
 
   render() {
+    let dataRest = this.props.restaurant;
     return (
       <View style={styles.gridContainer}>
         {this.state.isLoadingRestaurantItems ? (
@@ -79,7 +79,8 @@ class Restaurant extends Component {
         ) : (
               <ScrollView showsVerticalScrollIndicator={false}>
                 <FlatList
-                  data={this.props.restaurant}
+                  data={dataRest}
+                  extraData={this.props}
                   keyExtractor={item => item.itemId}
                   renderItem={this.renderGridItem}
                   horizontal={false}
@@ -127,9 +128,11 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   gridLayout: {
-    flex: 1,
-    marginBottom: 30,
+    // flex: 1,
+    // marginBottom: 30,
     display: 'flex',
+    // flexWrap: 'wrap',
+    // flexDirection: 'row',
     justifyContent: 'space-between'
   },
   emptyContainer: {

@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   Text,
+  Dimensions,
   ImageBackground,
   TextInput,
   TouchableWithoutFeedback,
@@ -11,6 +12,7 @@ import {
 import { connect } from 'react-redux'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { getImage } from '../config'
+const deviceWidth = Dimensions.get('window').width
 
 class GridItem extends Component {
   constructor(props) {
@@ -46,7 +48,15 @@ class GridItem extends Component {
     this.props.onChange(amount, type, itemId)
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.item === nextProps.item) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
+
     return (
       <View style={styles.itemContainer}>
         <TouchableWithoutFeedback onPress={() => this.onUpdate('increment', this.props.item.itemId)}>
@@ -118,8 +128,10 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 2,
     padding: 5,
-    maxWidth: '45%',
-    margin: 10
+    // maxWidth: '45%',
+    width: (deviceWidth - 60) / 2,
+    // height: (deviceWidth - 60) / 2,
+    margin: 10,
   },
   itemBgImage: {
     width: '100%',
