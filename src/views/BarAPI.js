@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, FlatList, Text } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import GridItem from '../components/GridItem'
+import GridItem1 from '../components/GridItem1'
 import { appUrl } from '../config'
 import {
     updateNoOfItemInBar,
@@ -38,12 +39,11 @@ class BarAPI extends Component {
             location = 'NewBar'
         }
         // let url = appUrl + `/getItemsFromNewBar`
-
+        console.log('url: ', url)
         axios
             .get(url)
             .then(async response => {
                 if (response.data.hasItems) {
-                    console.log('response.data.hasItems: ', response.data.items);
                     this.setState({ barItems: response.data.items })
                     this.props.populateItemsInBar(response.data.items)
                     this.limit = this.limit + 10
@@ -53,12 +53,22 @@ class BarAPI extends Component {
                 }
             })
             .catch(err => {
-                console.log(err)
+                console.log('err: ', err)
             })
     }
 
     renderGridItem = ({ item, index }) => (
         <GridItem
+            item={item}
+            index={index}
+            onChange={(value, eventType, itemId) => {
+                this.props.updateNoOfItemInBar(value, index, itemId)
+            }}
+        />
+    )
+
+    renderGridItem1 = ({ item, index }) => (
+        <GridItem1
             item={item}
             index={index}
             onChange={(value, eventType, itemId) => {
@@ -84,16 +94,30 @@ class BarAPI extends Component {
                     </View>
                 ) : (
                             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, }}>
-                                <FlatList
-                                    data={dataBar}
-                                    extraData={this.props}
-                                    keyExtractor={item => item.itemId}
-                                    renderItem={this.renderGridItem}
-                                    horizontal={false}
-                                    numColumns={2}
-                                    contentContainerStyle={styles.gridLayout}
-                                // onEndReached={this.loadMore.bind(this)}
-                                />
+                                {
+                                    (Number(this.props.totalNumberOfItemsAddedFromBar) +
+                                        Number(this.props.totalNumberOfItemsAddedFromRestaurant) === 0)
+                                        ? <FlatList
+                                            data={dataBar}
+                                            extraData={this.props}
+                                            keyExtractor={item => item.itemId}
+                                            renderItem={this.renderGridItem1}
+                                            horizontal={false}
+                                            numColumns={2}
+                                            contentContainerStyle={styles.gridLayout}
+                                        // onEndReached={this.loadMore.bind(this)}
+                                        />
+                                        : <FlatList
+                                            data={dataBar}
+                                            extraData={this.props}
+                                            keyExtractor={item => item.itemId}
+                                            renderItem={this.renderGridItem}
+                                            horizontal={false}
+                                            numColumns={2}
+                                            contentContainerStyle={styles.gridLayout}
+                                        // onEndReached={this.loadMore.bind(this)}
+                                        />
+                                }
                             </ScrollView>
                         )}
             </View>
@@ -102,11 +126,15 @@ class BarAPI extends Component {
 }
 
 mapStateToProps = state => {
-    
+
     return {
         bar: state.barReducer.bar,
         barCheckOut: state.barReducer.barCheckOut,
-        staffData: state.homeReducer.staffData
+        staffData: state.homeReducer.staffData,
+        totalNumberOfItemsAddedFromBar:
+            state.barReducer.totalNumberOfItemsAddedFromBar,
+        totalNumberOfItemsAddedFromRestaurant:
+            state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant,
     }
 }
 

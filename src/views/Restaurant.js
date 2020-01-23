@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import axios from 'axios'
 import GridItem from '../components/GridItem'
+import GridItem1 from '../components/GridItem1'
 import {
   updateNoOfItemInRestaurant,
   populateItemsInRestaurant
@@ -35,26 +36,38 @@ class Restaurant extends Component {
   }
 
   fetchItemsFromOnline = () => {
-    let url = appUrl + "/getItemsFromBranch";
+    let url = appUrl + "/getItemsFromRestaurant";
     axios
-      .post(url, {
-        Branch: 'Restaurant'
-      })
-      .then(async response => {
-        if (response.data.hasItems) {
-          this.props.populateItemsInRestaurant(response.data.items)
-          this.setState({
-            isLoadingRestaurantItems: false
-          })
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    .get(url)
+    .then(async response => {
+      if (response.data.hasItems) {
+        this.props.populateItemsInRestaurant(response.data.items)
+        // await AsyncStorage.setItem(
+        //   'restaurant',
+        //   JSON.stringify(response.data.items)
+        // )
+        this.setState({
+          isLoadingRestaurantItems: false
+        })
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   renderGridItem = ({ item, index }) => (
     <GridItem
+      item={item}
+      index={index}
+      onChange={(value, eventType, itemId) => {
+        this.props.updateNoOfItemInRestaurant(value, index, itemId)
+      }}
+    />
+  )
+
+  renderGridItem1 = ({ item, index }) => (
+    <GridItem1
       item={item}
       index={index}
       onChange={(value, eventType, itemId) => {
@@ -78,15 +91,28 @@ class Restaurant extends Component {
           </View>
         ) : (
               <ScrollView showsVerticalScrollIndicator={false}>
-                <FlatList
-                  data={dataRest}
-                  extraData={this.props}
-                  keyExtractor={item => item.itemId}
-                  renderItem={this.renderGridItem}
-                  horizontal={false}
-                  numColumns={2}
-                  contentContainerStyle={styles.gridLayout}
-                />
+                {
+                  (Number(this.props.totalNumberOfItemsAddedFromBar) +
+                    Number(this.props.totalNumberOfItemsAddedFromRestaurant) === 0)
+                    ? <FlatList
+                      data={dataRest}
+                      extraData={this.props}
+                      keyExtractor={item => item.itemId}
+                      renderItem={this.renderGridItem1}
+                      horizontal={false}
+                      numColumns={2}
+                      contentContainerStyle={styles.gridLayout}
+                    />
+                    : <FlatList
+                      data={dataRest}
+                      extraData={this.props}
+                      keyExtractor={item => item.itemId}
+                      renderItem={this.renderGridItem}
+                      horizontal={false}
+                      numColumns={2}
+                      contentContainerStyle={styles.gridLayout}
+                    />
+                }
               </ScrollView>
             )}
       </View>
@@ -97,7 +123,11 @@ class Restaurant extends Component {
 mapStateToProps = state => {
   return {
     restaurant: state.restaurantReducer.restaurant,
-    restaurantCheckOut: state.restaurantReducer.restaurantCheckOut
+    restaurantCheckOut: state.restaurantReducer.restaurantCheckOut,
+    totalNumberOfItemsAddedFromBar:
+      state.barReducer.totalNumberOfItemsAddedFromBar,
+    totalNumberOfItemsAddedFromRestaurant:
+      state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant,
   }
 }
 
