@@ -111,6 +111,11 @@ const barReducer = (state = initialState, action) => {
             noInCheckOut: { $set: action.payload.value }
           }
         },
+        barClone: {
+          [itemIndex]: {
+            noInCheckOut: { $set: action.payload.value }
+          }
+        },
         totalNumberOfItemsAddedFromBar: {
           $set: newTotalNumberOfItemsAddedFromBar
         },
