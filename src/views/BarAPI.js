@@ -13,6 +13,7 @@ import { populateMoreItemsInBar } from '../store/actions/moreItemsToOrderActions
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { Spinner } from 'react-native-ui-kitten'
 
+
 class BarAPI extends Component {
     constructor() {
         super()
@@ -159,9 +160,13 @@ const styles = StyleSheet.create({
     gridContainer: {
         flex: 1,
         backgroundColor: '#eee',
-        padding: 5
+        flexDirection: 'column',
+        marginTop: 15,
+        paddingLeft: 5,
+        paddingRight: 5
     },
     gridLayout: {
+        marginBottom: 30,
         display: 'flex',
         justifyContent: 'space-between',
     },

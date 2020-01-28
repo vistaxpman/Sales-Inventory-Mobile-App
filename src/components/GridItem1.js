@@ -37,22 +37,7 @@ class GridItem1 extends Component {
     this.props.onChange(amount, type, itemId)
   }
 
-//   shouldComponentUpdate(nextProps, nextState) {
-//     console.log('shouldComponentUpdate', this.props.item.noInCheckOut === nextProps.item.noInCheckOut);
-//     // console.log('this.props.item old: ', this.props.item.noInCheckOut);
-//     // console.log('nextProps.item new: ', nextProps.item.noInCheckOut);
-
-//     // this.forceUpdate()
-//     // && (this.props.item.noInCheckOut == 1 && nextProps.item.noInCheckOut == 1)
-//     if (this.props.item === nextProps.item) {
-//       return false;
-//     }
-//     return true;
-//   }
-
-
   render() {
-    console.log('render');
 
     return (
       <View style={styles.itemContainer}>
@@ -136,8 +121,8 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 2,
     padding: 5,
-    // maxWidth: '45%',
-    width: (deviceWidth - 60) / 2,
+    maxWidth: '45%',
+    // width: (deviceWidth - 60) / 2,
     // height: (deviceWidth - 60) / 2,
     margin: 10,
   },
