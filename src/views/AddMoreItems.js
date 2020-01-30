@@ -12,7 +12,7 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import TabBar from '@mindinventory/react-native-tab-bar-interaction'
 import { List } from 'react-native-ui-kitten'
 import { connect } from 'react-redux'
-import SingleMoreItem from '../components/SingleMoreItem'
+import GridItem from '../components/GridItem'
 import {
   updateNoOfItemInMoreBar,
   updateNoOfItemInMoreRestaurant
@@ -40,7 +40,6 @@ class AddMoreItems extends Component {
       const restaurantCheckOut = this.props.restaurantCheckOut
 
       if (barCheckOut.length === 0 && restaurantCheckOut.length === 0) {
-        //This line takes a while to run, hence the need to wait for it
         ToastAndroid.show(
           'Please, select items before you order.',
           ToastAndroid.SHORT
@@ -65,8 +64,8 @@ class AddMoreItems extends Component {
     }
   }
 
-  renderSingleMoreItemToBar = ({ item, index }) => (
-    <SingleMoreItem
+  renderGridItemToBar = ({ item, index }) => (
+    <GridItem
       item={item}
       index={index}
       onChange={(value, eventType) => {
@@ -75,8 +74,8 @@ class AddMoreItems extends Component {
     />
   )
 
-  renderSingleMoreItemToRestaurant = ({ item, index }) => (
-    <SingleMoreItem
+  renderGridItemToRestaurant = ({ item, index }) => (
+    <GridItem
       item={item}
       index={index}
       onChange={(value, eventType) => {
@@ -92,6 +91,7 @@ class AddMoreItems extends Component {
   }
 
   render() {
+    let barData = this.props.bar, restData = this.props.restaurant;
     return (
       <View style={styles.container}>
         <View style={styles.container2}>
@@ -137,9 +137,9 @@ class AddMoreItems extends Component {
                 ) : (
                     <ScrollView showsVerticalScrollIndicator={false}>
                       <FlatList
-                        data={this.props.restaurant}
+                        data={restData}
                         keyExtractor={item => item.itemId}
-                        renderItem={this.renderSingleMoreItemToRestaurant}
+                        renderItem={this.renderGridItemToRestaurant}
                         horizontal={false}
                         numColumns={2}
                         contentContainerStyle={styles.gridLayout}
@@ -169,9 +169,9 @@ class AddMoreItems extends Component {
                 ) : (
                     <ScrollView showsVerticalScrollIndicator={false}>
                       <FlatList
-                        data={this.props.bar}
+                        data={barData}
                         keyExtractor={item => item.itemId}
-                        renderItem={this.renderSingleMoreItemToBar}
+                        renderItem={this.renderGridItemToBar}
                         horizontal={false}
                         numColumns={2}
                         contentContainerStyle={styles.gridLayout}

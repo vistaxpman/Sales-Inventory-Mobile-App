@@ -14,22 +14,17 @@ const initialState = {
 const moreItemsToOrderReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.UPDATE_NO_OF_ITEM_IN_MORE_BAR: {
-      const newbar = state.bar.map((item, index) => {
-        if (index === action.payload.index) {
-          item.noInCheckOut = action.payload.value
-          item.newPrice = Number(action.payload.value) * Number(item.price)
-        }
-        return item
-      })
+      
+      state.barClone[action.payload.index].noInCheckOut = action.payload.value
+      state.barClone[action.payload.index].newPrice = Number(action.payload.value) * Number(state.barClone[action.payload.index].price)
 
-      const newbarCheckOut = () => {
-        return newbar.filter(item => item.noInCheckOut > 0)
+      const newBarCheckOut = () => {
+        return state.barClone.filter(item => item.noInCheckOut > 0)
       }
 
-      let newTotalNumberOfItemsAddedFromBar = 0
-      let newTotalAmountOfItemsAddedFromBar = 0
+      let newTotalNumberOfItemsAddedFromBar = 0, newTotalAmountOfItemsAddedFromBar = 0;
 
-      for (let anItem of newbar) {
+      for (let anItem of state.barClone) {
         newTotalNumberOfItemsAddedFromBar += Number(anItem.noInCheckOut)
         if (anItem.noInCheckOut > 0) {
           newTotalAmountOfItemsAddedFromBar +=
@@ -49,7 +44,7 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
         totalAmountOfItemsAddedFromBar: {
           $set: newTotalAmountOfItemsAddedFromBar
         },
-        barCheckOut: { $set: newbarCheckOut() }
+        barCheckOut: { $set: newBarCheckOut() }
       })
     }
     case Actions.CLEAR_ITEMS_IN_MORE_BAR: {
@@ -67,22 +62,17 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
       }
     }
     case Actions.UPDATE_NO_OF_ITEM_IN_MORE_RESTAURANT: {
-      const newRestaurant = state.restaurant.map((item, index) => {
-        if (index === action.payload.index) {
-          item.noInCheckOut = action.payload.value
-          item.newPrice = Number(action.payload.value) * Number(item.price)
-        }
-        return item
-      })
+      
+      state.restaurantClone[action.payload.index].noInCheckOut = action.payload.value
+      state.restaurantClone[action.payload.index].newPrice = Number(action.payload.value) * Number(state.restaurantClone[action.payload.index].price)
 
       const newRestaurantCheckOut = () => {
-        return newRestaurant.filter(item => item.noInCheckOut > 0)
+        return state.restaurantClone.filter(item => item.noInCheckOut > 0)
       }
 
-      let newTotalNumberOfItemsAddedFromRestaurant = 0
-      let newTotalAmountOfItemsAddedFromRestaurant = 0
+      let newTotalNumberOfItemsAddedFromRestaurant = 0, newTotalAmountOfItemsAddedFromRestaurant = 0
 
-      for (let anItem of newRestaurant) {
+      for (let anItem of state.restaurantClone) {
         newTotalNumberOfItemsAddedFromRestaurant += Number(anItem.noInCheckOut)
         if (anItem.noInCheckOut > 0) {
           newTotalAmountOfItemsAddedFromRestaurant +=

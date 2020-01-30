@@ -15,7 +15,7 @@ class Cart extends Component {
     return (
       this.props.itemsInCart.reduce(
         (total, obj) => obj.transactionTotalAmount + total, 0) || 0
-    )
+    ).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
 
   getData = async () => {

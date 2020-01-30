@@ -21,13 +21,19 @@ export const socketIO = store => {
 
           socket.emit("saveSocketId", Staff_ID);
 
-          setInterval(()=>{
-            socket.emit("getOngoingTransactions", Staff_ID, response => {
-              store.dispatch(
-                actions.populateOngoingTransactionsInCart(response)
-              );
-            })
-          }, 5000);
+          socket.on("transactionDetailsUpdated", data => {
+            if(data.Staff_ID === Staff_ID){
+              store.dispatch(actions.updateOngoingTransactionInCart(data));
+            }       
+          });
+
+          // setInterval(()=>{
+          //   socket.emit("getOngoingTransactions", Staff_ID, response => {
+          //     store.dispatch(
+          //       actions.populateOngoingTransactionsInCart(response)
+          //     );
+          //   })
+          // }, 5000);
 
           // socket.emit("getItems", Branch, response => {
           //   if (response) {
@@ -51,10 +57,6 @@ export const socketIO = store => {
 
     socket.on("disconnect", () => {
       console.log("connection to server lost.");
-    });
-
-    socket.on("transactionDetailsUpdated", data => {
-      store.dispatch(actions.updateOngoingTransactionInCart(data));
     });
 
     socket.on("cancelOrder", data => {

@@ -21,10 +21,6 @@ class Bar extends Component {
   }
 
   componentDidMount() {
-    this.fetchItemsFromLocalStorage()
-  }
-
-  fetchItemsFromLocalStorage = async () => {
     this.fetchItemsFromOnline()
   }
 
@@ -70,17 +66,17 @@ class Bar extends Component {
             <Text style={styles.emptyText}>None Found.</Text>
           </View>
         ) : (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <FlatList
-                  data={this.props.bar}
-                  keyExtractor={item => item.itemId}
-                  renderItem={this.renderGridItem}
-                  horizontal={false}
-                  numColumns={2}
-                  contentContainerStyle={styles.gridLayout}
-                />
-              </ScrollView>
-            )}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <FlatList
+              data={this.props.bar}
+              keyExtractor={item => item.itemId}
+              renderItem={this.renderGridItem}
+              horizontal={false}
+              numColumns={2}
+              contentContainerStyle={styles.gridLayout}
+            />
+          </ScrollView>
+        )}
       </View>
     )
   }

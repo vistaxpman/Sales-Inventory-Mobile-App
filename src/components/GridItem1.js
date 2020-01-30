@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { getImage } from '../config'
 
-class GridItem extends Component {
+class GridItem1 extends Component {
   constructor(props) {
     super(props)
   }
@@ -112,7 +112,7 @@ mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   null
-)(GridItem)
+)(GridItem1)
 
 const styles = StyleSheet.create({
   itemContainer: {

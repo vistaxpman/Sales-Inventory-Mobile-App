@@ -233,40 +233,6 @@ class CartItemsContainer extends Component {
                   // justifyContent: 'space-between'
                 }}
               >
-                {/* {this.cancelDialog()}
-                <TouchableOpacity
-                  onPress={() =>
-                    this.setState({
-                      cancelOrderIsVisible: true
-                    })
-                  }
-                >
-                  <Text
-                    style={[
-                      styles.orderControlButtons,
-                      { color: '#c98811', fontWeight: 'bold', fontSize: 17 }
-                    ]}
-                  >
-                    Cancel Order
-                  </Text>
-                </TouchableOpacity> */}
-                {/* {this.finishTransactionDialog()}
-                <TouchableOpacity
-                  onPress={() =>
-                    this.setState({
-                      finishTransactionIsVisible: true
-                    })
-                  }
-                >
-                  <Text
-                    style={[
-                      styles.orderControlButtons,
-                      { color: '#c98811', fontWeight: 'bold', fontSize: 17 }
-                    ]}
-                  >
-                    Finish
-                  </Text>
-                </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => this.addMoreItems()}>
                   <Text
                     style={[

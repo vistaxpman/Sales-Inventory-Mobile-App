@@ -58,9 +58,14 @@ class Sales extends Component {
       })
   }
 
+  totalAmount = () => {
+    return this.state.totalSales.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0
+  }
+
   renderItem = ({ item, index }) => <SalesItemsContainer item={item} />
 
   render() {
+    let itemsInSales = this.props.itemsInSales;
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.layoutContainer}>
@@ -104,7 +109,7 @@ class Sales extends Component {
               </Text>
               <Text
                 style={{ fontSize: 16, fontWeight: 'bold' }}
-              >{`₦${this.state.totalSales}`}</Text>
+              >{`₦${this.totalAmount()}`}</Text>
             </View>
           </View>
 
@@ -124,9 +129,8 @@ class Sales extends Component {
               </View>
             ) : (
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    {console.log(this.props.itemsInSales)}
                     <List
-                      data={this.props.itemsInSales}
+                      data={itemsInSales}
                       renderItem={this.renderItem}
                       style={styles.listLayout}
                     />
