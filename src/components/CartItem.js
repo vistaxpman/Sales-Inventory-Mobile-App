@@ -28,13 +28,11 @@ export default class CartItem extends Component {
           >
             {this.props.item.name}
           </Text>
-          <Text style={styles.itemPriceText}>{`₦${Number(
-            this.props.item.price
-          ) * Number(this.props.item.noInCheckOut)}`}</Text>
+          <Text style={styles.itemPriceText}>{`₦${this.props.item.newPrice}`}</Text>
         </View>
         <View style={styles.counterContainer}>
           <Text style={styles.counterText}>
-            {this.props.item.noInCheckOut.toString()}
+            {this.props.item.noInCheckOut}
           </Text>
         </View>
       </View>

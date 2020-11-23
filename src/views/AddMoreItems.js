@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import {
   Text,
   View,
@@ -12,7 +12,7 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import TabBar from '@mindinventory/react-native-tab-bar-interaction'
 import { List } from 'react-native-ui-kitten'
 import { connect } from 'react-redux'
-import GridItem from '../components/GridItem'
+import MoreGridItem from '../components/MoreGridItem'
 import {
   updateNoOfItemInMoreBar,
   updateNoOfItemInMoreRestaurant
@@ -24,7 +24,7 @@ import MoreItemsSearchBar from '../components/MoreItemsSearchBar'
 import { socket } from '../services/socketIO'
 import { addMoreToCart } from '../store/actions/cartActions'
 
-class AddMoreItems extends Component {
+class AddMoreItems extends PureComponent {
   constructor(props) {
     super(props)
   }
@@ -52,9 +52,8 @@ class AddMoreItems extends Component {
         )
         const data = this.props.selectedItem
         ToastAndroid.show('Order sent successfully.', ToastAndroid.SHORT)
-        socket.emit('moreAdded', data, response => {
-          this.closeModal()
-        })
+        socket.emit('moreAdded', data)
+        this.closeModal()
       }
     } else {
       ToastAndroid.show(
@@ -64,22 +63,22 @@ class AddMoreItems extends Component {
     }
   }
 
-  renderGridItemToBar = ({ item, index }) => (
-    <GridItem
+  renderMoreGridItemToBar = ({ item, index }) => (
+    <MoreGridItem
       item={item}
       index={index}
-      onChange={(value, eventType) => {
-        this.props.updateNoOfItemInMoreBar(value, index)
+      onChange={(value, eventType, itemId) => {
+        this.props.updateNoOfItemInMoreBar(value, index, itemId)
       }}
     />
   )
 
-  renderGridItemToRestaurant = ({ item, index }) => (
-    <GridItem
+  renderMoreGridItemToRestaurant = ({ item, index }) => (
+    <MoreGridItem
       item={item}
       index={index}
-      onChange={(value, eventType) => {
-        this.props.updateNoOfItemInMoreRestaurant(value, index)
+      onChange={(value, eventType, itemId) => {
+        this.props.updateNoOfItemInMoreRestaurant(value, index, itemId)
       }}
     />
   )
@@ -91,7 +90,9 @@ class AddMoreItems extends Component {
   }
 
   render() {
-    let barData = this.props.bar, restData = this.props.restaurant;
+    let barData = this.props.bar, 
+      restData = this.props.restaurant, 
+      itemsToOrder = this.itemsToOrder();
     return (
       <View style={styles.container}>
         <View style={styles.container2}>
@@ -108,7 +109,6 @@ class AddMoreItems extends Component {
             </Text>
             <TouchableOpacity onPress={() => this.closeModal()}>
               <AntDesignIcon
-                style={{ marginLeft: 25 }}
                 name="close"
                 size={25}
                 color="#fff"
@@ -138,8 +138,9 @@ class AddMoreItems extends Component {
                     <ScrollView showsVerticalScrollIndicator={false}>
                       <FlatList
                         data={restData}
+                        extraData={this.props}
                         keyExtractor={item => item.itemId}
-                        renderItem={this.renderGridItemToRestaurant}
+                        renderItem={this.renderMoreGridItemToRestaurant}
                         horizontal={false}
                         numColumns={2}
                         contentContainerStyle={styles.gridLayout}
@@ -170,8 +171,9 @@ class AddMoreItems extends Component {
                     <ScrollView showsVerticalScrollIndicator={false}>
                       <FlatList
                         data={barData}
+                        extraData={this.props}
                         keyExtractor={item => item.itemId}
-                        renderItem={this.renderGridItemToBar}
+                        renderItem={this.renderMoreGridItemToBar}
                         horizontal={false}
                         numColumns={2}
                         contentContainerStyle={styles.gridLayout}
@@ -187,7 +189,7 @@ class AddMoreItems extends Component {
               title="Cart"
             >
               <View style={styles.gridContainer}>
-                {this.itemsToOrder().length === 0 ? (
+                {itemsToOrder.length === 0 ? (
                   <View style={styles.emptyContainer}>
                     <MaterialIcon name="hourglass-empty" size={50} color="gray" />
                     <Text style={styles.emptyText}>None Found.</Text>
@@ -195,7 +197,7 @@ class AddMoreItems extends Component {
                 ) : (
                     <ScrollView showsVerticalScrollIndicator={false}>
                       <List
-                        data={this.itemsToOrder()}
+                        data={itemsToOrder}
                         renderItem={this.renderItemsToOrderCart}
                       />
                     </ScrollView>
@@ -224,11 +226,11 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return {
-    updateNoOfItemInMoreBar: (value, index) => {
-      dispatch(updateNoOfItemInMoreBar(value, index))
+    updateNoOfItemInMoreBar: (value, index, itemId) => {
+      dispatch(updateNoOfItemInMoreBar(value, index, itemId))
     },
-    updateNoOfItemInMoreRestaurant: (value, index) => {
-      dispatch(updateNoOfItemInMoreRestaurant(value, index))
+    updateNoOfItemInMoreRestaurant: (value, index, itemId) => {
+      dispatch(updateNoOfItemInMoreRestaurant(value, index, itemId))
     },
     addMoreToCart: (transactionId, barCheckOut, restaurantCheckOut) => {
       dispatch(addMoreToCart(transactionId, barCheckOut, restaurantCheckOut))
@@ -268,12 +270,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#c98811',
     height: 50,
     padding: 10,
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3
+    justifyContent: 'space-between'
   },
   bottomSheetHeaderText: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
     fontSize: 17,
     color: '#fff',
     fontWeight: 'bold'

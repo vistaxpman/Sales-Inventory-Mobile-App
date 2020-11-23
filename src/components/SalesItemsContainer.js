@@ -7,7 +7,6 @@ import {
 } from 'react-native'
 import { List, ListItem } from 'react-native-ui-kitten'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
-import { connect } from 'react-redux'
 import SalesItem from './SalesItem'
 
 class SalesItemsContainer extends Component {

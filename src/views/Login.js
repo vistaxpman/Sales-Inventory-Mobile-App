@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   View,
   Text,
@@ -8,105 +8,122 @@ import {
   AsyncStorage,
   Image,
   KeyboardAvoidingView,
-  Keyboard
-} from 'react-native'
-import axios from 'axios'
-import { Spinner } from 'react-native-ui-kitten'
-import { connect } from 'react-redux'
-import { socket } from '../services/socketIO'
-import AppLogo from '../assets/invex.png'
-import { setStaffData } from '../store/actions/homeActions'
-import { populateOngoingTransactionsInCart } from '../store/actions/cartActions'
-import { appUrl } from '../config'
+  Keyboard,
+} from "react-native";
+import axios from "axios";
+import { Spinner } from "react-native-ui-kitten";
+import { connect } from "react-redux";
+import { socket } from "../services/socketIO";
+import AppLogo from "../assets/invex.png";
+import {
+  setStaffData,
+  populateDrawerItems,
+} from "../store/actions/homeActions";
+import { populateOngoingTransactionsInCart } from "../store/actions/cartActions";
+import { appUrl } from "../config";
 
 class Login extends Component {
   constructor() {
-    super()
+    super();
     this.state = {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       usernameError: false,
       passwordError: false,
-      appId: 'invexBar&Restaurant',
-      errorMessage: '',
-      isLoading: false
-    }
+      appId: "invexBar&Restaurant",
+      errorMessage: "",
+      isLoading: false,
+    };
   }
 
-  handleSetUp = async staffData => {
+  handleSetUp = async (staffData) => {
     try {
-      await AsyncStorage.setItem('staffData', JSON.stringify(staffData))
-      this.props.navigation.replace('Home')
+      await AsyncStorage.setItem("staffData", JSON.stringify(staffData));
+      this.props.navigation.replace("Home");
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
   initialRequests = () => {
-    const { Staff_ID } = this.props.staffData
+    const { Staff_ID, Branch } = this.props.staffData;
 
-    socket.emit('saveSocketId', Staff_ID)
+    socket.emit("saveSocketId", Staff_ID);
 
-    socket.emit('getStaffUpdatedData', Staff_ID, response => {
-      this.props.setStaffData(response)
-    })
+    socket.emit("getStaffUpdatedData", Staff_ID, (response) => {
+      this.props.setStaffData(response);
+    });
 
-    socket.emit('getOngoingTransactions', Staff_ID, response => {
-      this.props.populateOngoingTransactionsInCart(response)
-    })
-  }
+    socket.emit("getOngoingTransactions", Staff_ID, (response) => {
+      this.props.populateOngoingTransactionsInCart(response);
+    });
+
+    let url = appUrl + '/getBranchCategories'
+    axios
+      .post(url, {
+        Branch
+      })
+      .then(async response => {
+        if (response.data.categories) {
+          this.props.populateDrawerItems(response.data.categories)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  };
 
   handleLogin = () => {
     Keyboard.dismiss();
     this.setState({
-      errorMessage: ''
-    })
+      errorMessage: "",
+    });
     let username = this.state.username,
       password = this.state.password,
-      appId = this.state.appId
+      appId = this.state.appId;
     if (!username) {
-      this.setState({ usernameError: true })
+      this.setState({ usernameError: true });
     } else if (!password) {
-      this.setState({ passwordError: true })
+      this.setState({ passwordError: true });
     } else {
       this.setState({
-        isLoading: true
-      })
+        isLoading: true,
+      });
       axios
-        .post(appUrl + '/login', {
+        .post(appUrl + "/login", {
           username,
           password,
-          appId
+          appId,
         })
-        .then(response => {
-          if (response.data.loginMessage === 'success') {
-            this.props.setStaffData(response.data.staffData)
-            this.initialRequests()
-            this.handleSetUp(response.data.staffData)
-          } else if (response.data.loginMessage === 'failed') {
+        .then((response) => {
+          if (response.data.loginMessage === "success") {
+            this.props.setStaffData(response.data.staffData);
+            this.initialRequests();
+            this.handleSetUp(response.data.staffData);
+          } else if (response.data.loginMessage === "failed") {
             this.setState({
-              errorMessage: 'Invalid Login',
-              isLoading: false
-            })
+              errorMessage: "Invalid Login",
+              isLoading: false,
+            });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.setState({
-            errorMessage: 'An error occured. Please try again',
-            isLoading: false
-          })
-          console.log(err)
-        })
+            errorMessage: "An error occured. Please try again",
+            isLoading: false,
+          });
+          console.log(err);
+        });
     }
-  }
+  };
 
   render() {
     return (
       <View
         style={{
           flex: 1,
-          justifyContent: 'center',
-          backgroundColor: '#F5FCFF'
+          justifyContent: "center",
+          backgroundColor: "#F5FCFF",
         }}
       >
         <KeyboardAvoidingView
@@ -117,18 +134,18 @@ class Login extends Component {
           <View style={styles.container2}>
             <View
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%'
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
               }}
             >
               <Image source={AppLogo} />
             </View>
             <Text
               style={{
-                color: 'red',
-                textAlign: 'center',
-                marginTop: 20
+                color: "red",
+                textAlign: "center",
+                marginTop: 20,
               }}
             >
               {this.state.errorMessage}
@@ -140,11 +157,11 @@ class Login extends Component {
                 </Text>
               )}
               <TextInput
-                onChangeText={username =>
+                onChangeText={(username) =>
                   this.setState({
                     usernameError: false,
                     username: username,
-                    errorMessage: ''
+                    errorMessage: "",
                   })
                 }
                 style={styles.textInputStyle}
@@ -160,11 +177,11 @@ class Login extends Component {
 
               <TextInput
                 secureTextEntry={true}
-                onChangeText={password =>
+                onChangeText={(password) =>
                   this.setState({
                     passwordError: false,
                     password: password,
-                    errorMessage: ''
+                    errorMessage: "",
                   })
                 }
                 style={styles.textInputStyle}
@@ -181,64 +198,64 @@ class Login extends Component {
               {this.state.isLoading ? (
                 <Spinner size="large" status="info" />
               ) : (
-                  <Text style={styles.loginTextStyle}> LOGIN </Text>
-                )}
+                <Text style={styles.loginTextStyle}> LOGIN </Text>
+              )}
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </View>
-    )
+    );
   }
 }
 
-mapStateToProps = state => {
-  return { staffData: state.homeReducer.staffData }
-}
+mapStateToProps = (state) => {
+  return { staffData: state.homeReducer.staffData };
+};
 
-mapDispatchToProps = dispatch => {
+mapDispatchToProps = (dispatch) => {
   return {
-    setStaffData: staffData => {
-      dispatch(setStaffData(staffData))
+    setStaffData: (staffData) => {
+      dispatch(setStaffData(staffData));
     },
-    populateOngoingTransactionsInCart: ongoingTransactions => {
-      dispatch(populateOngoingTransactionsInCart(ongoingTransactions))
+    populateOngoingTransactionsInCart: (ongoingTransactions) => {
+      dispatch(populateOngoingTransactionsInCart(ongoingTransactions));
+    },
+    populateDrawerItems: value => {
+      dispatch(populateDrawerItems(value))
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignItems: 'stretch'
+    justifyContent: "center",
+    alignItems: "center",
+    alignItems: "stretch",
   },
   container2: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     paddingLeft: 30,
-    paddingRight: 30
+    paddingRight: 30,
   },
   textInputContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: 25
+    display: "flex",
+    flexDirection: "column",
+    marginTop: 25,
   },
   textErrorStyle: {
-    color: 'red'
+    color: "red",
   },
   textInputStyle: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 3,
     fontSize: 16,
     marginTop: 5,
-    padding: 7
+    padding: 7,
   },
   loginButtonStyle: {
     marginTop: 40,
@@ -246,22 +263,22 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginLeft: 30,
     marginRight: 30,
-    backgroundColor: '#c98811',
+    backgroundColor: "#c98811",
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: '#c98811',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#fff',
+    borderColor: "#c98811",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#fff",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 2,
-    elevation: 2
+    elevation: 2,
   },
   loginTextStyle: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 17
-  }
-})
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 17,
+  },
+});

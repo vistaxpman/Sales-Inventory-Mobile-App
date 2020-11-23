@@ -16,10 +16,9 @@ import { getImage } from '../config'
 import { removePinnedItemInBar } from "../store/actions/barActions";
 import { removePinnedItemInRestaurant } from "../store/actions/restaurantActions";
 
-class GridItem extends Component {
+class MoreGridItem extends Component {
   constructor(props) {
     super(props)
-    // AsyncStorage.setItem('barPinnedItems', '');
   }
 
   onUpdate = (type, itemId, value) => {
@@ -177,7 +176,7 @@ mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GridItem)
+)(MoreGridItem)
 
 const styles = StyleSheet.create({
   itemContainer: {

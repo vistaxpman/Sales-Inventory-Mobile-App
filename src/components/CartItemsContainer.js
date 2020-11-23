@@ -20,6 +20,8 @@ import {
   clearItemsInMoreBar,
   clearItemsInMoreRestaurant
 } from '../store/actions/moreItemsToOrderActions'
+import { clearItemsInBar } from "../store/actions/barActions";
+import { clearItemsInRestaurant } from "../store/actions/restaurantActions";
 
 class CartItemsContainer extends Component {
   constructor(props) {
@@ -141,20 +143,17 @@ class CartItemsContainer extends Component {
   }
 
   addMoreItems = () => {
-    this.props.clearItemsInMoreBar()
-    this.props.clearItemsInMoreRestaurant()
-    this.props.changeSelectedOrderTransactionId(this.props.item.transactionId)
     this.setState({
       addMoreItemsModalIsVisible: !this.state.addMoreItemsModalIsVisible
     })
+    this.props.changeSelectedOrderTransactionId(this.props.item.transactionId)
   }
 
   onCloseModal = () => {
     this.setState({
       addMoreItemsModalIsVisible: !this.state.addMoreItemsModalIsVisible
     })
-    this.props.clearItemsInMoreBar()
-    this.props.clearItemsInMoreRestaurant()
+    this.props.clearItems();
   }
 
   render() {
@@ -270,8 +269,12 @@ mapDispatchToProps = dispatch => {
     changeSelectedOrderTransactionId: transactionId => {
       dispatch(changeSelectedOrderTransactionId(transactionId))
     },
-    clearItemsInMoreBar: () => dispatch(clearItemsInMoreBar()),
-    clearItemsInMoreRestaurant: () => dispatch(clearItemsInMoreRestaurant())
+    clearItems: () => {
+      dispatch(clearItemsInBar())
+      dispatch(clearItemsInRestaurant())
+      dispatch(clearItemsInMoreBar())
+      dispatch(clearItemsInMoreRestaurant())
+    }
   }
 }
 

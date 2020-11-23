@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component,PureComponent } from "react";
 import { View, StyleSheet, ScrollView, FlatList, Text } from "react-native";
 import axios from "axios";
 import { connect } from "react-redux";
@@ -7,18 +7,16 @@ import GridItem1 from "../components/GridItem1";
 import { appUrl } from "../config";
 import {
   updateNoOfItemInBar,
-  populateItemsInBar
+  populateItemsInBar,
+  toggleBarItemsLoading
 } from "../store/actions/barActions";
 import { populateMoreItemsInBar } from "../store/actions/moreItemsToOrderActions";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { Spinner } from "react-native-ui-kitten";
 
-class BarAPI extends Component {
+class BarAPI extends PureComponent {
   constructor() {
     super();
-    this.state = {
-      isLoadingBarItems: true
-    };
   }
 
   componentWillMount() {
@@ -32,14 +30,11 @@ class BarAPI extends Component {
       .post(url, {
         Branch: this.props.staffData.Branch
       })
-      .then(async response => {
+      .then(response => {
         if (response.data.hasItems) {
-          this.setState({ barItems: response.data.items });
           this.props.populateItemsInBar(response.data.items);
-          this.setState({
-            isLoadingBarItems: false
-          });
         }
+        this.props.toggleBarItemsLoading(false);
       })
       .catch(err => {
         console.log(err);
@@ -71,7 +66,7 @@ class BarAPI extends Component {
 
     return (
       <View style={styles.gridContainer}>
-        {this.state.isLoadingBarItems ? (
+        {this.props.isLoadingBarItems ? (
           <View style={styles.emptyContainer}>
             <Spinner size="giant" status="alternative" />
           </View>
@@ -99,18 +94,17 @@ class BarAPI extends Component {
                 // onEndReached={this.loadMore.bind(this)}
               />
             ) : ( */}
-              <FlatList
-                data={dataBar}
-                extraData={this.props}
-                keyExtractor={item => item.itemId}
-                renderItem={this.renderGridItem}
-                horizontal={false}
-                numColumns={2}
-                contentContainerStyle={styles.gridLayout}
-                // onEndReached={this.loadMore.bind(this)}
-              />
+            <FlatList
+              data={dataBar}
+              extraData={this.props}
+              keyExtractor={item => item.itemId}
+              renderItem={this.renderGridItem}
+              horizontal={false}
+              numColumns={2}
+              contentContainerStyle={styles.gridLayout}
+              // onEndReached={this.loadMore.bind(this)}
+            />
             {/* )} */}
-            
           </ScrollView>
         )}
       </View>
@@ -126,7 +120,8 @@ mapStateToProps = state => {
     totalNumberOfItemsAddedFromBar:
       state.barReducer.totalNumberOfItemsAddedFromBar,
     totalNumberOfItemsAddedFromRestaurant:
-      state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant
+      state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant,
+    isLoadingBarItems: state.barReducer.isLoadingBarItems
   };
 };
 
@@ -138,6 +133,9 @@ mapDispatchToProps = dispatch => {
     populateItemsInBar: value => {
       dispatch(populateItemsInBar(value));
       dispatch(populateMoreItemsInBar(value));
+    },
+    toggleBarItemsLoading: (value) => {
+      dispatch(toggleBarItemsLoading(value));
     }
   };
 };

@@ -3,9 +3,12 @@ import { Text, View, StyleSheet, Image } from 'react-native'
 import { AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import { socket } from '../services/socketIO'
+import axios from 'axios'
 import AppLogo from '../assets/invex.png'
-import { setStaffData } from '../store/actions/homeActions'
+import { setStaffData, populateDrawerItems } from '../store/actions/homeActions'
 import { populateOngoingTransactionsInCart } from '../store/actions/cartActions'
+import { appUrl } from '../config'
+
 
 class SplashScreen extends Component {
   constructor() {
@@ -26,13 +29,28 @@ class SplashScreen extends Component {
     socket.emit('getOngoingTransactions', Staff_ID, response => {
       this.props.populateOngoingTransactionsInCart(response)
     })
+
+    let url = appUrl + '/getBranchCategories'
+    axios
+      .post(url, {
+        Branch
+      })
+      .then(async response => {
+        if (response.data.categories) {
+          this.props.populateDrawerItems(response.data.categories)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
   }
 
   componentDidMount() {
     ; (staffData = async () => {
-      await AsyncStorage.getItem('staffData').then(value => {
+      await AsyncStorage.getItem('staffData').then(async value => {
         if (value) {
-          this.props.setStaffData(JSON.parse(value))
+          await this.props.setStaffData(JSON.parse(value))
           this.initialRequests()
           this.props.navigation.replace('Home')
         } else {
@@ -70,6 +88,9 @@ mapDispatchToProps = dispatch => {
     },
     populateOngoingTransactionsInCart: ongoingTransactions => {
       dispatch(populateOngoingTransactionsInCart(ongoingTransactions))
+    },
+    populateDrawerItems: value => {
+      dispatch(populateDrawerItems(value))
     }
   }
 }

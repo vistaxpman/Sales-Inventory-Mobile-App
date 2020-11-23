@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { YellowBox } from 'react-native'
+import { YellowBox, Platform } from 'react-native'
+import { SafeAreaView } from "react-navigation";
 import { Provider } from 'react-redux'
 import AppNavigator from './src/navigations/AppNavigator'
 import { mapping, light as lightTheme } from '@eva-design/eva'

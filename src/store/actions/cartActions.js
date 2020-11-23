@@ -13,6 +13,8 @@ export const REMOVE_ALL_ITEMS_FROM_ONGOING_TRANSACTIONS_IN_CART =
   "REMOVE_ALL_ITEMS_FROM_ONGOING_TRANSACTIONS_IN_CART";
 export const REMOVE_SINGLE_ITEM_FROM_ONGOING_TRANSACTIONS_IN_CART =
   "REMOVE_SINGLE_ITEM_FROM_ONGOING_TRANSACTIONS_IN_CART";
+export const TOGGLE_CART_LOADING = 'TOGGLE_CART_LOADING';
+
 
 export const updateNoOfItemInCart = (
   transactionId,
@@ -72,3 +74,8 @@ export const removeSingleItemFromOngoingTransactionsInCart = transactionId => ({
   type: REMOVE_SINGLE_ITEM_FROM_ONGOING_TRANSACTIONS_IN_CART,
   payload: transactionId
 });
+
+export const toggleCartItemsLoading = value => ({
+  type: TOGGLE_CART_LOADING,
+  payload: value
+})

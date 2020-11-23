@@ -5,8 +5,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  TextInput,
-  ToastAndroid
+  TextInput
 } from "react-native";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -27,27 +26,27 @@ export default class CheckOutItem extends Component {
     switch (type) {
       case "increment":
         let newAmount = amount + 1;
-        if (newAmount > quantity) {
-          ToastAndroid.show(
-            "Item cannot be more than quantity in inventory!",
-            ToastAndroid.SHORT
-          );
-        } else {
+        // if (newAmount > quantity) {
+        //   ToastAndroid.show(
+        //     "Item cannot be more than quantity in inventory!",
+        //     ToastAndroid.SHORT
+        //   );
+        // } else {
           amount = newAmount;
-        }
+        // }
         break;
       case "decrement":
         amount = amount - (amount ? 1 : 0);
         break;
       case "input":
-        if (value > quantity) {
-          ToastAndroid.show(
-            "Item cannot be more than quantity in inventory!",
-            ToastAndroid.SHORT
-          );
-        } else {
+        // if (value > quantity) {
+        //   ToastAndroid.show(
+        //     "Item cannot be more than quantity in inventory!",
+        //     ToastAndroid.SHORT
+        //   );
+        // } else {
           amount = value;
-        }
+        // }
         break;
       default:
         break;
@@ -62,7 +61,7 @@ export default class CheckOutItem extends Component {
   render() {
     return (
       <View style={styles.itemContainer}>
-        <View style={{ width: "10%", padding: 5 }}>
+        <View style={{ width: "12%" }}>
           <TouchableOpacity onPress={() => this.onDelete()}>
             <MaterialCommunityIcons name="close" size={30} color="gray" />
           </TouchableOpacity>
@@ -117,7 +116,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingTop: 3,
     paddingBottom: 3,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    paddingLeft: 5,
+    paddingRight: 5
   },
   itemBgImage: {
     height: "100%",
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    width: "52%",
+    width: "50%",
     paddingRight: 5
   },
   itemNameText: {

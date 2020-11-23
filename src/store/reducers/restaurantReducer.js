@@ -7,7 +7,8 @@ const initialState = {
   totalAmountOfItemsAddedFromRestaurant: 0,
   restaurant: [],
   restaurantClone: [],
-  restaurantCheckOut: []
+  restaurantCheckOut: [],
+  isLoadingRestaurantItems: true,
 };
 
 const restaurantReducer = (state = initialState, action) => {
@@ -16,46 +17,47 @@ const restaurantReducer = (state = initialState, action) => {
       let itemIndex;
       const newRestaurant = state.restaurantClone.map((item, index) => {
         if (index === action.payload.index) {
-          item.isPosted = false
-          item.noInCheckOut = action.payload.value
-          item.newPrice = Number(action.payload.value) * Number(item.price)
-          itemIndex = index
+          item.isPosted = false;
+          item.noInCheckOut = Number(action.payload.value);
+          item.newPrice = Number(action.payload.value) * Number(item.price);
+          itemIndex = index;
         }
-        return item
-      })
+        return item;
+      });
 
       const newRestaurantCheckOut = () => {
-        return newRestaurant.filter(item => item.noInCheckOut > 0)
-      }
+        return newRestaurant.filter((item) => item.noInCheckOut > 0);
+      };
 
       let newTotalNumberOfItemsAddedFromRestaurant = 0,
         newTotalAmountOfItemsAddedFromRestaurant = 0;
       for (let anItem of state.restaurantClone) {
-        newTotalNumberOfItemsAddedFromRestaurant += Number(anItem.noInCheckOut);
-        if (anItem.noInCheckOut > 0) {
+        const nINC = Number(anItem.noInCheckOut);
+        newTotalNumberOfItemsAddedFromRestaurant += nINC;
+        if (nINC > 0) {
           newTotalAmountOfItemsAddedFromRestaurant +=
-            Number(anItem.price) * Number(anItem.noInCheckOut);
+            Number(anItem.price) * nINC;
         }
       }
 
       return update(state, {
         restaurant: {
           [action.payload.index]: {
-            noInCheckOut: { $set: action.payload.value }
-          }
+            noInCheckOut: { $set: action.payload.value },
+          },
         },
         restaurantClone: {
           [itemIndex]: {
-            noInCheckOut: { $set: action.payload.value }
-          }
+            noInCheckOut: { $set: action.payload.value },
+          },
         },
         totalNumberOfItemsAddedFromRestaurant: {
-          $set: newTotalNumberOfItemsAddedFromRestaurant
+          $set: newTotalNumberOfItemsAddedFromRestaurant,
         },
         totalAmountOfItemsAddedFromRestaurant: {
-          $set: newTotalAmountOfItemsAddedFromRestaurant
+          $set: newTotalAmountOfItemsAddedFromRestaurant,
         },
-        restaurantCheckOut: { $set: newRestaurantCheckOut() }
+        restaurantCheckOut: { $set: newRestaurantCheckOut() },
       });
     }
     case Actions.CLEAR_ITEMS_IN_RESTAURANT: {
@@ -74,14 +76,14 @@ const restaurantReducer = (state = initialState, action) => {
         restaurantClone: newRestaurantClone,
         totalNumberOfItemsAddedFromRestaurant: 0,
         totalAmountOfItemsAddedFromRestaurant: 0,
-        restaurantCheckOut: []
+        restaurantCheckOut: [],
       };
     }
     case Actions.UPDATE_NO_OF_ITEM_FOR_RESTAURANT_CHECKOUT: {
       let itemIndex;
       const newRestaurant = state.restaurantClone.map((item, index) => {
         if (item.itemId === action.payload.itemId) {
-          item.noInCheckOut = action.payload.value;
+          item.noInCheckOut = Number(action.payload.value);
           item.newPrice = Number(action.payload.value) * Number(item.price);
           itemIndex = index;
         }
@@ -89,43 +91,44 @@ const restaurantReducer = (state = initialState, action) => {
       });
 
       const newRestaurantCheckOut = () => {
-        return newRestaurant.filter(item => item.noInCheckOut > 0);
+        return newRestaurant.filter((item) => item.noInCheckOut > 0);
       };
 
       let newTotalNumberOfItemsAddedFromRestaurant = 0;
       let newTotalAmountOfItemsAddedFromRestaurant = 0;
       for (let anItem of newRestaurant) {
-        newTotalNumberOfItemsAddedFromRestaurant += Number(anItem.noInCheckOut);
-        if (anItem.noInCheckOut > 0) {
+        const nINC = Number(anItem.noInCheckOut);
+        newTotalNumberOfItemsAddedFromRestaurant += nINC;
+        if (nINC > 0) {
           newTotalAmountOfItemsAddedFromRestaurant +=
-            Number(anItem.price) * Number(anItem.noInCheckOut);
+            Number(anItem.price) * nINC;
         }
       }
 
       return update(state, {
         restaurant: {
           [itemIndex]: {
-            noInCheckOut: { $set: action.payload.value }
-          }
+            noInCheckOut: { $set: action.payload.value },
+          },
         },
         restaurantClone: {
           [itemIndex]: {
-            noInCheckOut: { $set: action.payload.value }
-          }
+            noInCheckOut: { $set: action.payload.value },
+          },
         },
         totalNumberOfItemsAddedFromRestaurant: {
-          $set: newTotalNumberOfItemsAddedFromRestaurant
+          $set: newTotalNumberOfItemsAddedFromRestaurant,
         },
         totalAmountOfItemsAddedFromRestaurant: {
-          $set: newTotalAmountOfItemsAddedFromRestaurant
+          $set: newTotalAmountOfItemsAddedFromRestaurant,
         },
-        restaurantCheckOut: { $set: newRestaurantCheckOut() }
+        restaurantCheckOut: { $set: newRestaurantCheckOut() },
       });
     }
     case Actions.FILTER_ITEMS_IN_RESTAURANT: {
       let newRestaurant = [];
       if (action.payload.value) {
-        newRestaurant = state.restaurantClone.filter(item =>
+        newRestaurant = state.restaurantClone.filter((item) =>
           item.name.toLowerCase().includes(action.payload.value.toLowerCase())
         );
       } else {
@@ -134,16 +137,74 @@ const restaurantReducer = (state = initialState, action) => {
 
       return update(state, {
         restaurant: {
-          $set: newRestaurant
-        }
+          $set: newRestaurant,
+        },
       });
     }
     case Actions.POPULATE_ITEMS_IN_RESTAURANT: {
       return {
         ...state,
         restaurant: action.payload,
-        restaurantClone: action.payload
+        restaurantClone: action.payload,
+        isLoadingRestaurantItems: false,
       };
+    }
+    case Actions.TOGGLE_RESTAURANT_LOADING: {
+      return {
+        ...state,
+        isLoadingRestaurantItems: action.payload,
+      };
+    }
+    case Actions.REMOVE_PINNED_ITEM_IN_RESTAURANT: {
+      const newRestaurant = state.restaurantClone.filter(
+        (item, index) => item.itemId !== action.payload.itemId
+      );
+      return {
+        ...state,
+        restaurant: newRestaurant,
+        restaurantClone: newRestaurant,
+      };
+    }
+    case Actions.SORT_ITEMS_IN_RESTAURANT: {
+      let newRestaurant = [],
+        arrToBeSorted = action.payload,
+        restaurantClone = state.restaurantClone;
+
+      if (arrToBeSorted.length > 0) {
+        const newRestaurantClone = restaurantClone.filter((item) => {
+          if (!arrToBeSorted.find((arr) => arr.itemId.includes(item.itemId))) {
+            return item;
+          }
+        });
+        newRestaurant = arrToBeSorted.concat(newRestaurantClone);
+      } else {
+        newRestaurant = state.restaurantClone;
+      }
+
+      return {
+        ...state,
+        restaurant: newRestaurant,
+        restaurantClone: newRestaurant,
+        isLoadingRestaurantItems: false,
+      };
+    }
+    case Actions.FILTER_ITEMS_IN_RESTAURANT_BY_CATEGORY: {
+      let newRestaurant = [];
+      if (action.payload.value !== "All") {
+        newRestaurant = state.restaurantClone.filter((item) => {
+          return item.name
+            .toLowerCase()
+            .includes(action.payload.value.toLowerCase());
+        });
+      } else {
+        newRestaurant = state.restaurantClone;
+      }
+
+      return update(state, {
+        restaurant: {
+          $set: newRestaurant,
+        },
+      });
     }
     default: {
       return state;

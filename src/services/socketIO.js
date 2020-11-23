@@ -22,35 +22,42 @@ export const socketIO = store => {
           socket.emit("saveSocketId", Staff_ID);
 
           socket.on("transactionDetailsUpdated", data => {
-            if(data.Staff_ID === Staff_ID){
+            if (data.Staff_ID === Staff_ID) {
               store.dispatch(actions.updateOngoingTransactionInCart(data));
-            }       
+            }
           });
 
-          // setInterval(()=>{
-          //   socket.emit("getOngoingTransactions", Staff_ID, response => {
-          //     store.dispatch(
-          //       actions.populateOngoingTransactionsInCart(response)
-          //     );
-          //   })
-          // }, 5000);
+          socket.on("itemRemoved", data => {
+            if (data.Staff_ID === Staff_ID) {
+              store.dispatch(actions.removeItemFromOngoingTransactionInCart(data));
+            }
+          });
 
-          // socket.emit("getItems", Branch, response => {
-          //   if (response) {
-          //     let { barItems, restaurantItems } = response;
+          socket.on("inventoryUpdated", () => {
+            socket.emit("getItems", Branch, response => {
+              if (response) {
+                let { barItems, restaurantItems } = response;
 
-          //     store.dispatch(
-          //       actions.populateItemsInRestaurant(restaurantItems)
-          //     );
+                store.dispatch(
+                  actions.populateItemsInRestaurant(restaurantItems)
+                );
+                store.dispatch(
+                  actions.populateMoreItemsInRestaurant(restaurantItems)
+                );
 
-          //     store.dispatch(
-          //       actions.populateMoreItemsInRestaurant(restaurantItems)
-          //     );
+                store.dispatch(actions.populateItemsInBar(barItems));
+                store.dispatch(actions.populateMoreItemsInBar(barItems));
+              }
+            });
+          });
 
-          //     store.dispatch(actions.populateItemsInBar(barItems));
-          //     store.dispatch(actions.populateMoreItemsInBar(barItems));
-          //   }
-          // });
+          socket.on("salesClosed", data => {
+            if (data === Branch) {
+              store.dispatch(
+                actions.removeAllItemsFromOngoingTransactionsInCart()
+              );
+            }
+          });
         }
       });
     })();
@@ -59,37 +66,19 @@ export const socketIO = store => {
       console.log("connection to server lost.");
     });
 
-    socket.on("cancelOrder", data => {
-      store.dispatch(actions.cancelTransactionInCart(data));
-    });
-
-    socket.on("removeItem", data => {
-      store.dispatch(actions.removeItemFromOngoingTransactionInCart(data));
-    });
-
     socket.on("newCustomersAdded", data => {
       store.dispatch(actions.addNewCustomer(data));
     });
 
-    socket.on("salesClosed", data => {
-      store.dispatch(actions.removeAllItemsFromOngoingTransactionsInCart());
-    });
+    // socket.on("updateItems", data => {
+    //   if (data) {
+    //     let { items, items2 } = data;
+    //     store.dispatch(actions.populateItemsInRestaurant(items2));
+    //     store.dispatch(actions.populateMoreItemsInRestaurant(items2));
 
-    socket.on("singleSalesClosed", data => {
-      store.dispatch(
-        actions.removeSingleItemFromOngoingTransactionsInCart(data)
-      );
-    });
-
-    socket.on("updateItems", data => {
-      if (data) {
-        let { items, items2 } = data;
-        store.dispatch(actions.populateItemsInRestaurant(items2));
-        store.dispatch(actions.populateMoreItemsInRestaurant(items2));
-
-        store.dispatch(actions.populateItemsInBar(items));
-        store.dispatch(actions.populateMoreItemsInBar(items));
-      }
-    });
+    //     store.dispatch(actions.populateItemsInBar(items));
+    //     store.dispatch(actions.populateMoreItemsInBar(items));
+    //   }
+    // });
   });
 };

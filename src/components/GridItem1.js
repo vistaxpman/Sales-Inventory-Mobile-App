@@ -24,21 +24,21 @@ class GridItem1 extends Component {
     switch (type) {
       case 'increment':
         let newAmount = amount + 1;
-        if(newAmount > quantity){
-          ToastAndroid.show('Item cannot be more than quantity in inventory!', ToastAndroid.SHORT)
-        }else{
+        // if(newAmount > quantity){
+        //   ToastAndroid.show('Item cannot be more than quantity in inventory!', ToastAndroid.SHORT)
+        // }else{
           amount = newAmount
-        }
+        // }
         break
       case 'decrement':
         amount = amount - (amount ? 1 : 0)
         break
       case 'input':
-        if(value > quantity){
-          ToastAndroid.show('Item cannot be more than quantity in inventory!', ToastAndroid.SHORT)
-        }else{
+        // if(value > quantity){
+        //   ToastAndroid.show('Item cannot be more than quantity in inventory!', ToastAndroid.SHORT)
+        // }else{
           amount = value
-        }     
+        // }     
         break
       default:
         break

@@ -5,7 +5,7 @@ const initialState = {
   itemsInCart: [],
   itemsInCartClone: [],
   selectedItem: [],
-
+  isLoadingCartItems: true
 };
 
 const cartReducer = (state = initialState, action) => {
@@ -78,6 +78,9 @@ const cartReducer = (state = initialState, action) => {
         },
         itemsInCartClone: {
           $set: newItemsInCart
+        },
+        isLoadingCartItems: {
+          $set: false
         }
       });
     }
@@ -134,27 +137,28 @@ const cartReducer = (state = initialState, action) => {
     case Actions.UPDATE_ONGOING_TRANSACTION_IN_CART: {
       const newItemsInCart = state.itemsInCartClone.map(transaction => {
         if (transaction.transactionId === action.payload.transactionId) {
-          const transactionDetails = transaction.transactionDetails;
-          let Branch = transaction.Branch;
-          if (Branch == "Old Bar" || Branch == "New Bar") {
-            transactionDetails.map(transactionDetail => {
-              const barCheckOut = transactionDetail.barCheckOut;
-              barCheckOut.map(b => {
-                b.isPosted = true;
-                return b;
-              });
-              return transactionDetail;
-            });
-          } else {
-            transactionDetails.map(transactionDetail => {
-              const restaurantCheckOut = transactionDetail.restaurantCheckOut;
-              restaurantCheckOut.map(b => {
-                b.isPosted = true;
-                return b;
-              });
-              return transactionDetail;
-            });
-          }
+          transaction = action.payload
+          // const transactionDetails = transaction.transactionDetails;
+          // let Branch = transaction.Branch;
+          // if (Branch == "Old Bar" || Branch == "New Bar") {
+          //   transactionDetails.map(transactionDetail => {
+          //     const barCheckOut = transactionDetail.barCheckOut;
+          //     barCheckOut.map(b => {
+          //       b.isPosted = true;
+          //       return b;
+          //     });
+          //     return transactionDetail;
+          //   });
+          // } else {
+          //   transactionDetails.map(transactionDetail => {
+          //     const restaurantCheckOut = transactionDetail.restaurantCheckOut;
+          //     restaurantCheckOut.map(b => {
+          //       b.isPosted = true;
+          //       return b;
+          //     });
+          //     return transactionDetail;
+          //   });
+          // }
         }
         return transaction;
       });
@@ -219,6 +223,12 @@ const cartReducer = (state = initialState, action) => {
           $set: newItemsInCart
         }
       });
+    }    
+    case Actions.TOGGLE_CART_LOADING: {
+      return {
+        ...state,
+        isLoadingCartItems: action.payload,
+      };
     }
     default: {
       return state;

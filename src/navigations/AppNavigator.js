@@ -1,5 +1,3 @@
-import React from 'react'
-import { Image, StyleSheet } from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import Home from '../views/Home'
@@ -8,9 +6,6 @@ import RemovedItems from '../views/RemovedItems'
 import Login from '../views/Login'
 import SplashScreen from '../views/SplashScreen'
 import Profile from '../views/Profile'
-// import InvexLogo from '../assets/invex.png'
-
-// Invex = () => <Image source={InvexLogo} style={styles.invexImage} />
 
 const NavigationStack = createStackNavigator(
   {
@@ -23,7 +18,6 @@ const NavigationStack = createStackNavigator(
     Sales: {
       screen: Sales,
       navigationOptions: {
-        // headerLeft: <Invex />,
         title: 'Sales History',
         headerTitleStyle: { color: '#fff' },
         headerStyle: { backgroundColor: '#c98811' },
@@ -54,7 +48,7 @@ const NavigationStack = createStackNavigator(
     Profile: {
       screen: Profile,
       navigationOptions: {
-        title: 'Staff Profile',
+        title: 'Profile',
         headerTitleStyle: { color: '#fff' },
         headerStyle: { backgroundColor: '#c98811' },
         headerTintColor: '#fff'
@@ -66,13 +60,6 @@ const NavigationStack = createStackNavigator(
   }
 )
 
-const styles = StyleSheet.create({
-  invexImage: {
-    height: 40,
-    width: 70,
-    marginRight: 10
-  }
-})
 
 const AppNavigator = createAppContainer(NavigationStack)
 

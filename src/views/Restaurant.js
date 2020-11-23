@@ -6,7 +6,8 @@ import GridItem from "../components/GridItem";
 import GridItem1 from "../components/GridItem1";
 import {
   updateNoOfItemInRestaurant,
-  populateItemsInRestaurant
+  populateItemsInRestaurant,
+  toggleRestaurantItemsLoading
 } from "../store/actions/restaurantActions";
 import { populateMoreItemsInRestaurant } from "../store/actions/moreItemsToOrderActions";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
@@ -16,9 +17,6 @@ import { appUrl } from "../config";
 class Restaurant extends Component {
   constructor() {
     super();
-    this.state = {
-      isLoadingRestaurantItems: true
-    };
   }
 
   componentDidMount() {
@@ -29,17 +27,15 @@ class Restaurant extends Component {
     let url = appUrl + "/getItemsFromBranch";
     axios
       .post(url, {
-        Branch: "Restaurant"
+        Branch: "Restaurant",
       })
-      .then(async response => {
+      .then(async (response) => {
         if (response.data.hasItems) {
           this.props.populateItemsInRestaurant(response.data.items);
-          this.setState({
-            isLoadingRestaurantItems: false
-          });
         }
+        this.props.toggleRestaurantItemsLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -68,7 +64,7 @@ class Restaurant extends Component {
     let dataRest = this.props.restaurant;
     return (
       <View style={styles.gridContainer}>
-        {this.state.isLoadingRestaurantItems ? (
+        {this.props.isLoadingRestaurantItems ? (
           <View style={styles.emptyContainer}>
             <Spinner size="giant" status="alternative" />
           </View>
@@ -82,7 +78,7 @@ class Restaurant extends Component {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ flex: 1 }}
           >
-            {Number(this.props.totalNumberOfItemsAddedFromBar) +
+            {/* {Number(this.props.totalNumberOfItemsAddedFromBar) +
               Number(this.props.totalNumberOfItemsAddedFromRestaurant) ===
             0 ? (
               <FlatList
@@ -95,18 +91,18 @@ class Restaurant extends Component {
                 contentContainerStyle={styles.gridLayout}
                 // onEndReached={this.loadMore.bind(this)}
               />
-            ) : (
-              <FlatList
-                data={dataRest}
-                extraData={this.props}
-                keyExtractor={item => item.itemId}
-                renderItem={this.renderGridItem}
-                horizontal={false}
-                numColumns={2}
-                contentContainerStyle={styles.gridLayout}
-                // onEndReached={this.loadMore.bind(this)}
-              />
-            )}
+            ) : ( */}
+            <FlatList
+              data={dataRest}
+              extraData={this.props}
+              keyExtractor={(item) => item.itemId}
+              renderItem={this.renderGridItem}
+              horizontal={false}
+              numColumns={2}
+              contentContainerStyle={styles.gridLayout}
+              // onEndReached={this.loadMore.bind(this)}
+            />
+            {/* )} */}
           </ScrollView>
         )}
       </View>
@@ -114,25 +110,29 @@ class Restaurant extends Component {
   }
 }
 
-mapStateToProps = state => {
+mapStateToProps = (state) => {
   return {
     restaurant: state.restaurantReducer.restaurant,
     restaurantCheckOut: state.restaurantReducer.restaurantCheckOut,
     totalNumberOfItemsAddedFromBar:
       state.barReducer.totalNumberOfItemsAddedFromBar,
     totalNumberOfItemsAddedFromRestaurant:
-      state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant
+      state.restaurantReducer.totalNumberOfItemsAddedFromRestaurant,
+    isLoadingRestaurantItems: state.restaurantReducer.isLoadingRestaurantItems,
   };
 };
 
-mapDispatchToProps = dispatch => {
+mapDispatchToProps = (dispatch) => {
   return {
     updateNoOfItemInRestaurant: (value, index, itemId) => {
       dispatch(updateNoOfItemInRestaurant(value, index, itemId));
     },
-    populateItemsInRestaurant: value => {
+    populateItemsInRestaurant: (value) => {
       dispatch(populateItemsInRestaurant(value));
       dispatch(populateMoreItemsInRestaurant(value));
+    },
+    toggleRestaurantItemsLoading: (value) => {
+      dispatch(toggleRestaurantItemsLoading(value));
     }
   };
 };
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 15,
     paddingLeft: 5,
-    paddingRight: 5
+    paddingRight: 5,
   },
   gridLayout: {
     // flex: 1,
@@ -154,17 +154,17 @@ const styles = StyleSheet.create({
     display: "flex",
     // flexWrap: 'wrap',
     // flexDirection: 'row',
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   emptyContainer: {
     height: "100%",
     width: "100%",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   emptyText: {
     fontSize: 16,
     color: "gray",
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });
