@@ -21,7 +21,7 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
 
       const newBar = state.barClone.map((item, index) => {
         if (item.itemId === action.payload.itemId) {
-          item.noInCheckOut = action.payload.value;
+          item.noInCheckOut = Number(action.payload.value);
           item.newPrice = Number(action.payload.value) * Number(item.price);
           itemIndex = index;
         }
@@ -37,10 +37,11 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
         newTotalAmountOfItemsAddedFromBar = 0;
 
       for (let anItem of state.barClone) {
-        newTotalNumberOfItemsAddedFromBar += Number(anItem.noInCheckOut);
-        if (anItem.noInCheckOut > 0) {
+        const nINC = Number(anItem.noInCheckOut);
+        newTotalNumberOfItemsAddedFromBar += nINC;
+        if (nINC > 0) {
           newTotalAmountOfItemsAddedFromBar +=
-            Number(anItem.price) * Number(anItem.noInCheckOut);
+            Number(anItem.price) * nINC;
         }
       }
 
@@ -89,7 +90,7 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
 
       const newRestaurant = state.restaurantClone.map((item, index) => {
         if (item.itemId === action.payload.itemId) {
-          item.noInCheckOut = action.payload.value;
+          item.noInCheckOut = Number(action.payload.value);
           item.newPrice = Number(action.payload.value) * Number(item.price);
           itemIndex = index;
         }
@@ -105,10 +106,11 @@ const moreItemsToOrderReducer = (state = initialState, action) => {
         newTotalAmountOfItemsAddedFromRestaurant = 0;
 
       for (let anItem of state.restaurantClone) {
-        newTotalNumberOfItemsAddedFromRestaurant += Number(anItem.noInCheckOut);
-        if (anItem.noInCheckOut > 0) {
+        const nINC = Number(anItem.noInCheckOut);
+        newTotalNumberOfItemsAddedFromRestaurant += nINC;
+        if (nINC > 0) {
           newTotalAmountOfItemsAddedFromRestaurant +=
-            Number(anItem.price) * Number(anItem.noInCheckOut);
+            Number(anItem.price) * nINC;
         }
       }
 

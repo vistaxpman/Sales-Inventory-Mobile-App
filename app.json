@@ -3,7 +3,7 @@
     "name": "Invex",
     "slug": "Invex",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
+    "sdkVersion": "37.0.0",
     "platforms": ["ios", "android", "web"],
     "version": "2.1.0",
     "orientation": "portrait",
