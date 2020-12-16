@@ -131,7 +131,7 @@ class MoreGridItem extends Component {
               <TouchableWithoutFeedback
                 onPress={() => this.onUpdate('increment', item.itemId)}
               >
-                <EntypoIcon name="plus" size={30} color="#c98811" />
+                <EntypoIcon name="plus" size={30} color="#2e88ce" />
               </TouchableWithoutFeedback>
               <TextInput
                 style={styles.counterText}
@@ -145,7 +145,7 @@ class MoreGridItem extends Component {
               <TouchableWithoutFeedback
                 onPress={() => this.onUpdate('decrement', item.itemId)}
               >
-                <EntypoIcon name="minus" size={30} color="#c98811" />
+                <EntypoIcon name="minus" size={30} color="#2e88ce" />
               </TouchableWithoutFeedback>
             </View>
           </View>

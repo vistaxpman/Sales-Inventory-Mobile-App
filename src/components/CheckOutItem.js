@@ -85,7 +85,7 @@ export default class CheckOutItem extends Component {
         </View>
         <View style={styles.counterContainer}>
           <TouchableOpacity onPress={() => this.onUpdate("increment")}>
-            <EntypoIcon name="plus" size={30} color="#c98811" />
+            <EntypoIcon name="plus" size={30} color="#2e88ce" />
           </TouchableOpacity>
           <TextInput
             style={styles.counterText}
@@ -97,7 +97,7 @@ export default class CheckOutItem extends Component {
             selectTextOnFocus
           />
           <TouchableOpacity onPress={() => this.onUpdate("decrement")}>
-            <EntypoIcon name="minus" size={30} color="#c98811" />
+            <EntypoIcon name="minus" size={30} color="#2e88ce" />
           </TouchableOpacity>
         </View>
       </View>

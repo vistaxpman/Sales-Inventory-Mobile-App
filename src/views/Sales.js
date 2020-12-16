@@ -79,7 +79,7 @@ class Sales extends Component {
             animationType={'fade'}
             androidMode={'default'}
             placeHolderText={'Click here to choose a date'}
-            textStyle={{ color: '#c98811', fontSize: 20 }}
+            textStyle={{ color: '#2e88ce', fontSize: 20 }}
             // placeHolderTextStyle={{ color: 'gray', fontWeight: 'bold' }}
             onDateChange={this.setDate}
             disabled={false}

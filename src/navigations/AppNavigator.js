@@ -20,7 +20,7 @@ const NavigationStack = createStackNavigator(
       navigationOptions: {
         title: 'Sales History',
         headerTitleStyle: { color: '#fff' },
-        headerStyle: { backgroundColor: '#c98811' },
+        headerStyle: { backgroundColor: '#2e88ce' },
         headerTintColor: '#fff'
       }
     },
@@ -29,7 +29,7 @@ const NavigationStack = createStackNavigator(
       navigationOptions: {
         title: 'Removed Items',
         headerTitleStyle: { color: '#fff' },
-        headerStyle: { backgroundColor: '#c98811' },
+        headerStyle: { backgroundColor: '#2e88ce' },
         headerTintColor: '#fff'
       }
     },
@@ -50,7 +50,7 @@ const NavigationStack = createStackNavigator(
       navigationOptions: {
         title: 'Profile',
         headerTitleStyle: { color: '#fff' },
-        headerStyle: { backgroundColor: '#c98811' },
+        headerStyle: { backgroundColor: '#2e88ce' },
         headerTintColor: '#fff'
       }
     }

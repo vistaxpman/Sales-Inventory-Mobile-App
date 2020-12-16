@@ -62,7 +62,7 @@ class SalesItemsContainer extends Component {
             </Text>
           </View>
           <TouchableOpacity onPress={() => this.toggleItemsVisibility()}>
-            <AntDesignIcon name="downcircleo" size={20} color="#c98811" />
+            <AntDesignIcon name="downcircleo" size={20} color="#2e88ce" />
           </TouchableOpacity>
         </View>
         {this.state.itemsVisibility && (

@@ -213,7 +213,7 @@ class Header extends Component {
           </View>
         }
         containerStyle={{
-          backgroundColor: "#c98811",
+          backgroundColor: "#2e88ce",
           justifyContent: "space-around"
         }}
       />

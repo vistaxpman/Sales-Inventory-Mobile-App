@@ -190,7 +190,7 @@ class CartItemsContainer extends Component {
             <Text style={styles.tIdNormal}>{this.props.item.tableNumber}</Text>
           </View>
           <TouchableOpacity onPress={() => this.toggleItemsVisibility()}>
-            <AntDesignIcon name="downcircleo" size={25} color="#c98811" />
+            <AntDesignIcon name="downcircleo" size={25} color="#2e88ce" />
           </TouchableOpacity>
         </View>
 
@@ -237,7 +237,7 @@ class CartItemsContainer extends Component {
                     style={[
                       styles.orderControlButtons,
                       {
-                        color: '#c98811',
+                        color: '#2e88ce',
                         fontWeight: 'bold',
                         fontSize: 17
                       }

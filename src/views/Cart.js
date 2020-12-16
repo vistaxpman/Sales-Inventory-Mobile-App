@@ -115,6 +115,7 @@ class Cart extends Component {
                   alignItems: "center",
                   justifyContent: "center",
                   flexDirection: "row",
+                  maxWidth:'40%'
                 }}
               >
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   refreshButton: {
-    backgroundColor: "#c98811",
+    backgroundColor: "#2e88ce",
     color: "#fff",
     paddingTop: 5,
     paddingBottom: 5,

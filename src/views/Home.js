@@ -303,7 +303,7 @@ class Home extends Component {
                     style={[
                       styles.bottomControls2,
                       {
-                        borderColor: "#c98811",
+                        borderColor: "#2e88ce",
                         borderWidth: 1,
                       },
                     ]}
@@ -315,7 +315,7 @@ class Home extends Component {
                   <Text
                     style={[
                       styles.bottomControls,
-                      { backgroundColor: "#c98811" },
+                      { backgroundColor: "#2e88ce" },
                     ]}
                   >
                     Send
@@ -358,10 +358,10 @@ class Home extends Component {
     return route.key === "bar" ? (
       <View>
         {focused && (
-          <FontAwesome5Icon name="wine-bottle" size={15} color="#eeaf3b" />
+          <FontAwesome5Icon name="wine-bottle" size={15} color="#2e88ce" />
         )}
         {!focused && (
-          <FontAwesome5Icon name="wine-bottle" size={15} color="#ccc" />
+          <FontAwesome5Icon name="wine-bottle" size={15} color="gray" />
         )}
       </View>
     ) : route.key === "restaurant" ? (
@@ -370,20 +370,20 @@ class Home extends Component {
           <MaterialCommunityIcon
             name="food-variant"
             size={15}
-            color="#eeaf3b"
+            color="#2e88ce"
           />
         )}
         {!focused && (
-          <MaterialCommunityIcon name="food-variant" size={15} color="#ccc" />
+          <MaterialCommunityIcon name="food-variant" size={15} color="gray" />
         )}
       </View>
     ) : route.key === "cart" ? (
       <View>
         {focused && (
-          <MaterialCommunityIcon name="cart" size={15} color="#eeaf3b" />
+          <MaterialCommunityIcon name="cart" size={15} color="#2e88ce" />
         )}
         {!focused && (
-          <MaterialCommunityIcon name="cart" size={15} color="#ccc" />
+          <MaterialCommunityIcon name="cart" size={15} color="gray" />
         )}
       </View>
     ) : null;
@@ -459,7 +459,7 @@ class Home extends Component {
                                 paddingBottom: 15,
                                 fontSize: 14,
                               }, this.state.activeCategory === drawerItem ? {
-                                color: "#c98811"
+                                color: "#2e88ce"
                               }: null ]}
                             >
                               {drawerItem}
@@ -532,10 +532,10 @@ class Home extends Component {
             renderTabBar={(props) => (
               <TabBar
                 {...props}
-                indicatorStyle={{ backgroundColor: "#eeaf3b" }}
-                style={{ backgroundColor: "#303030", height: 55 }}
+                indicatorStyle={{ backgroundColor: "#2e88ce" }}
+                style={{ backgroundColor: "#f4f4f4", height: 55 }}
                 renderIcon={this.renderIcon}
-                indicatorStyle={{ backgroundColor: "#eeaf3b", height: 5 }}
+                indicatorStyle={{ backgroundColor: "#2e88ce", height: 5 }}
                 renderLabel={this.renderLabel}
               />
             )}
@@ -618,10 +618,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   activeTabTextColor: {
-    color: "#eeaf3b",
+    color: "#2e88ce",
   },
   tabTextColor: {
-    color: "#ccc",
+    color: "gray",
   },
   tabText: {
     fontWeight: "bold",
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#c98811",
+    backgroundColor: "#2e88ce",
   },
   bottomSheetHeaderText: {
     marginLeft: "auto",
@@ -681,13 +681,13 @@ const styles = StyleSheet.create({
   },
   bottomControls2: {
     fontSize: 17,
-    color: "#c98811",
+    color: "#2e88ce",
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 7,
     paddingBottom: 7,
     borderRadius: 3,
-    shadowColor: "#c98811",
+    shadowColor: "#2e88ce",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 2,

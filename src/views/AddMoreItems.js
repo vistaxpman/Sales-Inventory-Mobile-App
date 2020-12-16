@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#c98811',
+    backgroundColor: '#2e88ce',
     height: 50,
     padding: 10,
     justifyContent: 'space-between'
@@ -307,6 +307,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: 5,
     paddingBottom: 5,
-    backgroundColor: '#c98811',
+    backgroundColor: '#2e88ce',
   }
 })

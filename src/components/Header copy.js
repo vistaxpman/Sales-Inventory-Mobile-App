@@ -246,7 +246,7 @@ class Header extends Component {
             </View>
           }
           containerStyle={{
-            backgroundColor: "#c98811",
+            backgroundColor: "#2e88ce",
             justifyContent: "space-around"
           }}
         />
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#c98811",
+    backgroundColor: "#2e88ce",
     height: 50,
     padding: 10,
     borderTopLeftRadius: 3,
@@ -400,10 +400,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginLeft: 30,
     marginRight: 30,
-    backgroundColor: "#c98811",
+    backgroundColor: "#2e88ce",
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: "#c98811",
+    borderColor: "#2e88ce",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
