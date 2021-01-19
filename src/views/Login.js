@@ -196,7 +196,7 @@ class Login extends Component {
               onPress={this.handleLogin}
             >
               {this.state.isLoading ? (
-                <Spinner size="large" status="info" />
+                <Spinner size="large" status="info" color="#fff"/>
               ) : (
                 <Text style={styles.loginTextStyle}> LOGIN </Text>
               )}

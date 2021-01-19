@@ -19,7 +19,7 @@
     "@shoutem/ui": "^1.0.1",
     "@ui-kitten/eva-icons": "^4.2.0",
     "axios": "^0.19.0",
-    "expo": "^35.0.0",
+    "expo": "^37.0.0",
     "expo-barcode-scanner": "~7.0.0",
     "expo-font": "~7.0.0",
     "expo-permissions": "~7.0.0",
