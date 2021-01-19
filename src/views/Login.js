@@ -39,7 +39,12 @@ class Login extends Component {
   handleSetUp = async (staffData) => {
     try {
       await AsyncStorage.setItem("staffData", JSON.stringify(staffData));
-      this.props.navigation.replace("Home");
+      const department = staffData.Department || "";
+      if (department === "Admin") {
+        this.props.navigation.replace("Summary", { params: staffData });
+      } else {
+        this.props.navigation.replace("Home");
+      }
     } catch (e) {
       console.error(e);
     }
@@ -58,19 +63,19 @@ class Login extends Component {
       this.props.populateOngoingTransactionsInCart(response);
     });
 
-    let url = appUrl + '/getBranchCategories'
+    let url = appUrl + "/getBranchCategories";
     axios
       .post(url, {
-        Branch
+        Branch,
       })
-      .then(async response => {
+      .then(async (response) => {
         if (response.data.categories) {
-          this.props.populateDrawerItems(response.data.categories)
+          this.props.populateDrawerItems(response.data.categories);
         }
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   handleLogin = () => {
@@ -196,7 +201,7 @@ class Login extends Component {
               onPress={this.handleLogin}
             >
               {this.state.isLoading ? (
-                <Spinner size="large" status="info" color="#fff"/>
+                <Spinner size="large" status="info" color="#fff" />
               ) : (
                 <Text style={styles.loginTextStyle}> LOGIN </Text>
               )}
@@ -220,9 +225,9 @@ mapDispatchToProps = (dispatch) => {
     populateOngoingTransactionsInCart: (ongoingTransactions) => {
       dispatch(populateOngoingTransactionsInCart(ongoingTransactions));
     },
-    populateDrawerItems: value => {
-      dispatch(populateDrawerItems(value))
-    }
+    populateDrawerItems: (value) => {
+      dispatch(populateDrawerItems(value));
+    },
   };
 };
 

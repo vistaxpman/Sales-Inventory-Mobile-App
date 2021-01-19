@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import { withNavigation } from "react-navigation";
-import {
-  AsyncStorage,
-  View,
-  TouchableOpacity
-} from "react-native";
+import { AsyncStorage, View, TouchableOpacity } from "react-native";
 import { Header as NativeHeader } from "react-native-elements";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { connect } from "react-redux";
@@ -67,27 +63,18 @@ class Header extends Component {
     const currentTab = this.props.currentTab;
 
     if (index === 0) {
-      this.props.clearCart();
-      (async () => {
-        await AsyncStorage.setItem("staffData", "").then((value) => {
-          this.props.logOut();
-          this.props.navigation.navigate("Login");
-          socket;
-        });
-      })();
-    } else if (index === 1) {
       this.props.navigation.navigate("Sales");
-    } else if (index === 2) {
+    } else if (index === 1) {
       this.props.navigation.navigate("RemovedItems");
-    } else if (index === 3) {
+    } else if (index === 2) {
       this.props.navigation.navigate("Profile");
-    } else if (index === 4) {
+    } else if (index === 3) {
       (async () => {
         this.props.toggleBarItemsLoading(true);
         await this.fetchItems("/getItemsFromBranch");
         this.props.toggleSortedBy("defaultItems");
       })();
-    } else if (index === 5) {
+    } else if (index === 4) {
       (async () => {
         if (currentTab === "bar") {
           this.props.toggleBarItemsLoading(true);
@@ -112,7 +99,7 @@ class Header extends Component {
         }
         this.props.toggleSortedBy("pinnedItems");
       })();
-    } else if (index === 6) {
+    } else if (index === 5) {
       (async () => {
         if (currentTab === "bar") {
           this.props.toggleBarItemsLoading(true);
@@ -125,6 +112,15 @@ class Header extends Component {
 
       this.props.clearCart();
       this.props.toggleSortedBy("topSellingItems");
+    } else if (index === 6) {
+      this.props.clearCart();
+      (async () => {
+        await AsyncStorage.setItem("staffData", "").then((value) => {
+          this.props.logOut();
+          this.props.navigation.navigate("Login");
+          socket;
+        });
+      })();
     }
   };
 
@@ -200,13 +196,13 @@ class Header extends Component {
           >
             <PopupMenu
               actions={[
-                "Log Out",
                 "Sales",
                 "Removed Items",
                 "Profile",
                 "Sort by default",
                 "Sort by pinned items",
                 "Sort by top selling",
+                "Log Out",
               ]}
               onPress={this.onPopupEvent}
             />
@@ -214,7 +210,7 @@ class Header extends Component {
         }
         containerStyle={{
           backgroundColor: "#2e88ce",
-          justifyContent: "space-around"
+          justifyContent: "space-around",
         }}
       />
     );
@@ -281,4 +277,3 @@ mapDispatchToProps = (dispatch) => {
 export default withNavigation(
   connect(mapStateToProps, mapDispatchToProps)(Header)
 );
-
