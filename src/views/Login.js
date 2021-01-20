@@ -36,12 +36,15 @@ class Login extends Component {
     };
   }
 
-  handleSetUp = async (staffData) => {
+  handleSetUp = async (data) => {
     try {
+      const staffData = data.staffData;
+      const branches = data.branches;
       await AsyncStorage.setItem("staffData", JSON.stringify(staffData));
+      await AsyncStorage.setItem("branches", JSON.stringify(branches));
       const department = staffData.Department || "";
       if (department === "Admin") {
-        this.props.navigation.replace("Summary", { params: staffData });
+        this.props.navigation.replace("Summary", { params: data });
       } else {
         this.props.navigation.replace("Home");
       }
@@ -104,7 +107,7 @@ class Login extends Component {
           if (response.data.loginMessage === "success") {
             this.props.setStaffData(response.data.staffData);
             this.initialRequests();
-            this.handleSetUp(response.data.staffData);
+            this.handleSetUp(response.data);
           } else if (response.data.loginMessage === "failed") {
             this.setState({
               errorMessage: "Invalid Login",

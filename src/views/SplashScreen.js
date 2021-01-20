@@ -51,11 +51,15 @@ class SplashScreen extends Component {
     (staffData = async () => {
       await AsyncStorage.getItem("staffData").then(async (value) => {
         if (value) {
+          let branches = await AsyncStorage.getItem("branches");
+          branches = JSON.parse(branches);
           const staffData = JSON.parse(value);
           await this.props.setStaffData(staffData);
           const department = staffData.Department || "";
           if (department === "Admin") {
-            this.props.navigation.replace("Summary");
+            this.props.navigation.replace("Summary", {
+              params: { branches, staffData },
+            });
           } else {
             this.initialRequests();
             this.props.navigation.replace("Home");
