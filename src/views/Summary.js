@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   ScrollView,
+  TextInput,
 } from "react-native";
 import { Header as NativeHeader } from "react-native-elements";
 import { Content, DatePicker } from "native-base";
@@ -17,63 +18,76 @@ export default function Summary({ route, navigation }) {
   const data = navigation?.state?.params?.params;
   const staffData = data?.staffData;
   const branches = data?.branches;
+  let branchName = branches[0]["branchName"],
+    requestPath = "getStoreInventory",
+    limit = 20,
+    offset = 0;
 
   const [state, setState] = useState({
     isLoading: true,
     isLoadingMore: false,
     activeSummary: "Store Inventory",
-    requestPath: "getStoreInventory",
-    limit: 20,
-    offset: 0,
-    branchName: branches[0]["branchName"],
+    requestPath,
+    limit,
+    offset,
     storeInventory: [],
-    salesHistory: [],
+    salesAnalysis: [],
     expensesHistory: [],
+    searchCriteria: [],
+    url: `${appUrl}/${requestPath}?branchName=${branchName}&limit=${limit}&offset=${offset}`,
   });
 
   useEffect(() => {
-    let branchName = state.branchName,
-      limit = state.limit,
-      offset = state.offset,
-      requestPath = state.requestPath;
-    url = `${appUrl}/${requestPath}?branchName=${branchName}&limit=${limit}&offset=${offset}`;
-    storeInventoryRequest(url);
-  }, []);
+    storeInventoryRequest();
+  }, [state.url]);
 
   const onPopupEvent = async (eventName, index) => {
-    let activeSummary = state.activeSummary;
+    let { activeSummary, requestPath } = state;
     if (index === 0) {
       activeSummary = "Store Inventory";
+      requestPath = "getStoreInventory";
     } else if (index === 1) {
-      activeSummary = "Sales History";
+      activeSummary = "Sales Analysis";
+      requestPath = "getSalesAnalysis";
     } else if (index === 2) {
       activeSummary = "Expenses History";
+      requestPath = "getExpenses";
     }
-    await setState({
+
+    let branchName = state.branchName,
+      limit = 20,
+      offset = 0,
+      url = `${appUrl}/${requestPath}?branchName=${branchName}&limit=${limit}&offset=${offset}`;
+
+    setState({
       ...state,
+      url,
       activeSummary,
-      offset: 0,
+      requestPath,
+      offset,
       storeInventory: [],
-      salesHistory: [],
+      salesAnalysis: [],
       expensesHistory: [],
       isLoading: true,
     });
   };
 
-  const storeInventoryRequest = (url) => {
+  const storeInventoryRequest = () => {
+    const url = state.url;
     axios
       .get(url)
       .then(async (response) => {
         const activeSummary = state.activeSummary;
+        console.log(activeSummary);
         const payload = response.data;
-        let { storeInventory, salesHistory, expensesHistory, offset } = state;
+        let { storeInventory, salesAnalysis, expensesHistory, offset } = state;
         if (payload.success) {
           const dataFound = payload.data;
           offset = state.offset + (dataFound.length || 0);
           if (activeSummary === "Store Inventory") {
             storeInventory = [...storeInventory, ...dataFound];
-          } else if (activeSummary === "Sales History") {
-            salesHistory = [...salesHistory, ...dataFound];
+          } else if (activeSummary === "Sales Analysis") {
+            salesAnalysis = [...salesAnalysis, ...dataFound];
           } else if (activeSummary === "Expenses History") {
             expensesHistory = [...expensesHistory, ...dataFound];
           }
@@ -84,7 +98,7 @@ export default function Summary({ route, navigation }) {
           isLoadingMore: false,
           ...(offset && { offset }),
           ...(storeInventory && { storeInventory }),
-          ...(salesHistory && { salesHistory }),
+          ...(salesAnalysis && { salesAnalysis }),
           ...(expensesHistory && { expensesHistory }),
         });
       })
@@ -127,7 +141,7 @@ export default function Summary({ route, navigation }) {
         rightComponent={
           <View style={styles.rightWrapper}>
             <PopupMenu
-              actions={["Store Inventory", "Sales History", "Expenses History"]}
+              actions={["Store Inventory", "Sales Analysis", "Expenses History"]}
               onPress={onPopupEvent}
             />
           </View>
@@ -142,100 +156,106 @@ export default function Summary({ route, navigation }) {
           <View style={styles.emptyContainer}>
             <ActivityIndicator size="large" color="#2e88ce" />
           </View>
-        ) : state.activeSummary === "Store Inventory" ? (
+        ) : (
           <>
-            <View style={styles.tableWrapper}>
-              <DataTable>
-                <ScrollView horizontal>
-                  <View>
-                    <DataTable.Header>
-                      <DataTable.Title style={styles.serialNumberCell}>
-                        S/N
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Item Code
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Item Name
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Quantity
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Category Name
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Product Name
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Unit Cost
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Unit Price(R/S)
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Unit Price(WP)
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Unit Price(DP)
-                      </DataTable.Title>
-                      <DataTable.Title style={styles.singleCell}>
-                        Total Value Available
-                      </DataTable.Title>
-                    </DataTable.Header>
-                    <ScrollView
-                      showsVerticalScrollIndicator={false}
-                      onScroll={({ nativeEvent }) => {
-                        if (isCloseToBottom(nativeEvent)) {
-                          scrolledToBottom();
-                        }
-                      }}
-                      vertical={true}
-                    >
-                      {state.storeInventory.map((inventory, index) => {
-                        return (
-                          <DataTable.Row key={index}>
-                            <DataTable.Cell style={styles.serialNumberCell}>
-                              {index + 1}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.Bar_Code}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.Item_Name}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.Quantity}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.Cat_Name}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.Item_Name}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.UnitCost}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.UnitPrice}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.UnitPrice}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {inventory?.UnitPrice}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={styles.singleCell}>
-                              {48500}
-                            </DataTable.Cell>
-                          </DataTable.Row>
-                        );
-                      })}
-                    </ScrollView>
-                  </View>
-                </ScrollView>
+            <View style={styles.searchLayout}>
+              <View style={styles.searchWrapper}>
+                <TextInput placeholder="Search" />
+              </View>
+            </View>
+            {state.activeSummary === "Store Inventory" ? (
+              <View style={styles.tableWrapper}>
+                <DataTable>
+                  <ScrollView horizontal>
+                    <View>
+                      <DataTable.Header>
+                        <DataTable.Title style={styles.serialNumberCell}>
+                          S/N
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Item Code
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Item Name
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Quantity
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Category Name
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Product Name
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Unit Cost
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Unit Price(R/S)
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Unit Price(WP)
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Unit Price(DP)
+                        </DataTable.Title>
+                        <DataTable.Title style={styles.singleCell}>
+                          Total Value Available
+                        </DataTable.Title>
+                      </DataTable.Header>
+                      <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        onScroll={({ nativeEvent }) => {
+                          if (isCloseToBottom(nativeEvent)) {
+                            scrolledToBottom();
+                          }
+                        }}
+                        vertical={true}
+                      >
+                        {state.storeInventory.map((inventory, index) => {
+                          return (
+                            <DataTable.Row key={index}>
+                              <DataTable.Cell style={styles.serialNumberCell}>
+                                {index + 1}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.Bar_Code}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.Item_Name}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.Quantity}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.Cat_Name}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.Item_Name}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.UnitCost}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.UnitPrice}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.UnitPrice}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {inventory?.UnitPrice}
+                              </DataTable.Cell>
+                              <DataTable.Cell style={styles.singleCell}>
+                                {48500}
+                              </DataTable.Cell>
+                            </DataTable.Row>
+                          );
+                        })}
+                      </ScrollView>
+                    </View>
+                  </ScrollView>
 
-                {/* <DataTable.Pagination
+                  {/* <DataTable.Pagination
                 page={1}
                 numberOfPages={3}
                 onPageChange={(page) => {
@@ -243,8 +263,17 @@ export default function Summary({ route, navigation }) {
                 }}
                 label="1-2 of 6"
               /> */}
-              </DataTable>
-            </View>
+                </DataTable>
+              </View>
+            ) : state.activeSummary === "Sales Analysis" ? (
+              <View style={styles.tableWrapper}>
+                <Text>Sales Analysis</Text>
+              </View>
+            ) : state.activeSummary === "Expenses History" ? (
+              <View style={styles.tableWrapper}>
+                <Text>Expenses History</Text>
+              </View>
+            ) : null}
             {state.isLoadingMore ? (
               <View style={styles.loadingWrapper}>
                 <ActivityIndicator size="large" color="#2e88ce" styl />
@@ -252,8 +281,6 @@ export default function Summary({ route, navigation }) {
               </View>
             ) : null}
           </>
-        ) : (
-          <Text>Next</Text>
         )}
       </View>
     </View>
@@ -276,7 +303,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   tableWrapper: {
-    height: "81%",
+    height: "75%",
   },
   rightWrapper: {
     display: "flex",
@@ -315,5 +342,20 @@ const styles = StyleSheet.create({
   loadingMoreText: {
     opacity: 0.5,
     fontSize: 13,
+  },
+  searchLayout: {
+    display: "flex",
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 15,
+    marginBottom: 15,
+    height: 35,
+    alignItems: "center",
+  },
+  searchWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    paddingHorizontal: 10,
   },
 });
