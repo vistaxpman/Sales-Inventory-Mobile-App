@@ -36,6 +36,12 @@ export default function Summary({ route, navigation }) {
     expensesHistory: [],
     searchCriteria: [],
     url: `${appUrl}/${requestPath}?branchName=${branchName}&limit=${limit}&offset=${offset}`,
+    itemsToSearchBy: [
+      { label: "Item Name", value: "Item_Name" },
+      { label: "Category", value: "Cat_Name" },
+    ],
+    selectedSearchItem: {},
+    searchText: "",
   });
 
   useEffect(() => {
@@ -43,16 +49,22 @@ export default function Summary({ route, navigation }) {
   }, [state.url]);
 
   const onPopupEvent = async (eventName, index) => {
-    let { activeSummary, requestPath } = state;
+    let { activeSummary, requestPath, itemsToSearchBy } = state;
     if (index === 0) {
       activeSummary = "Store Inventory";
       requestPath = "getStoreInventory";
+      itemsToSearchBy = [
+        { label: "Item Name", value: "Item_Name" },
+        { label: "Category", value: "Cat_Name" },
+      ];
     } else if (index === 1) {
       activeSummary = "Sales Analysis";
       requestPath = "getSalesAnalysis";
+      itemsToSearchBy = [{ label: "Item Name", value: "Item_Name" }];
     } else if (index === 2) {
       activeSummary = "Expenses History";
       requestPath = "getExpenses";
+      itemsToSearchBy = [];
     }
 
     let limit = 20,
@@ -71,6 +83,7 @@ export default function Summary({ route, navigation }) {
       salesAnalysis: [],
       expensesHistory: [],
       isLoading: true,
+      itemsToSearchBy,
     });
   };
 
@@ -80,9 +93,7 @@ export default function Summary({ route, navigation }) {
       .get(url)
       .then(async (response) => {
         const activeSummary = state.activeSummary;
-        console.log(activeSummary);
         const payload = response.data;
-        console.log(payload);
         let { storeInventory, salesAnalysis, expensesHistory, offset } = state;
         if (payload.success) {
           const dataFound = payload.data;
@@ -138,6 +149,21 @@ export default function Summary({ route, navigation }) {
     return new Date(dt).toDateString();
   };
 
+  const handleChangeSearchBy = (value) => {
+    let { activeSummary, searchText, url } = state;
+    let shortUrl;
+    if(searchText){
+      shortUrl = `&${value}?=${searchText}`
+    }
+    console.log(value, activeSummary, searchText);
+  };
+
+  const handleSearchFilter = (text) => {
+    let { activeSummary, searchText, url } = state;
+
+    console.log(searchText);
+  };
+
   return (
     <View style={styles.layoutContainer}>
       <NativeHeader
@@ -173,43 +199,45 @@ export default function Summary({ route, navigation }) {
           <>
             {state.activeSummary === "Store Inventory" ? (
               <>
-                {/* <View style={styles.searchByContainer}> */}
                 <View style={styles.searchLayout}>
                   <View style={styles.searchWrapper}>
-                    <TextInput placeholder="Search" />
+                    <TextInput
+                      placeholder="Search"
+                      value={state.searchText}
+                      onChangeText={(text) => handleSearchFilter(text)}
+                    />
                   </View>
                 </View>
-                <View style={{ width: "45%" }}>
-                  <DropDownPicker
-                    placeholder="Search by"
-                    items={[
-                      {
-                        label: "Item Name",
-                        value: "Item Name",
-                      },
-                      {
-                        label: "Product Name",
-                        value: "Product Name",
-                      },
-                      {
-                        label: "Category",
-                        value: "Category",
-                      },
-                    ]}
-                    defaultValue={state.country}
-                    containerStyle={{ height: 40 }}
-                    style={{ backgroundColor: "#fafafa" }}
-                    itemStyle={{
-                      justifyContent: "flex-start",
+                {state.itemsToSearchBy.length ? (
+                  <View
+                    style={{
+                      width: "45%",
+                      marginLeft: "auto",
+                      marginBottom: 20,
                     }}
-                    dropDownStyle={{ backgroundColor: "#fafafa" }}
-                    onChangeItem={(item) =>
-                      this.setState({
-                        country: item.value,
-                      })
-                    }
-                  />
-                </View>
+                  >
+                    <DropDownPicker
+                      placeholder="Search by"
+                      placeholderStyle={{ color: "#ccc" }}
+                      items={state.itemsToSearchBy}
+                      // defaultValue={state.searchByText}
+                      containerStyle={{ height: 40 }}
+                      style={{ backgroundColor: "#fafafa" }}
+                      itemStyle={{
+                        justifyContent: "flex-start",
+                        color: "gray",
+                      }}
+                      dropDownStyle={{
+                        backgroundColor: "#fafafa",
+                      }}
+                      onChangeItem={(item) => handleChangeSearchBy(item?.value)}
+                      selectedLabelStyle={{ color: "#000" }}
+                      labelStyle={{
+                        color: "gray",
+                      }}
+                    />
+                  </View>
+                ) : null}
                 {/* </View> */}
                 <View style={styles.tableWrapper}>
                   <DataTable>
@@ -490,7 +518,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   tableWrapper: {
-    height: "75%",
+    height: "68%",
   },
   rightWrapper: {
     display: "flex",
@@ -548,8 +576,9 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 15,
     marginBottom: 15,
-    height: 35,
+    height: 40,
     alignItems: "center",
+    backgroundColor: "#fafafa",
   },
   searchWrapper: {
     display: "flex",
