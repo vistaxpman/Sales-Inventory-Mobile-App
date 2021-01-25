@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   ScrollView,
   TextInput,
+  AsyncStorage,
 } from "react-native";
 import { Header as NativeHeader } from "react-native-elements";
 import { Content, DatePicker } from "native-base";
@@ -42,6 +43,8 @@ export default function Summary({ route, navigation }) {
     ],
     selectedSearchItem: {},
     searchText: "",
+    branchesToSearchBy: [],
+    customersToSearchBy: [],
   });
 
   useEffect(() => {
@@ -65,6 +68,10 @@ export default function Summary({ route, navigation }) {
       activeSummary = "Expenses History";
       requestPath = "getExpenses";
       itemsToSearchBy = [];
+    } else if (index === 3) {
+      await AsyncStorage.setItem("branches", "");
+      await AsyncStorage.setItem("staffData", "");
+      navigation?.replace("Login");
     }
 
     let limit = 20,
@@ -93,15 +100,53 @@ export default function Summary({ route, navigation }) {
       .get(url)
       .then(async (response) => {
         const activeSummary = state.activeSummary;
-        const payload = response.data;
-        let { storeInventory, salesAnalysis, expensesHistory, offset } = state;
-        if (payload.success) {
-          const dataFound = payload.data;
+        const result = response.data;
+        let {
+          storeInventory,
+          salesAnalysis,
+          expensesHistory,
+          offset,
+          branchesToSearchBy,
+          categoriesToSearchBy,
+          customersToSearchBy,
+        } = state;
+        if (result?.success) {
+          const dataFound = result?.data?.payload;
+          branchesToSearchBy = result?.data?.branches;
           offset = state.offset + (dataFound.length || 0);
+
+          branchesToSearchBy = branchesToSearchBy.reduce((acc, cur) => {
+            let obj = {};
+            obj["label"] = cur["branchName"];
+            obj["value"] = cur["branchName"];
+            acc.push(obj);
+            return acc;
+          }, []);
+
           if (activeSummary === "Store Inventory") {
             storeInventory = [...storeInventory, ...dataFound];
+            categoriesToSearchBy = result?.data?.categories;
+            categoriesToSearchBy = categoriesToSearchBy.reduce((acc, cur) => {
+              if (cur?.Cat_Name) {
+                let obj = {};
+                obj["label"] = cur["Cat_Name"];
+                obj["value"] = cur["Cat_Name"];
+                acc.push(obj);
+              }
+              return acc;
+            }, []);
           } else if (activeSummary === "Sales Analysis") {
             salesAnalysis = [...salesAnalysis, ...dataFound];
+            customersToSearchBy = result?.data?.customers;
+            customersToSearchBy = customersToSearchBy.reduce((acc, cur) => {
+              if (cur?.Cust_ID) {
+                let obj = {};
+                obj["label"] = cur["LastName"];
+                obj["value"] = cur["Cust_ID"];
+                acc.push(obj);
+              }
+              return acc;
+            }, []);
           } else if (activeSummary === "Expenses History") {
             expensesHistory = [...expensesHistory, ...dataFound];
           }
@@ -115,6 +160,9 @@ export default function Summary({ route, navigation }) {
           ...(storeInventory && { storeInventory }),
           ...(salesAnalysis && { salesAnalysis }),
           ...(expensesHistory && { expensesHistory }),
+          ...(branchesToSearchBy && { branchesToSearchBy }),
+          ...(categoriesToSearchBy && { categoriesToSearchBy }),
+          ...(customersToSearchBy && { customersToSearchBy }),
         });
       })
       .catch((err) => {
@@ -152,8 +200,8 @@ export default function Summary({ route, navigation }) {
   const handleChangeSearchBy = (value) => {
     let { activeSummary, searchText, url } = state;
     let shortUrl;
-    if(searchText){
-      shortUrl = `&${value}?=${searchText}`
+    if (searchText) {
+      shortUrl = `&${value}?=${searchText}`;
     }
     console.log(value, activeSummary, searchText);
   };
@@ -180,6 +228,7 @@ export default function Summary({ route, navigation }) {
                 "Store Inventory",
                 "Sales Analysis",
                 "Expenses History",
+                "Logout",
               ]}
               onPress={onPopupEvent}
             />
@@ -197,48 +246,81 @@ export default function Summary({ route, navigation }) {
           </View>
         ) : (
           <>
+            <View style={styles.searchLayout}>
+              <View style={styles.searchWrapper}>
+                <TextInput
+                  placeholder="Search"
+                  value={state.searchText}
+                  onChangeText={(text) => handleSearchFilter(text)}
+                />
+              </View>
+            </View>
             {state.activeSummary === "Store Inventory" ? (
               <>
-                <View style={styles.searchLayout}>
-                  <View style={styles.searchWrapper}>
-                    <TextInput
-                      placeholder="Search"
-                      value={state.searchText}
-                      onChangeText={(text) => handleSearchFilter(text)}
-                    />
-                  </View>
+                <View style={styles.searchByContainer}>
+                  {state.branchesToSearchBy.length ? (
+                    <View
+                      style={{
+                        width: "45%",
+                        marginBottom: 20,
+                      }}
+                    >
+                      <DropDownPicker
+                        placeholder="Branches"
+                        placeholderStyle={{ color: "#ccc" }}
+                        items={state.branchesToSearchBy}
+                        // defaultValue={state.searchByText}
+                        containerStyle={{ height: 35 }}
+                        style={{ backgroundColor: "#fafafa" }}
+                        itemStyle={{
+                          justifyContent: "flex-start",
+                          color: "gray",
+                        }}
+                        dropDownStyle={{
+                          backgroundColor: "#fafafa",
+                        }}
+                        onChangeItem={(item) =>
+                          handleChangeSearchBy(item?.value)
+                        }
+                        selectedLabelStyle={{ color: "#000" }}
+                        labelStyle={{
+                          color: "gray",
+                        }}
+                      />
+                    </View>
+                  ) : null}
+                  {state.categoriesToSearchBy.length ? (
+                    <View
+                      style={{
+                        width: "45%",
+                        marginBottom: 20,
+                      }}
+                    >
+                      <DropDownPicker
+                        placeholder="Categories"
+                        placeholderStyle={{ color: "#ccc" }}
+                        items={state.categoriesToSearchBy}
+                        // defaultValue={state.searchByText}
+                        containerStyle={{ height: 35 }}
+                        style={{ backgroundColor: "#fafafa" }}
+                        itemStyle={{
+                          justifyContent: "flex-start",
+                          color: "gray",
+                        }}
+                        dropDownStyle={{
+                          backgroundColor: "#fafafa",
+                        }}
+                        onChangeItem={(item) =>
+                          handleChangeSearchBy(item?.value)
+                        }
+                        selectedLabelStyle={{ color: "#000" }}
+                        labelStyle={{
+                          color: "gray",
+                        }}
+                      />
+                    </View>
+                  ) : null}
                 </View>
-                {state.itemsToSearchBy.length ? (
-                  <View
-                    style={{
-                      width: "45%",
-                      marginLeft: "auto",
-                      marginBottom: 20,
-                    }}
-                  >
-                    <DropDownPicker
-                      placeholder="Search by"
-                      placeholderStyle={{ color: "#ccc" }}
-                      items={state.itemsToSearchBy}
-                      // defaultValue={state.searchByText}
-                      containerStyle={{ height: 40 }}
-                      style={{ backgroundColor: "#fafafa" }}
-                      itemStyle={{
-                        justifyContent: "flex-start",
-                        color: "gray",
-                      }}
-                      dropDownStyle={{
-                        backgroundColor: "#fafafa",
-                      }}
-                      onChangeItem={(item) => handleChangeSearchBy(item?.value)}
-                      selectedLabelStyle={{ color: "#000" }}
-                      labelStyle={{
-                        color: "gray",
-                      }}
-                    />
-                  </View>
-                ) : null}
-                {/* </View> */}
                 <View style={styles.tableWrapper}>
                   <DataTable>
                     <ScrollView horizontal>
@@ -333,161 +415,223 @@ export default function Summary({ route, navigation }) {
                 </View>
               </>
             ) : state.activeSummary === "Sales Analysis" ? (
-              <View style={styles.tableWrapper}>
-                <DataTable>
-                  <ScrollView horizontal>
-                    <View>
-                      <DataTable.Header>
-                        <DataTable.Title style={styles.serialNumberCell}>
-                          S/N
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Model Number
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Item Name
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Quantity
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Price Sold
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Unit Cost
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Profit
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Sales Date
-                        </DataTable.Title>
-                      </DataTable.Header>
-                      <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        onScroll={({ nativeEvent }) => {
-                          if (isCloseToBottom(nativeEvent)) {
-                            scrolledToBottom();
-                          }
-                        }}
-                        vertical={true}
-                      >
-                        {state.salesAnalysis.map((analysis, index) => {
-                          return (
-                            <DataTable.Row key={index}>
-                              <DataTable.Cell style={styles.serialNumberCell}>
-                                {index + 1}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {analysis?.Bar_Code}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {analysis?.Item_Name}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {analysis?.QTY}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {analysis?.PriceSold}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {analysis?.UnitCost}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {analysis?.Profit}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {convertToReadableDate(analysis?.Date_Log)}
-                              </DataTable.Cell>
-                            </DataTable.Row>
-                          );
-                        })}
-                      </ScrollView>
-                    </View>
-                  </ScrollView>
-                </DataTable>
-              </View>
+              <>
+                {state.branchesToSearchBy.length ? (
+                  <View
+                    style={{
+                      width: "45%",
+                      marginBottom: 20,
+                    }}
+                  >
+                    <DropDownPicker
+                      placeholder="Branches"
+                      placeholderStyle={{ color: "#ccc" }}
+                      items={state.branchesToSearchBy}
+                      // defaultValue={state.searchByText}
+                      containerStyle={{ height: 35 }}
+                      style={{ backgroundColor: "#fafafa" }}
+                      itemStyle={{
+                        justifyContent: "flex-start",
+                        color: "gray",
+                      }}
+                      dropDownStyle={{
+                        backgroundColor: "#fafafa",
+                      }}
+                      onChangeItem={(item) => handleChangeSearchBy(item?.value)}
+                      selectedLabelStyle={{ color: "#000" }}
+                      labelStyle={{
+                        color: "gray",
+                      }}
+                    />
+                  </View>
+                ) : null}
+                <View style={styles.tableWrapper}>
+                  <DataTable>
+                    <ScrollView horizontal>
+                      <View>
+                        <DataTable.Header>
+                          <DataTable.Title style={styles.serialNumberCell}>
+                            S/N
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Model Number
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Item Name
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Quantity
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Price Sold
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Unit Cost
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Profit
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Sales Date
+                          </DataTable.Title>
+                        </DataTable.Header>
+                        <ScrollView
+                          showsVerticalScrollIndicator={false}
+                          onScroll={({ nativeEvent }) => {
+                            if (isCloseToBottom(nativeEvent)) {
+                              scrolledToBottom();
+                            }
+                          }}
+                          vertical={true}
+                        >
+                          {state.salesAnalysis.map((analysis, index) => {
+                            return (
+                              <DataTable.Row key={index}>
+                                <DataTable.Cell style={styles.serialNumberCell}>
+                                  {index + 1}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {analysis?.Bar_Code}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {analysis?.Item_Name}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {analysis?.QTY}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {analysis?.PriceSold}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {analysis?.UnitCost}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {analysis?.Profit}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {convertToReadableDate(analysis?.Date_Log)}
+                                </DataTable.Cell>
+                              </DataTable.Row>
+                            );
+                          })}
+                        </ScrollView>
+                      </View>
+                    </ScrollView>
+                  </DataTable>
+                </View>
+              </>
             ) : state.activeSummary === "Expenses History" ? (
-              <View style={styles.tableWrapper}>
-                <DataTable>
-                  <ScrollView horizontal>
-                    <View>
-                      <DataTable.Header>
-                        <DataTable.Title style={styles.serialNumberCell}>
-                          S/N
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Exp Header
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Requester Name
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Department
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Amount
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.wideCell}>
-                          Purpose
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Exp Date
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Exp ID
-                        </DataTable.Title>
-                        <DataTable.Title style={styles.singleCell}>
-                          Username
-                        </DataTable.Title>
-                      </DataTable.Header>
-                      <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        onScroll={({ nativeEvent }) => {
-                          if (isCloseToBottom(nativeEvent)) {
-                            scrolledToBottom();
-                          }
-                        }}
-                        vertical={true}
-                      >
-                        {state.expensesHistory.map((expenses, index) => {
-                          return (
-                            <DataTable.Row key={index}>
-                              <DataTable.Cell style={styles.serialNumberCell}>
-                                {index + 1}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {expenses?.Header}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {expenses?.ReqName}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {expenses?.Department}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {expenses?.Amount}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.wideCell}>
-                                {expenses?.Purpose}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {convertToReadableDate(expenses?.ReqDate)}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {expenses?.ExpID}
-                              </DataTable.Cell>
-                              <DataTable.Cell style={styles.singleCell}>
-                                {expenses?.username}
-                              </DataTable.Cell>
-                            </DataTable.Row>
-                          );
-                        })}
-                      </ScrollView>
-                    </View>
-                  </ScrollView>
-                </DataTable>
-              </View>
+              <>
+                {state.branchesToSearchBy.length ? (
+                  <View
+                    style={{
+                      width: "45%",
+                      marginBottom: 20,
+                    }}
+                  >
+                    <DropDownPicker
+                      placeholder="Branches"
+                      placeholderStyle={{ color: "#ccc" }}
+                      items={state.branchesToSearchBy}
+                      // defaultValue={state.searchByText}
+                      containerStyle={{ height: 35 }}
+                      style={{ backgroundColor: "#fafafa" }}
+                      itemStyle={{
+                        justifyContent: "flex-start",
+                        color: "gray",
+                      }}
+                      dropDownStyle={{
+                        backgroundColor: "#fafafa",
+                      }}
+                      onChangeItem={(item) => handleChangeSearchBy(item?.value)}
+                      selectedLabelStyle={{ color: "#000" }}
+                      labelStyle={{
+                        color: "gray",
+                      }}
+                    />
+                  </View>
+                ) : null}
+                <View style={styles.tableWrapper}>
+                  <DataTable>
+                    <ScrollView horizontal>
+                      <View>
+                        <DataTable.Header>
+                          <DataTable.Title style={styles.serialNumberCell}>
+                            S/N
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Exp Header
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Requester Name
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Department
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Amount
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.wideCell}>
+                            Purpose
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Exp Date
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Exp ID
+                          </DataTable.Title>
+                          <DataTable.Title style={styles.singleCell}>
+                            Username
+                          </DataTable.Title>
+                        </DataTable.Header>
+                        <ScrollView
+                          showsVerticalScrollIndicator={false}
+                          onScroll={({ nativeEvent }) => {
+                            if (isCloseToBottom(nativeEvent)) {
+                              scrolledToBottom();
+                            }
+                          }}
+                          vertical={true}
+                        >
+                          {state.expensesHistory.map((expenses, index) => {
+                            return (
+                              <DataTable.Row key={index}>
+                                <DataTable.Cell style={styles.serialNumberCell}>
+                                  {index + 1}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {expenses?.Header}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {expenses?.ReqName}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {expenses?.Department}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {expenses?.Amount}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.wideCell}>
+                                  {expenses?.Purpose}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {convertToReadableDate(expenses?.ReqDate)}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {expenses?.ExpID}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={styles.singleCell}>
+                                  {expenses?.username}
+                                </DataTable.Cell>
+                              </DataTable.Row>
+                            );
+                          })}
+                        </ScrollView>
+                      </View>
+                    </ScrollView>
+                  </DataTable>
+                </View>
+              </>
             ) : null}
             {state.isLoadingMore ? (
               <View style={styles.loadingWrapper}>
@@ -518,7 +662,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   tableWrapper: {
-    height: "68%",
+    maxHeight: "68%",
   },
   rightWrapper: {
     display: "flex",
@@ -567,14 +711,15 @@ const styles = StyleSheet.create({
   searchByContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   searchLayout: {
     display: "flex",
     flexDirection: "row",
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 15,
+    borderRadius: 5,
     marginBottom: 15,
     height: 40,
     alignItems: "center",

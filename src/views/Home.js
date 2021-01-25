@@ -57,7 +57,7 @@ class Home extends Component {
       tableNumber: "",
       customer: {},
       processingOrder: false,
-      activeCategory: 'All'
+      activeCategory: "All",
     };
   }
 
@@ -446,7 +446,7 @@ class Home extends Component {
                             key={index}
                             onPress={() => {
                               this.props.toggleDrawer(false);
-                              this.setState({activeCategory: drawerItem})
+                              this.setState({ activeCategory: drawerItem });
                               this.props.filterItemsByCategory(
                                 drawerItem,
                                 this.props.currentTab
@@ -454,13 +454,18 @@ class Home extends Component {
                             }}
                           >
                             <Text
-                              style={[{
-                                paddingTop: 15,
-                                paddingBottom: 15,
-                                fontSize: 14,
-                              }, this.state.activeCategory === drawerItem ? {
-                                color: "#2e88ce"
-                              }: null ]}
+                              style={[
+                                {
+                                  paddingTop: 15,
+                                  paddingBottom: 15,
+                                  fontSize: 14,
+                                },
+                                this.state.activeCategory === drawerItem
+                                  ? {
+                                      color: "#2e88ce",
+                                    }
+                                  : null,
+                              ]}
                             >
                               {drawerItem}
                             </Text>

@@ -28,7 +28,7 @@ class Cart extends Component {
   totalAmountInCart = () => {
     return (
       this.props.itemsInCart.reduce(
-        (total, obj) => obj.transactionTotalAmount + total,
+        (total, obj) => +obj.transactionTotalAmount + total,
         0
       ) || 0
     )

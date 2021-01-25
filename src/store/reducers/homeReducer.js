@@ -68,7 +68,7 @@ const homeReducer = (state = initialState, action) => {
     }
     case Actions.POPULATE_ITEMS_IN_SALES: {
       const newSalesTotalAmount = action.payload.reduce(
-        (total, obj) => obj.transactionTotalAmount + total,
+        (total, obj) => +obj.transactionTotalAmount + total,
         0
       );
       return {

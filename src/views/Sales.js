@@ -43,7 +43,7 @@ class Sales extends Component {
           this.props.populateItemsInSales(sales)
           if (sales.length > 0) {
             const totalSales = sales.reduce(
-              (total, obj) => obj.transactionTotalAmount + total, 0)
+              (total, obj) => +obj.transactionTotalAmount + total, 0)
             this.setState({
               totalSales
             })

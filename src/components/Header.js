@@ -59,7 +59,7 @@ class Header extends Component {
     this.setState({ hasCameraPermission: status === "granted" });
   };
 
-  onPopupEvent = (eventName, index) => {
+  onPopupEvent = async (eventName, index) => {
     const currentTab = this.props.currentTab;
 
     if (index === 0) {
@@ -69,58 +69,48 @@ class Header extends Component {
     } else if (index === 2) {
       this.props.navigation.navigate("Profile");
     } else if (index === 3) {
-      (async () => {
-        this.props.toggleBarItemsLoading(true);
-        await this.fetchItems("/getItemsFromBranch");
-        this.props.toggleSortedBy("defaultItems");
-      })();
+      this.props.toggleBarItemsLoading(true);
+      await this.fetchItems("/getItemsFromBranch");
+      this.props.toggleSortedBy("defaultItems");
     } else if (index === 4) {
-      (async () => {
-        if (currentTab === "bar") {
-          this.props.toggleBarItemsLoading(true);
-          let pinnedItems = await AsyncStorage.getItem(
-            `${currentTab}PinnedItems`
-          );
-          pinnedItems = JSON.parse(pinnedItems);
-          if (!pinnedItems) {
-            pinnedItems = [];
-          }
-          this.props.sortItemsInBar(pinnedItems);
-        } else {
-          this.props.toggleRestaurantItemsLoading(true);
-          let pinnedItems = await AsyncStorage.getItem(
-            `${currentTab}PinnedItems`
-          );
-          pinnedItems = JSON.parse(pinnedItems);
-          if (!pinnedItems) {
-            pinnedItems = [];
-          }
-          this.props.sortItemsInRestaurant(pinnedItems);
+      if (currentTab === "bar") {
+        this.props.toggleBarItemsLoading(true);
+        let pinnedItems = await AsyncStorage.getItem(
+          `${currentTab}PinnedItems`
+        );
+        pinnedItems = JSON.parse(pinnedItems);
+        if (!pinnedItems) {
+          pinnedItems = [];
         }
-        this.props.toggleSortedBy("pinnedItems");
-      })();
+        this.props.sortItemsInBar(pinnedItems);
+      } else {
+        this.props.toggleRestaurantItemsLoading(true);
+        let pinnedItems = await AsyncStorage.getItem(
+          `${currentTab}PinnedItems`
+        );
+        pinnedItems = JSON.parse(pinnedItems);
+        if (!pinnedItems) {
+          pinnedItems = [];
+        }
+        this.props.sortItemsInRestaurant(pinnedItems);
+      }
+      this.props.toggleSortedBy("pinnedItems");
     } else if (index === 5) {
-      (async () => {
-        if (currentTab === "bar") {
-          this.props.toggleBarItemsLoading(true);
-          await this.fetchItems("/getTopSellingItemsFromBranch");
-        } else if (currentTab === "restaurant") {
-          this.props.toggleRestaurantItemsLoading(true);
-          await this.fetchItems("/getTopSellingItemsFromBranch");
-        }
-      })();
-
+      if (currentTab === "bar") {
+        this.props.toggleBarItemsLoading(true);
+        await this.fetchItems("/getTopSellingItemsFromBranch");
+      } else if (currentTab === "restaurant") {
+        this.props.toggleRestaurantItemsLoading(true);
+        await this.fetchItems("/getTopSellingItemsFromBranch");
+      }
       this.props.clearCart();
       this.props.toggleSortedBy("topSellingItems");
     } else if (index === 6) {
       this.props.clearCart();
-      (async () => {
-        await AsyncStorage.setItem("staffData", "").then((value) => {
-          this.props.logOut();
-          this.props.navigation.navigate("Login");
-          socket;
-        });
-      })();
+      await AsyncStorage.setItem("branches", "");
+      await AsyncStorage.setItem("staffData", "");
+      this.props.logOut();
+      this.props.navigation.replace("Login");
     }
   };
 
